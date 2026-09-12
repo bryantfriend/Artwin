@@ -63,7 +63,7 @@ function Chair({m}) {
     {[-1,1].map(a=><Soft key={a} position={[a*.275,.62,-.02]} size={[.07,.22,.48]} material={m.caramel}/>)}
   </>;
 }
-function Place({position,m}) {return <group position={position}>
+function Place({position,rotation=0,m}) {return <group position={position} rotation={[0,rotation,0]}>
   <Cylinder position={[0,0,0]} size={[.18,.012,.18]} material={m.brass}/>
   <Cylinder position={[0,.012,0]} size={[.15,.018,.15]} material={m.black}/>
   <Cylinder position={[0,.025,0]} size={[.09,.012,.09]} material={m.ceramic}/>
@@ -76,8 +76,9 @@ function Dining({m}) {
     <Cylinder position={[0,.78,0]} size={[.57,.07,1.15]} material={m.stone}/>
     {[-1,1].flatMap(x=>[-.65,0,.65].map(z=><group key={x+':'+z} position={[x*.8,0,z]} rotation={[0,-x*Math.PI/2,0]}><Chair m={m}/></group>))}
     {[-1,1].map(z=><group key={z} position={[0,0,z*1.24]} rotation={[0,z===1?Math.PI:0,0]}><Chair m={m}/></group>)}
-    {[-1,1].flatMap(x=>[-.65,0,.65].map(z=><Place key={x+':'+z} position={[x*.32,.825,z]} m={m}/>))}
-    {[-.45,.35].map(z=><group key={z} position={[0,.9,z]}><Cylinder position={[0,0,0]} size={[.07,.16,.07]} material={m.brass}/><Ball position={[0,.1,0]} size={[.13,.09,.14]} material={m.white}/></group>)}
+    {/* Each setting faces its chair; inset the end settings from the oval edge. */}
+    {[-1,1].flatMap(side=>[-.6,0,.6].map(z=><Place key={side+':'+z} position={[side*.25,.825,z]} rotation={side*Math.PI/2} m={m}/>))}
+    {[-.3,.3].map(z=><group key={z} position={[0,.9,z]}><Cylinder position={[0,0,0]} size={[.07,.16,.07]} material={m.brass}/><Ball position={[0,.1,0]} size={[.13,.09,.14]} material={m.white}/></group>)}
   </>;
 }
 function Breakfast({m}) {return <>

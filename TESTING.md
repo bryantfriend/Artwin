@@ -1,0 +1,38 @@
+# Verification — 12 September 2026
+
+Tested locally on Windows with Node 22.14.0, npm 11.2.0, Chromium via Playwright CLI 0.1.19, and the **production `dist` build served at `http://127.0.0.1:4173/Artwin/`**. The static verification server rejects unknown paths instead of rewriting them to the app.
+
+## Passed
+
+- `npm ci --no-fund --no-audit`: clean installation from `package-lock.json`.
+- `npm ls --depth=0`: all declared packages installed without peer-dependency errors.
+- `npm test`: **9 tests**, including actual Rapier WASM checks for every configured destination, closed/open door passage, backing away after contact, wall sliding, and grounding.
+- `npm run build`: production application built successfully.
+- `npm run check:dist`: all **5 built asset files** and **3 HTML asset references** served successfully under `/Artwin/`. Root and missing asset/room paths return 404.
+- Desktop browser: furnished dollhouse, keyboard movement after entering, pause/resume, all **11 room destinations**, closed door obstruction, open door passage, repeated interaction during animation, kitchen light toggle, TV toggle, entrance recovery, mode switch with a held movement key, keyboard help dismissal.
+- Desktop normal-load request monitoring: **no failed requests, HTTP errors, or console/runtime errors**. Every requested application asset remained below `/Artwin/`; no remote model, texture, font, or WASM request occurred.
+- Touchscreen emulation: portrait layout, simultaneous joystick movement and second-finger looking, input release, touch cancellation, room selection, landscape resizing, and quality selection. The test closes the floor-plan overlay before using the controls beneath it.
+- Separate fault-injection checks: no automatic pointer lock; simulated pointer-lock and fullscreen refusal show fallback messages; simulated blur pauses; cabinet opening animation works; graphics-context loss shows recovery; a failed lazy scene download is caught by the loading boundary; restoring assets and reloading succeeds.
+- Visual inspection of the generated dollhouse, living/kitchen and bedroom interiors, light-on/light-off views, cabinet interaction, and mobile screenshots. Layout was checked against the supplied four-room reference. The result is an approximate procedural reconstruction.
+
+Two upstream deprecation warnings remain in normal runs: Three.js's `Clock` (used by React Three Fiber) and Rapier's compatibility initializer. Neither is a runtime error or asset-load failure. The deliberate fault-injection run produces expected errors that are separate from the clean normal-load checks.
+
+## Evidence
+
+Screenshots are in the local, gitignored `output/playwright/` folder:
+
+- `dollhouse.png`
+- `living.png`, `kitchen.png`, `primary.png`
+- `light-on.png`, `light-off.png`, `television.png`, `cabinet-open.png`
+- `mobile-dollhouse.png`, `mobile-walkthrough.png`, `mobile-landscape.png`
+- `graphics-recovery.png`, `asset-recovery.png`
+
+Reproduce the browser checks using the commands in README. The production physics chunk is approximately 2.24 MB minified (0.84 MB gzip); it contains embedded WASM. The initial application shell is approximately 217 KB minified (69 KB gzip), and the viewer/Three.js load separately.
+
+## Not claimed or not tested
+
+- No live GitHub Actions deployment or live Pages URL was verified. Files have not been pushed from this workspace. Follow README's activation steps.
+- No physical phone, Safari, Firefox, device-specific FPS benchmark, or construction-dimension survey was tested.
+- The occupied-door-swing guard is tested at the geometry level, and door contact/retreat and repeated animation are tested in the browser. Exhaustive player/door corner cases are not claimed.
+- The rejection path for an obstructed relocation is implemented against live colliders; the automated destination tests confirm the shipped destinations are clear. Arbitrarily edited/obstructed destinations were not injected in the browser.
+- No separate linter is configured; production compilation and focused Node/browser tests are the available checks.

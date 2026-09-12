@@ -111,7 +111,7 @@ export default function App() {
     :`${state.cabinet?'Close':'Open'} cabinet`;
   return <div className={`app mode-${mode}`}>
     <header className="topbar">
-      <a className="wordmark" href={import.meta.env.BASE_URL} aria-label="Artwin home">artwin</a>
+      <a className="wordmark" href={import.meta.env.BASE_URL} aria-label="Artwin home"><img src={`${import.meta.env.BASE_URL}artwin-logo.png`} alt="ARTWIN" width="287" height="88"/></a>
       <div className="header-divider"/><span className="header-caption">SPACES FOR LIVING</span>
       <div className="header-end"><span className="project-label">APARTMENT STUDY <span>/</span> 134.68 M²</span><button className="icon-button help-button" onClick={()=>{setHelp(true);clearInput(input);}} aria-label="Open controls and help"><Icon name="help"/></button></div>
     </header>
@@ -136,7 +136,7 @@ export default function App() {
         <div className="scene-label"><span className="live-dot"/>{mode==='dollhouse'?'INTERACTIVE 3D VIEW':'INSIDE THE RESIDENCE'}</div>
         <div className="viewer-tools"><button className="icon-button" onClick={recover} aria-label={mode==='dollhouse'?'Reset view':'Return to entrance'} title={mode==='dollhouse'?'Reset view':'Return to entrance'}><Icon name="reset"/></button><button className="icon-button" onClick={fullscreen} aria-label="Toggle fullscreen" title="Fullscreen"><Icon name="expand"/></button></div>
         {mode==='dollhouse'&&<div className="compass"><span>N</span><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5 27 30 20 25 13 30Z"/></svg></div>}
-        {(!ready||contextLost)&&<div className="loading-overlay"><div className="loading-symbol">a</div><h2>{contextLost?'The graphics connection was lost.':'Making room for you.'}</h2><p>{contextLost?'Reload to restore the apartment.':'Preparing the apartment and physics…'}</p>{contextLost&&<button className="primary-button" onClick={()=>location.reload()}>Reload viewer</button>}</div>}
+        {(!ready||contextLost)&&<div className="loading-overlay"><div className="loading-symbol"><img src={`${import.meta.env.BASE_URL}artwin-logo.png`} alt="ARTWIN" width="287" height="88"/></div><h2>{contextLost?'The graphics connection was lost.':'Making room for you.'}</h2><p>{contextLost?'Reload to restore the apartment.':'Preparing the apartment and physics…'}</p>{contextLost&&<button className="primary-button" onClick={()=>location.reload()}>Reload viewer</button>}</div>}
         {mode==='walkthrough'&&ready&&!help&&<>
           {!paused&&<div className={`reticle ${target?'targeted':''}`}/>}
           {target&&!paused&&<button className="interaction-prompt" onClick={activate}><kbd>E</kbd> {prompt}</button>}

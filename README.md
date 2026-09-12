@@ -140,7 +140,7 @@ Actual verification results and limits are recorded in [TESTING.md](TESTING.md).
 
 ## Assets and limitations
 
-All included visual assets, SVGs, textures, and furniture geometry were created in code for this prototype. No external models, fonts, reference-image copies, HDR presets, music, tracking, or analytics are included. The supplied apartment screenshot remains the user's design reference; no independent license to republish it is asserted. Third-party library licenses remain with their respective packages.
+The ARTWIN logo image was supplied by the user and is stored in `public/artwin-logo.png`. Other visual assets, SVGs, textures, and furniture geometry were created in code for this prototype. No external models, fonts, apartment-reference image copies, HDR presets, music, tracking, or analytics are included. The supplied apartment screenshot remains the user's design reference; no independent license to republish it is asserted. Third-party library licenses remain with their respective packages.
 
 This is a procedural visual reconstruction, not a photorealistic or dimensionally surveyed model. Bathrooms and decorative details are simplified. Cabinet collision is conservative and does not model shelf contents. There is no exterior world, save system, jump/sprint, or audio.
 

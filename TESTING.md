@@ -14,6 +14,7 @@ Tested locally on Windows with Node 22.14.0, npm 11.2.0, Chromium via Playwright
 - Touchscreen emulation: portrait layout, simultaneous joystick movement and second-finger looking, input release, touch cancellation, room selection, landscape resizing, and quality selection. The test closes the floor-plan overlay before using the controls beneath it.
 - Separate fault-injection checks: no automatic pointer lock; simulated pointer-lock and fullscreen refusal show fallback messages; simulated blur pauses; cabinet opening animation works; graphics-context loss shows recovery; a failed lazy scene download is caught by the loading boundary; restoring assets and reloading succeeds.
 - Visual inspection of the generated dollhouse, living/kitchen and bedroom interiors, light-on/light-off views, cabinet interaction, and mobile screenshots. Layout was checked against the supplied four-room reference. The result is an approximate procedural reconstruction.
+- Live publication: commit `2517c0e` was pushed to `main`, and [GitHub Actions build and Pages deployment succeeded](https://github.com/bryantfriend/Artwin/actions/runs/34691769295). A browser check of [the published site](https://bryantfriend.github.io/Artwin/) returned HTTP 200, loaded all assets and physics without failed requests or console errors, entered walkthrough mode, and navigated to the primary bedroom.
 
 Two upstream deprecation warnings remain in normal runs: Three.js's `Clock` (used by React Three Fiber) and Rapier's compatibility initializer. Neither is a runtime error or asset-load failure. The deliberate fault-injection run produces expected errors that are separate from the clean normal-load checks.
 
@@ -31,7 +32,7 @@ Reproduce the browser checks using the commands in README. The production physic
 
 ## Not claimed or not tested
 
-- No live GitHub Actions deployment or live Pages URL was verified. Files have not been pushed from this workspace. Follow README's activation steps.
+- The live check covered loading, walkthrough entry, and room navigation. The broader interaction and failure-injection suite above was run against the matching local production build.
 - No physical phone, Safari, Firefox, device-specific FPS benchmark, or construction-dimension survey was tested.
 - The occupied-door-swing guard is tested at the geometry level, and door contact/retreat and repeated animation are tested in the browser. Exhaustive player/door corner cases are not claimed.
 - The rejection path for an obstructed relocation is implemented against live colliders; the automated destination tests confirm the shipped destinations are clear. Arbitrarily edited/obstructed destinations were not injected in the browser.

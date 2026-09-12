@@ -2,6 +2,8 @@
 
 A client-side React + Vite + Three.js reconstruction of the supplied **four-room, 134.68 m²** apartment reference. Three bedrooms, a separate kitchen/dining space, living room, central hall, three bathroom spaces, and two loggias. No server, account, database, SSR, remote model, or hosted texture service is required.
 
+**[Open the live apartment walkthrough](https://bryantfriend.github.io/Artwin/)**
+
 The older pasted 52.10 m² brief is not the reference for this implementation. The subsequently supplied four-room image is.
 
 ## Run locally
@@ -28,7 +30,7 @@ Alternatively, `npm run preview` starts Vite's production preview at the same ad
 
 ## GitHub Pages activation
 
-The workflow is prepared; **a successful live deployment has not been verified**.
+GitHub Pages is enabled with **GitHub Actions** as its source. The [initial deployment succeeded](https://github.com/bryantfriend/Artwin/actions/runs/34691769295), and the live viewer was checked in a browser. The following steps describe setup for a new copy or reactivation; this repository is already activated.
 
 1. Commit these files, including `package-lock.json`, and push them to the repository's default branch. The initial local branch is `main`:
 

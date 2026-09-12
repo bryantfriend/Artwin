@@ -19,7 +19,7 @@ function Floor({room,m,mode}) {
   },[room]);
   useEffect(()=>()=>{resources.geo.dispose();resources.slab.dispose();},[resources]);
   return <>
-    <mesh geometry={resources.geo} material={m[room.type]} receiveShadow/>
+    <mesh geometry={resources.geo} material={m[room.id==='hall'?'hallOak':room.type]} receiveShadow/>
     <mesh geometry={resources.slab} material={m.wall} position={[0,-.19,0]} receiveShadow/>
     <RigidBody type="fixed" colliders={false}><CuboidCollider args={[resources.w/2,.1,resources.d/2]} position={[resources.x,-.1,resources.z]}/></RigidBody>
     {mode==='walkthrough'&&<mesh geometry={resources.geo} position={[0,APARTMENT.ceiling,0]} rotation={[0,0,0]}><meshStandardMaterial color="#f4f1ea" side={THREE.DoubleSide}/></mesh>}

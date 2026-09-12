@@ -61,6 +61,24 @@ function Sofa({item,m}) {
     {[-1,1].map(a=><Pillow key={a} position={[a*(w/2-.4),.73,.05]} size={[.35,.35,.13]} rotation={[.1,0,a*.22]} material={a===1?m.sofaAccent:m.sofaBrown}/>)}
   </>;
 }
+function HallStorage({item,m}){
+  const [w,h,d]=item.size;
+  return <>
+    <Box position={[0,h/2,0]} size={[w-.1,h-.08,d-.025]} material={m.dark}/>
+    {/* White end panels and header frame the gray fitted cabinet. */}
+    {[-1,1].map(side=><Box key={side} position={[side*(w/2-.025),h/2,0]} size={[.05,h,d]} material={m.white}/>)}
+    <Box position={[0,h-.035,0]} size={[w,.07,d]} material={m.white}/>
+    <Box position={[0,.055,.005]} size={[w-.1,.11,d-.05]} material={m.dark}/>
+    {[-1,0,1].map(column=><group key={column} position={[column*(w-.12)/3,0,0]}>
+      <Box position={[0,.45,d/2-.025]} size={[(w-.15)/3,.66,.04]} material={m.hallJoinery}/>
+      <Box position={[0,1.435,d/2-.025]} size={[(w-.15)/3,1.28,.04]} material={m.hallJoinery}/>
+      {[.66,.94].map(y=><group key={y} position={[.13,y,d/2-.004]}>
+        <Cylinder position={[0,0,.006]} rotation={[Math.PI/2,0,0]} size={[.01,.018,.01]} material={m.brass}/>
+        <Ball position={[0,0,.017]} size={[.015,.015,.01]} material={m.brass}/>
+      </group>)}
+    </group>)}
+  </>;
+}
 function Chair({m}) {
   return <><Legs width={.58} depth={.6} height={.42} mat={m.dark}/>
     <Soft position={[0,.46,0]} size={[.6,.14,.58]} material={m.caramel}/>
@@ -174,7 +192,7 @@ function Plant({item,m}) {
 export default function Furniture({item,m,state,player,mode,activeRoom,quality,reducedMotion}) {
   const [w,h,d]=item.size;
   const content = {
-    bed:()=> <Bed item={item} m={m}/>, sofa:()=> <Sofa item={item} m={m}/>,
+    bed:()=> <Bed item={item} m={m}/>, sofa:()=> <Sofa item={item} m={m}/>, hallStorage:()=> <HallStorage item={item} m={m}/>,
     dining:()=> <Dining m={m}/>, breakfast:()=> <Breakfast m={m}/>, kitchen:()=> <Kitchen item={item} m={m}/>,
     chair:()=> <Chair m={m}/>, plant:()=> <Plant item={item} m={m}/>,
     cabinet:()=> <Cabinet item={item} m={m} state={state} player={player} mode={mode}/>,

@@ -67,7 +67,7 @@ export const furniture = [
   {id:'wardrobe-north',kind:'wardrobe',position:[.82,0,3.48],size:[1.45,2.45,.5]},
   {id:'wardrobe-primary',kind:'wardrobe',position:[.8,0,9.76],size:[1.45,2.45,.5]},
   {id:'wardrobe-south',kind:'wardrobe',position:[3.72,0,10.9],rotation:Math.PI/2,size:[1.2,2.4,.5]},
-  {id:'hall-console',kind:'wardrobe',position:[3.35,0,7.35],size:[1.7,2.15,.45]},
+  {id:'hall-console',kind:'hallStorage',position:[3.35,0,7.35],rotation:Math.PI/2,size:[1.7,2.15,.45]},
   {id:'kitchen-cabinets',kind:'kitchen',position:[3.76,0,2.5],rotation:Math.PI/2,size:[3.7,.92,.62]},
   {id:'dining',kind:'dining',position:[8.1,0,14.4],rotation:Math.PI/2,size:[2.2,.8,3]},
   {id:'breakfast',kind:'breakfast',position:[5.525,0,2.6],size:[1.4,.82,2]},

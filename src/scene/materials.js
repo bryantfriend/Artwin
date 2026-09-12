@@ -47,6 +47,8 @@ export function createMaterials(){
   const colors={wall:'#f1f1ef',trim:'#ffffff',dark:'#363638',walnut:'#4b3527',oak:'#b89c7c',linen:'#d3d0c9',taupe:'#857767',sage:'#a8a698',metal:'#292b2c',brass:'#bd9553',ceramic:'#fafaf7',rug:'#d4d0c7',leaf:'#3d4737',soil:'#433528',black:'#141416',white:'#fafaf7',curtain:'#92918d',caramel:'#9c7257',padded:'#adaeaa',pink:'#d4969f'};
   const materials=Object.fromEntries(Object.entries(colors).map(([k,color])=>[k,new THREE.MeshStandardMaterial({color,roughness:k==='brass'?.3:.82,metalness:k==='brass'?.65:0})]));
   for(const k of ['wood','stone','darkMarble'])materials[k]=new THREE.MeshPhysicalMaterial({map:maps[k],roughness:k==='wood'?.52:.26,clearcoat:k==='wood'?.12:.3,clearcoatRoughness:.3,side:THREE.DoubleSide});
+  maps.hallOak=maps.wood.clone();maps.hallOak.repeat.set(3.2,2);maps.hallOak.needsUpdate=true;
+  materials.hallOak=new THREE.MeshPhysicalMaterial({map:maps.hallOak,color:'#f1e6d5',roughness:.6,clearcoat:.08});
   for(const k of ['linen','taupe','padded','rug','curtain','caramel']){materials[k].bumpMap=maps.weave;materials[k].bumpScale=k==='rug'?.022:.008;materials[k].roughness=.92;}
   for(const k of ['brownBedding','whiteBedding'])materials[k]=new THREE.MeshPhysicalMaterial({map:maps[k],roughness:.98,bumpMap:maps.weave,bumpScale:.01,sheen:.45,side:THREE.DoubleSide});
   for(let i=0;i<6;i++){maps['art'+i]=decorativeTexture('art',i);materials['art'+i]=new THREE.MeshStandardMaterial({map:maps['art'+i],roughness:1});}
@@ -57,6 +59,7 @@ export function createMaterials(){
   materials.upholstery=new THREE.MeshPhysicalMaterial({color:'#ece8df',roughness:.93,bumpMap:maps.weave,bumpScale:.008,sheen:.4,sheenColor:'#fff8ed'});
   for(const [name,color] of Object.entries({sofaBrown:'#755039',sofaAccent:'#9a7656',chairFabric:'#b97540'}))materials[name]=new THREE.MeshPhysicalMaterial({color,roughness:.88,bumpMap:maps.weave,bumpScale:.003,sheen:.3,sheenColor:'#d5aa7d',sheenRoughness:.85});
   materials.chairStitch=new THREE.MeshStandardMaterial({color:'#a96c3e',roughness:.95});
+  materials.hallJoinery=new THREE.MeshStandardMaterial({color:'#747779',roughness:.72});
   materials.porcelain=new THREE.MeshPhysicalMaterial({color:'#f9f7f1',roughness:.2,clearcoat:.45,clearcoatRoughness:.18});
   materials.showerGlass=new THREE.MeshPhysicalMaterial({color:'#d1e5e0',transparent:true,opacity:.15,roughness:.08,metalness:.05,side:THREE.DoubleSide,depthWrite:false});
   materials.glass=new THREE.MeshStandardMaterial({color:'#d6dce0',transparent:true,opacity:.16,roughness:.14,depthWrite:false});

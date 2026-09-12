@@ -67,3 +67,7 @@ Production build and /Artwin/ checks passed. The six-stop guided-tour suite pass
 ## Animated television — 13 September 2026
 
 The production build and /Artwin/ asset check passed. The TV browser test compares rendered frames: on-state frames differ, off-state frames stay identical, switching on again restarts the scene, and reduced-motion frames stay identical. Close-up frames were visually reviewed for screen fit and moving clouds/boat. No console errors, failed requests or HTTP errors occurred.
+
+## Hall reference refinement — 13 September 2026
+
+All nine layout/physics tests passed after rotating the storage unit toward the entrance. The production browser smoke suite passed all 11 room destinations, door movement/collisions, entrance recovery, light and TV interactions, and resource checks with no errors or failed requests. Hall walkthrough and dollhouse screenshots were inspected. Production build and /Artwin/ asset checks passed. Three.Clock, Rapier initialization and SVGLoader.createShapes emit library deprecation warnings.

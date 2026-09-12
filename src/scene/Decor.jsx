@@ -88,7 +88,6 @@ export default function Decor({m,mode}) {
     <Rug position={[1.5,.025,12.8]} width={2.85} depth={3.1} index={1} m={m}/>
     <Rug position={[4.85,.025,12.7]} width={2.7} depth={2.9} index={2} m={m}/>
     <Rug position={[1.5,.025,1.65]} width={2.8} depth={2.95} index={1} m={m}/>
-    <Rug position={[4.9,.026,7.85]} width={1.05} depth={3.05} index={2} m={m}/>
     <Rug position={[4.6,.025,2.55]} width={.7} depth={2.65} index={1} m={m}/>
     <Rug position={[1.2,.025,6.65]} width={.65} depth={.8} index={0} m={m}/>
     <Rug position={[1.15,.025,8.45]} width={.65} depth={.6} index={0} m={m}/>
@@ -100,11 +99,9 @@ export default function Decor({m,mode}) {
     {mode==='walkthrough'&&<Art position={[3.51,1.95,13.15]} width={.7} height={.9} rotation={Math.PI/2} index={4} m={m}/>}
     <Art position={[.145,2.06,1.55]} width={1.3} height={.68} rotation={Math.PI/2} index={5} m={m}/>
     {mode==='walkthrough'&&<Art position={[5.8,1.8,.11]} width={.65} height={.85} index={2} m={m}/>}
-    {mode==='walkthrough'&&<Art position={[6.29,1.8,7.7]} width={.65} height={.85} rotation={-Math.PI/2} index={1} m={m}/>}
     {mode==='walkthrough'&&<Art position={[1.2,1.85,7.39]} width={.48} height={.65} rotation={Math.PI} index={4} m={m}/>}
     {mode==='walkthrough'&&<Art position={[.5,1.85,9.29]} width={.48} height={.65} rotation={Math.PI} index={2} m={m}/>}
     {furniture.filter(f=>['nightstand','kitchen','breakfast','vanity','cabinet'].includes(f.kind)).map(item=><SmallDetails key={item.id} item={item} m={m}/>)}
     <group position={[.65,.64,4.75]}><Soft position={[0,0,0]} size={[.18,.08,.4]} material={m.linen}/></group>
-    {mode==='walkthrough'&&<group position={[6.29,1.2,7.7]} rotation={[0,-Math.PI/2,0]}><Box size={[.75,.045,.17]} material={m.oak}/><group position={[-.18,.04,0]}><Books m={m} small/></group><group position={[.22,.025,0]}><Vase m={m}/></group></group>}
   </>;
 }

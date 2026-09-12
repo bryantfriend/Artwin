@@ -51,3 +51,7 @@ Added a six-stop guided tour with composed room views, timed advancement, pause/
 Rendering now uses a locally generated Three.js RoomEnvironment/PMREM lighting map, physical surface finishes, fabric bump maps, shaped pillows, continuous draped bedding, folded curtain geometry, softened sofa geometry and detailed bedside cabinets. High quality casts interior shadows from the active room light. No new dependencies, remote models or hosted textures were introduced.
 
 Verification: nine Node layout/physics tests passed; production build and /Artwin/ asset checks passed. Desktop walkthrough, mobile touch and recovery suites passed. The tour browser suite checks all six stops, automatic advancement, pause, completion/replay, Escape, mobile layout, room handoff, exit and reduced motion. All six desktop tour views and the mobile tour card were visually reviewed. Tests use Chromium emulation, not physical phones; photographic fidelity and device-wide frame-rate guarantees are not claimed.
+
+## Decorative styling — 12 September 2026
+
+Reviewed the six guided interior views with wall art, patterned rugs, tabletop accessories and layered curtains. The guided-tour suite passed with no console errors or failed requests. The production build and /Artwin/ asset check passed. Decorative texture generation adds no remote requests. Added décor is placed on existing surfaces or against walls and retains the existing collision layout; rug fringe uses instancing. Physical-device performance is not claimed.

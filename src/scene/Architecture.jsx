@@ -51,7 +51,6 @@ function Wall({wall,m,mode}) {
             <Box position={[0,(Math.min(cap,2.35)+.85)/2,0]} size={[o.width,Math.min(cap,2.35)-.85,.025]} material={m.glass}/>
             {[-1,0,1].map(a=><Box key={a} position={[a*o.width/2,1.6,0]} size={[.045,1.5,.09]} material={m.dark}/>)}
             {[.86,2.35].map(y=><Box key={y} position={[0,y,0]} size={[o.width,.055,.1]} material={m.dark}/>)}
-            {wall.tall&&[-1,1].map(a=><group key={a} position={[a*(o.width/2-.13),1.36,.12]}>{[-.12,-.04,.04,.12].map(x=><Box key={x} position={[x,0,Math.sin(x*35)*.04]} size={[.07,2.4,.05]} material={m.linen}/>)}</group>)}
           </>}
         </>:<>
           {o.kind==='entrance'&&<><CuboidCollider args={[o.width/2,1.1,.06]} position={[0,1.1,0]}/><Box position={[0,Math.min(2.2,cap)/2,0]} size={[o.width,Math.min(2.2,cap),.08]} material={m.walnut}/></>}
@@ -90,9 +89,7 @@ export default function Architecture({m,mode,state,player,reducedMotion,quality,
     {rooms.map(room=><Floor key={room.id} room={room} m={m} mode={mode}/>)}
     {walls.map(wall=><Wall key={wall.id} wall={wall} m={m} mode={mode}/>)}
     {doors.map(door=><Door key={door.id} door={door} m={m} mode={mode} open={!!state.doors[door.id]} player={player} reducedMotion={reducedMotion}/>)}
-    <Box position={[8.1,.012,11.7]} size={[2.7,.02,3.4]} material={m.rug}/>
-    <Box position={[1.5,.012,12.8]} size={[2.7,.02,3.3]} material={m.rug}/>
-    <Decor m={m}/>
+    <Decor m={m} mode={mode}/>
     {furniture.map(item=><Furniture key={item.id} item={item} m={m} state={state} player={player} mode={mode}/>)}
     {switches.map(s=><group key={s.id} position={s.position} rotation={[0,s.rotation,0]} userData={{interaction:s.id}}>
       <Box size={[.13,.2,.045]} material={m.white}/>

@@ -83,7 +83,7 @@ export const furniture = [
   {id:'vanity1',kind:'vanity',position:[1.5,0,4.03],size:[.65,.85,.35]},
   {id:'toilet2',kind:'toilet',position:[1.3,0,7.15],rotation:Math.PI,size:[.48,.7,.7]},
   {id:'vanity2',kind:'vanity',position:[.3,0,6.75],rotation:Math.PI/2,size:[1,.85,.45]},
-  {id:'shower',kind:'shower',position:[1.5,0,9],size:[.8,2.1,.65]},
+  {id:'shower',kind:'shower',position:[1.5,0,9],rotation:Math.PI,size:[.8,2.1,.65]},
   {id:'vanity3',kind:'vanity',position:[.3,0,8.4],rotation:Math.PI/2,size:[1,.85,.45]},
   {id:'plant-living',kind:'plant',position:[9.35,0,15.4],size:[.5,1.5,.5]},
   {id:'plant-hall',kind:'plant',position:[6,0,9.6],size:[.42,1.3,.42]},

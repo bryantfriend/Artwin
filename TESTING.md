@@ -55,3 +55,7 @@ Verification: nine Node layout/physics tests passed; production build and /Artwi
 ## Decorative styling — 12 September 2026
 
 Reviewed the six guided interior views with wall art, patterned rugs, tabletop accessories and layered curtains. The guided-tour suite passed with no console errors or failed requests. The production build and /Artwin/ asset check passed. Decorative texture generation adds no remote requests. Added décor is placed on existing surfaces or against walls and retains the existing collision layout; rug fringe uses instancing. Physical-device performance is not claimed.
+
+## Bathroom fixtures — 12 September 2026
+
+The upgraded sinks, live mirrors and shower passed production compilation, subpath asset checks and all nine layout/physics tests. Browser verification covered the bathroom tour view, repeated navigation between all three bathrooms, shower orientation and Light-quality mirrors at a 390 px viewport, with no errors or failed requests. Close-up screenshots were reviewed. Only the active bathroom has a live reflection; quality controls its render resolution. No physical-phone frame-rate claim is made.

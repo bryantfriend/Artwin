@@ -55,6 +55,8 @@ export function createMaterials(){
   materials.terracotta=new THREE.MeshStandardMaterial({color:'#ac6d50',roughness:.9});
   materials.curtain.side=THREE.DoubleSide;
   materials.upholstery=new THREE.MeshPhysicalMaterial({color:'#ece8df',roughness:.93,bumpMap:maps.weave,bumpScale:.008,sheen:.4,sheenColor:'#fff8ed'});
+  materials.porcelain=new THREE.MeshPhysicalMaterial({color:'#f9f7f1',roughness:.2,clearcoat:.45,clearcoatRoughness:.18});
+  materials.showerGlass=new THREE.MeshPhysicalMaterial({color:'#d1e5e0',transparent:true,opacity:.15,roughness:.08,metalness:.05,side:THREE.DoubleSide,depthWrite:false});
   materials.glass=new THREE.MeshStandardMaterial({color:'#d6dce0',transparent:true,opacity:.16,roughness:.14,depthWrite:false});
   materials.mirror=new THREE.MeshStandardMaterial({color:'#dedbd2',metalness:.6,roughness:.2});
   materials.bulb=new THREE.MeshStandardMaterial({color:'#fff7e5',emissive:'#ffe2ab',emissiveIntensity:.8});

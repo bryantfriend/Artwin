@@ -1,5 +1,6 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
+import {Vanity,Shower} from './BathroomFixtures.jsx';
 import { useFrame } from '@react-three/fiber';
 import { RigidBody, CuboidCollider } from '@react-three/rapier';
 import { boxGeometry, pillowGeometry, roundedGeometry, ringGeometry, sphereGeometry, cylinderGeometry } from './materials.js';
@@ -140,35 +141,23 @@ function TV({m,state}) {
     {[.6,1.15,1.7].map((y,i)=><group key={y}><Box position={[-1.24,y,.055]} size={[.48,.035,.3]} material={m.brass}/><Box position={[-1.22,y+.14,.08]} size={[.12,.24,.15]} rotation={[0,0,.14]} material={[m.oak,m.white,m.taupe][i]}/><Cylinder position={[-1.4,y+.12,.08]} size={[.045,.2,.045]} material={m.ceramic}/></group>)}
   </>;
 }
-function Bath({item,m}) {
+function Bath({item,m,activeRoom,quality,mode}) {
   if(item.kind==='tub') return <>
     <Box position={[0,.3,0]} size={[1.48,.58,.68]} material={m.ceramic}/>
     <Box position={[0,.6,0]} size={[1.28,.015,.5]} material={m.mirror}/>
     <Box position={[-.58,.75,-.24]} size={[.03,.3,.03]} material={m.brass}/>
     <Box position={[-.5,.89,-.24]} size={[.18,.025,.025]} material={m.brass}/>
   </>;
-  if(item.kind==='shower') return <>
-    <Box position={[0,.05,0]} size={[.8,.1,.8]} material={m.ceramic}/>
-    <Box position={[.38,1.03,0]} size={[.025,2,.8]} material={m.glass}/>
-    <Box position={[-.3,1.1,-.35]} size={[.025,1.8,.025]} material={m.brass}/>
-    <Cylinder position={[-.17,2.02,-.2]} size={[.13,.018,.13]} material={m.brass}/>
-  </>;
+  if(item.kind==='shower')return <Shower item={item} m={m}/>;
   if(item.kind==='toilet') return <>
     <Box position={[0,.43,-.24]} size={[.43,.74,.2]} material={m.ceramic}/>
     <Ball position={[0,.38,.04]} size={[.24,.18,.32]} material={m.ceramic}/>
     <Cylinder position={[0,.46,.06]} size={[.17,.03,.23]} material={m.linen}/>
     <Box position={[0,.19,0]} size={[.28,.35,.35]} material={m.ceramic}/>
   </>;
-  const w=item.size[0];
-  return <>
-    <Box position={[0,.56,0]} size={[w,.49,.35]} material={m.walnut}/>
-    <Box position={[0,.84,0]} size={[w+.04,.07,.39]} material={m.ceramic}/>
-    <Ball position={[0,.879,.015]} size={[w*.3,.035,.13]} material={m.mirror}/>
-    <Box position={[.15,.97,-.13]} size={[.025,.2,.025]} material={m.brass}/>
-    <mesh geometry={ringGeometry} position={[0,1.55,-.14]} scale={[w*.47,.46,.2]} material={m.brass}/>
-    <Cylinder position={[0,1.55,-.16]} size={[w*.44,.015,.43]} rotation={[Math.PI/2,0,0]} material={m.mirror}/>
-  </>;
+  return <Vanity item={item} m={m} quality={quality} active={mode==='walkthrough'&&activeRoom===({vanity1:'bath1',vanity2:'bath2',vanity3:'bath3'}[item.id])}/>;
 }
+
 function Plant({item,m}) {
   const h=item.size[1];
   return <>
@@ -178,7 +167,7 @@ function Plant({item,m}) {
     {Array.from({length:7},(_,i)=> <Ball key={i} position={[Math.sin(i*2.4)*.17,.55+i*(h-.65)/7,Math.cos(i*2.4)*.17]} size={[.2,.12,.1]} rotation={[0,i*2.4,.5]} material={m.leaf}/>)}
   </>;
 }
-export default function Furniture({item,m,state,player,mode}) {
+export default function Furniture({item,m,state,player,mode,activeRoom,quality}) {
   const [w,h,d]=item.size;
   const content = {
     bed:()=> <Bed item={item} m={m}/>, sofa:()=> <Sofa item={item} m={m}/>,
@@ -193,6 +182,6 @@ export default function Furniture({item,m,state,player,mode}) {
   }[item.kind];
   return <RigidBody type="fixed" colliders={false} position={item.position} rotation={[0,item.rotation||0,0]}>
     <CuboidCollider args={[w/2,h/2,d/2]} position={[0,h/2,0]}/>
-    {content ? content() : <Bath item={item} m={m}/>}
+    {content ? content() : <Bath item={item} m={m} activeRoom={activeRoom} quality={quality} mode={mode}/>}
   </RigidBody>;
 }

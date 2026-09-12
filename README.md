@@ -114,7 +114,7 @@ Change furniture through its stable `id`, `kind`, `position`, `rotation`, and `s
 ## Manual verification
 
 1. Build and start `npm run serve:pages`. Open `/Artwin/`, not `/`. In DevTools, enable Preserve log on Console and Network, then reload. Check that every JS/CSS/favicon request succeeds beneath `/Artwin/`, including the physics chunk. No external asset service should be contacted.
-2. Orbit and zoom; select room markers; reset the view. Check all three beds, kitchen/dining area, living room, bathroom strip, and two loggias against the reference.
+2. Orbit and zoom; select rooms on the floor plan; reset the view. Check all three beds, kitchen/dining area, living room, bathroom strip, and two loggias against the reference.
 3. Step inside. Move using WASD, including diagonal movement into a wall. Confirm sliding, grounding, and obstruction by furniture, windows, and the exterior entrance door.
 4. Select Bedroom 02, turn toward its hall door, and approach. A closed door should stop you. Back away from its swing, aim at it, press E, and walk through once it is open. Repeat interactions during animation; stand in its swing and confirm that motion defers until you move away.
 5. Aim at the kitchen and bedroom switches, then press E. Confirm fixture appearance and room illumination change. A wall should block interactions with objects behind it. Toggle the living-room television and cabinet.
@@ -142,8 +142,17 @@ Actual verification results and limits are recorded in [TESTING.md](TESTING.md).
 
 All included visual assets, SVGs, textures, and furniture geometry were created in code for this prototype. No external models, fonts, reference-image copies, HDR presets, music, tracking, or analytics are included. The supplied apartment screenshot remains the user's design reference; no independent license to republish it is asserted. Third-party library licenses remain with their respective packages.
 
-This is a procedural visual reconstruction, not a photorealistic or dimensionally surveyed model. Bathrooms and decorative details are simplified. Cabinet collision is conservative and does not model shelf contents. There is no exterior world, save system, jump/sprint, audio, or automatic camera tour.
+This is a procedural visual reconstruction, not a photorealistic or dimensionally surveyed model. Bathrooms and decorative details are simplified. Cabinet collision is conservative and does not model shelf contents. There is no exterior world, save system, jump/sprint, or audio.
 
 Graphics quality depends on the device. Light mode disables shadows and limits pixel ratio. No real-phone or device-wide performance claim is made. The sizeable physics chunk includes WASM by design. Upstream Three.js Clock and Rapier initialization deprecation warnings may appear; they are distinct from runtime errors and failed asset requests.
 
 The furnished-reference revision adds striped brown and white bedding, padded and black/gold feature walls, gray curtains, marble kitchen surfaces, oval dining furniture, round brass mirrors, and a black TV partition. Furniture placement and collision bounds are defined together in `src/apartmentConfig.js`; decorative wall finishes are in `src/scene/Decor.jsx`.
+
+
+## Guided tour and rendering
+
+Choose **Take a guided tour** from the dollhouse for six composed interior views. Each stop stays on screen for 8.5 seconds; the tour stops at the end. Pause/resume, previous/next, direct stop selection, replay and exit are available. **Explore this room** hands over to the existing collision-checked walkthrough destination. Escape pauses playback. Opening help or hiding the browser tab suspends advancement. Reduced-motion users start with manual playback and no scene fades. Camera positions, framing and copy are in `src/tourConfig.js`. No URL navigation or server is involved.
+
+The existing React Three Fiber, Drei and Three.js packages are reused without new dependencies. Three.js RoomEnvironment and PMREM generate local image-based lighting; fabric bump maps, striped duvet maps and marble/oak finishes are generated in the browser. Pillows, duvet drape, curtain folds and sofa upholstery use shaped geometry. High quality enables shadows in the active interior room; Light quality keeps shadows off. These upgrades improve the procedural model but do not replace Artwin's original architectural models or a photorealistic production render.
+
+Test the guided tour with `npx --yes @playwright/cli@0.1.19 -s=artwin run-code --filename scripts/browser-tour.js` against the production subpath server.

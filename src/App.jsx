@@ -5,9 +5,13 @@ import Icon from './ui/Icon.jsx';
 import FloorPlan from './ui/FloorPlan.jsx';
 import Joystick from './ui/Joystick.jsx';
 import ErrorBoundary from './ui/ErrorBoundary.jsx';
+import TourControls from './ui/TourControls.jsx';
+import { tourStops } from './tourConfig.js';
 const Viewer=lazy(()=>import('./scene/Viewer.jsx'));
 
 export default function App() {
+  const [tourIndex,setTourIndex]=useState(0),[tourPlaying,setTourPlaying]=useState(false),[tourComplete,setTourComplete]=useState(false);
+  const [visible,setVisible]=useState(()=>!document.hidden);
   const [mode,setMode]=useState('dollhouse'),[selected,setSelected]=useState(null),[currentRoom,setCurrentRoom]=useState('hall');
   const [state,setState]=useState({doors:{},lights:{},tv:false,cabinet:false});
   const [ready,setReady]=useState(false),[paused,setPaused]=useState(false),[planOpen,setPlanOpen]=useState(()=>window.innerWidth>=760),[help,setHelp]=useState(false);
@@ -43,21 +47,39 @@ export default function App() {
     travelTimer.current=setTimeout(()=>setTravel({position:destination,yaw,sequence:++sequence.current}),reducedMotion?0:180);
   }
   function changeMode(next) {
+    setTourPlaying(false);setTourComplete(false);
     if(next===mode)return;
     clearTimeout(travelTimer.current);setFade(false);clearInput(input);setTarget(null);setHelp(false);setPaused(false);setMode(next);
     if(next==='walkthrough'){setSelected(null);requestTravel(APARTMENT.entrance.position,APARTMENT.entrance.yaw);}
     else {setSelected(null);setReset(v=>v+1);if(document.pointerLockElement)document.exitPointerLock();}
   }
   function selectRoom(id) {
+    if(mode==='tour'){setTourPlaying(false);setMode('dollhouse');}
     const r=rooms.find(r=>r.id===id);if(!r)return;
     setSelected(id);
     if(mode==='walkthrough') {setPaused(false);requestTravel(r.destination,r.yaw);}
     if(window.innerWidth<760)setPlanOpen(false);
   }
   function recover() {
+    if(mode==='tour'){setTourIndex(0);setTourComplete(false);return;}
     if(mode==='walkthrough'){setPaused(false);requestTravel(APARTMENT.entrance.position,APARTMENT.entrance.yaw);}
     else {setSelected(null);setReset(v=>v+1);}
   }
+  function startTour() {
+    clearInput(input);setPaused(false);setHelp(false);setTarget(null);setSelected(null);setTourIndex(0);setTourComplete(false);setTourPlaying(!reducedMotion);setMode('tour');
+    if(document.pointerLockElement)document.exitPointerLock();
+    if(window.innerWidth<760)setPlanOpen(false);
+  }
+  function stepTour(index){setTourIndex(index);setTourComplete(false);}
+  function toggleTour(){if(tourComplete){setTourIndex(0);setTourComplete(false);setTourPlaying(true);}else setTourPlaying(v=>!v);}
+  function exploreTourRoom(){const r=rooms.find(r=>r.id===tourStops[tourIndex].room);setTourPlaying(false);setMode('walkthrough');setSelected(r.id);setPaused(false);requestTravel(r.destination,r.yaw);}
+  useEffect(()=>{const fn=()=>setVisible(!document.hidden);document.addEventListener('visibilitychange',fn);return()=>document.removeEventListener('visibilitychange',fn);},[]);
+  useEffect(()=>{
+    if(mode!=='tour'||!tourPlaying||!ready||help||!visible||contextLost)return;
+    const timer=setTimeout(()=>{if(tourIndex===tourStops.length-1){setTourPlaying(false);setTourComplete(true);}else setTourIndex(i=>i+1);},8500);
+    return()=>clearTimeout(timer);
+  },[mode,tourIndex,tourPlaying,ready,help,visible,contextLost]);
+  useEffect(()=>{if(mode!=='tour')return;const escape=e=>{if(e.key==='Escape')setTourPlaying(false);};window.addEventListener('keydown',escape);return()=>window.removeEventListener('keydown',escape);},[mode]);
   const activate=useCallback(()=>{
     if(!target||paused||help||mode!=='walkthrough')return;
     setState(previous=>{
@@ -102,13 +124,13 @@ export default function App() {
         </div>
         <div className={`plan-panel ${planOpen?'open':''}`}>
           <button className="plan-heading" onClick={()=>setPlanOpen(!planOpen)} aria-expanded={planOpen}><span><Icon name="plan" size={17}/> YOUR FLOOR PLAN</span><span>{planOpen?'−':'+'}</span></button>
-          {planOpen&&<><FloorPlan selected={mode==='walkthrough'?currentRoom:selected} onSelect={selectRoom} position={position} mode={mode}/><div className="plan-caption"><span className="plan-dot"/> Select a room to explore</div></>}
+          {planOpen&&<><FloorPlan selected={mode==='tour'?tourStops[tourIndex].room:mode==='walkthrough'?currentRoom:selected} onSelect={selectRoom} position={position} mode={mode}/><div className="plan-caption"><span className="plan-dot"/> Select a room to explore</div></>}
         </div>
         <p className="reference-note">Approximate visualization based on the supplied reference.</p>
       </aside>
       <section className="experience" aria-label="Interactive 3D apartment viewer">
         <div className="viewer" ref={viewerRef}>
-          <ErrorBoundary><Suspense fallback={null}><Viewer mode={mode} selected={selected} reset={reset} onSelect={selectRoom} state={state} player={player} input={input} travel={travel} onTravel={onTravel} paused={paused||help||fade} onPause={onPause} onRoom={onRoom} onTarget={setTarget} quality={quality} reducedMotion={reducedMotion} onReady={onReady} onContextLost={()=>setContextLost(true)}/></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={null}><Viewer currentRoom={currentRoom} tourIndex={tourIndex} mode={mode} selected={selected} reset={reset} onSelect={selectRoom} state={state} player={player} input={input} travel={travel} onTravel={onTravel} paused={paused||help||fade} onPause={onPause} onRoom={onRoom} onTarget={setTarget} quality={quality} reducedMotion={reducedMotion} onReady={onReady} onContextLost={()=>setContextLost(true)}/></Suspense></ErrorBoundary>
         </div>
         <nav className="mode-switch" aria-label="Viewing mode"><button onClick={()=>changeMode('dollhouse')} aria-pressed={mode==='dollhouse'}><Icon name="cube" size={17}/> Dollhouse</button><button disabled={!ready} onClick={()=>changeMode('walkthrough')} aria-pressed={mode==='walkthrough'}><Icon name="walk" size={17}/> Walkthrough</button></nav>
         <div className="scene-label"><span className="live-dot"/>{mode==='dollhouse'?'INTERACTIVE 3D VIEW':'INSIDE THE RESIDENCE'}</div>
@@ -121,15 +143,16 @@ export default function App() {
           {paused&&<div className="pause-card"><Icon name="eye" size={28}/><h2>Take your time.</h2><p>Your walkthrough is paused.</p><button className="primary-button" onClick={()=>setPaused(false)}>Continue exploring <Icon name="arrow"/></button></div>}
           {!paused&&<><Joystick input={input} disabled={help||fade}/><div className="touch-look-hint">DRAG TO LOOK</div><button className="touch-interact" onClick={activate} disabled={!target}>Interact</button></>}
         </>}
+        {mode==='tour'&&<><div key={tourIndex} className="tour-scene-fade" aria-hidden="true"/><TourControls index={tourIndex} playing={tourPlaying&&!help&&visible} complete={tourComplete} onToggle={toggleTour} onStep={stepTour} onStop={()=>changeMode('dollhouse')} onExplore={exploreTourRoom}/></>}
         <div className={`transition-fade ${fade?'active':''}`} aria-hidden="true"/>
-        <div className="scene-bottom">
+        <div className="scene-bottom" hidden={mode==='tour'}>
           <div className="scene-title"><span className="eyebrow">{mode==='dollhouse'?(room?'A CLOSER LOOK':'A NEW PERSPECTIVE'):'YOU ARE HERE'}</span><h2>{room?.name||'The whole picture.'}</h2><p>{room?.subtitle||'Thoughtful spaces. Effortlessly connected.'}</p></div>
-          {mode==='dollhouse'?<button className="primary-button enter-button" disabled={!ready} onClick={()=>changeMode('walkthrough')}>Step inside <Icon name="arrow"/></button>:<button className="secondary-button mouse-button" onClick={lockMouse}><Icon name="eye" size={17}/> Capture mouse</button>}
+          {mode==='dollhouse'?<div className="entry-actions"><button className="secondary-button tour-start" disabled={!ready} onClick={startTour}>Take a guided tour</button><button className="primary-button enter-button" disabled={!ready} onClick={()=>changeMode('walkthrough')}>Step inside <Icon name="arrow"/></button></div>:<button className="secondary-button mouse-button" onClick={lockMouse}><Icon name="eye" size={17}/> Capture mouse</button>}
         </div>
       </section>
     </main>
-    <footer className="bottom-bar"><div className="navigation-hint"><Icon name={mode==='dollhouse'?'cube':'walk'} size={17}/>{mode==='dollhouse'?'Drag to orbit · Scroll to zoom':'WASD to move · Drag to look · E to interact · Esc to pause'}</div><div className="footer-actions"><label className="quality-picker">DETAIL <select aria-label="Graphics quality" value={quality} onChange={e=>setQuality(e.target.value)}><option value="high">High</option><option value="low">Light</option></select></label><label className="room-picker"><select aria-label="Select a room" value={selected||''} onChange={e=>selectRoom(e.target.value)}><option value="" disabled>Explore a room</option>{rooms.map(r=><option key={r.id} value={r.id}>{r.name}</option>)}</select></label></div></footer>
+    <footer className="bottom-bar"><div className="navigation-hint"><Icon name={mode==='dollhouse'?'cube':'walk'} size={17}/>{mode==='tour'?'A guided look inside · Pause at any time':mode==='dollhouse'?'Drag to orbit · Scroll to zoom':'WASD to move · Drag to look · E to interact · Esc to pause'}</div><div className="footer-actions"><label className="quality-picker">DETAIL <select aria-label="Graphics quality" value={quality} onChange={e=>setQuality(e.target.value)}><option value="high">High</option><option value="low">Light</option></select></label><label className="room-picker"><select aria-label="Select a room" value={selected||''} onChange={e=>selectRoom(e.target.value)}><option value="" disabled>Explore a room</option>{rooms.map(r=><option key={r.id} value={r.id}>{r.name}</option>)}</select></label></div></footer>
     {notice&&<div className="toast" role="status">{notice}</div>}
-    {help&&<div className="modal-backdrop" onClick={()=>setHelp(false)}><section className="help-dialog" role="dialog" aria-modal="true" aria-labelledby="help-title" onClick={e=>e.stopPropagation()} onKeyDown={e=>{if(e.key==='Escape')setHelp(false);}}><button autoFocus className="icon-button modal-close" onClick={()=>setHelp(false)} aria-label="Close help"><Icon name="close"/></button><span className="eyebrow">MAKE YOURSELF AT HOME</span><h2 id="help-title">A few ways to explore.</h2><div className="help-row"><Icon name="cube"/><div><h3>See the whole apartment</h3><p>Drag to orbit. Scroll or pinch to zoom. Select a numbered marker or a room on the plan for a closer look.</p></div></div><div className="help-row"><Icon name="walk"/><div><h3>Step inside</h3><p>Move with WASD or arrow keys. Drag to look, or choose Capture mouse. Press Escape to pause. On touchscreens, use the left joystick and drag the scene with your other finger.</p></div></div><div className="help-row"><Icon name="light"/><div><h3>Make the space your own</h3><p>Look at a nearby door, wall switch, television, or living-room cabinet. Press E or tap the prompt to interact. If a door pauses, step out of its swing.</p></div></div><div className="help-row"><Icon name="plan"/><div><h3>Go straight to a room</h3><p>The floor plan moves you to a checked destination with a brief fade. The reset button returns you to the entrance.</p></div></div><p className="help-note">134.68 m² is the advertised area. Geometry, dimensions, finishes, and furnishings are approximate. This is a visual study, not a construction drawing.</p><button className="primary-button" onClick={()=>setHelp(false)}>Got it <Icon name="arrow"/></button></section></div>}
+    {help&&<div className="modal-backdrop" onClick={()=>setHelp(false)}><section className="help-dialog" role="dialog" aria-modal="true" aria-labelledby="help-title" onClick={e=>e.stopPropagation()} onKeyDown={e=>{if(e.key==='Escape')setHelp(false);}}><button autoFocus className="icon-button modal-close" onClick={()=>setHelp(false)} aria-label="Close help"><Icon name="close"/></button><span className="eyebrow">MAKE YOURSELF AT HOME</span><h2 id="help-title">A few ways to explore.</h2><div className="help-row"><Icon name="cube"/><div><h3>See the whole apartment</h3><p>Drag to orbit. Scroll or pinch to zoom. Select a room on the plan for a closer look.</p></div></div><div className="help-row"><Icon name="walk"/><div><h3>Step inside</h3><p>Move with WASD or arrow keys. Drag to look, or choose Capture mouse. Press Escape to pause. On touchscreens, use the left joystick and drag the scene with your other finger.</p></div></div><div className="help-row"><Icon name="light"/><div><h3>Make the space your own</h3><p>Look at a nearby door, wall switch, television, or living-room cabinet. Press E or tap the prompt to interact. If a door pauses, step out of its swing.</p></div></div><div className="help-row"><Icon name="plan"/><div><h3>Go straight to a room</h3><p>The floor plan moves you to a checked destination with a brief fade. The reset button returns you to the entrance.</p></div></div><p className="help-note">134.68 m² is the advertised area. Geometry, dimensions, finishes, and furnishings are approximate. This is a visual study, not a construction drawing.</p><button className="primary-button" onClick={()=>setHelp(false)}>Got it <Icon name="arrow"/></button></section></div>}
   </div>;
 }

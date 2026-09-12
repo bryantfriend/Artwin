@@ -1,11 +1,19 @@
-import React from 'react';
+import React, {useMemo,useEffect} from 'react';
+import * as THREE from 'three';
 import { Box } from './Furniture.jsx';
 function Curtain({position,width,rotation=0,m}) {
+  const geometry=useMemo(()=>{
+    const g=new THREE.PlaneGeometry(width,2.5,Math.ceil(width*80),12),p=g.attributes.position;
+    for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i);p.setZ(i,Math.sin(x*42)*.045+Math.sin(x*84)*.012+(1.25-y)*.006);}
+    g.computeVertexNormals();return g;
+  },[width]);
+  useEffect(()=>()=>geometry.dispose(),[geometry]);
   return <group position={position} rotation={[0,rotation,0]}>
     <Box position={[0,2.6,0]} size={[width,.055,.08]} material={m.dark}/>
-    {Array.from({length:Math.ceil(width/.075)},(_,i)=><Box key={i} position={[-width/2+i*.075,1.3,Math.sin(i*Math.PI/2)*.04]} size={[.075,2.5,.045]} material={i%2?m.curtain:m.linen}/>)}
+    <mesh geometry={geometry} position={[0,1.3,0]} material={m.curtain} castShadow receiveShadow/>
   </group>;
 }
+
 export default function Decor({m}) {
   return <>
     <Box position={[.095,1.35,1.9]} size={[.025,2.65,3.65]} material={m.darkMarble}/>

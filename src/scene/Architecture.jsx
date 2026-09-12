@@ -85,7 +85,7 @@ function Door({door,m,open,mode,player,reducedMotion}) {
     </group>
   </RigidBody>;
 }
-export default function Architecture({m,mode,state,player,reducedMotion}) {
+export default function Architecture({m,mode,state,player,reducedMotion,quality,activeRoom}) {
   return <>
     {rooms.map(room=><Floor key={room.id} room={room} m={m} mode={mode}/>)}
     {walls.map(wall=><Wall key={wall.id} wall={wall} m={m} mode={mode}/>)}
@@ -99,7 +99,7 @@ export default function Architecture({m,mode,state,player,reducedMotion}) {
       <Box position={[0,0,.027]} size={[.065,.12,.018]} material={state.lights[s.room]!==false?m.bulb:m.dark}/>
     </group>)}
     {rooms.filter(r=>!r.id.startsWith('loggia')).map(r=><group key={r.id}>
-      <pointLight position={[r.label[0],2.45,r.label[1]]} color="#fff4e6" intensity={state.lights[r.id]===false?0:mode==='walkthrough'?11:3} distance={7} decay={2}/>
+      <pointLight castShadow={quality==='high'&&mode==='walkthrough'&&activeRoom===r.id} shadow-mapSize={[512,512]} shadow-bias={-.0005} shadow-normalBias={.035} shadow-radius={2} position={[r.label[0],2.45,r.label[1]]} color="#fff4e6" intensity={state.lights[r.id]===false?0:mode==='walkthrough'?11:3} distance={7} decay={2}/>
       {mode==='walkthrough'&&<Box position={[r.label[0],2.65,r.label[1]]} size={[.5,.04,.5]} material={state.lights[r.id]===false?m.linen:m.bulb}/>}
     </group>)}
   </>;

@@ -7,11 +7,17 @@ import { APARTMENT, rooms } from '../apartmentConfig.js';
 import { createMaterials } from './materials.js';
 import Architecture from './Architecture.jsx';
 import Player from './Player.jsx';
+import StudioLighting from './StudioLighting.jsx';
+import { tourStops } from '../tourConfig.js';
 const MemoArchitecture=React.memo(Architecture);
 
-function CameraRig({mode,selected,reset}) {
+function CameraRig({mode,selected,reset,tourIndex=0}) {
   const controls=useRef(); const {camera,size}=useThree();
   useEffect(()=> {
+    if(mode==='tour') {
+      const stop=tourStops[tourIndex];camera.fov=stop.fov+(size.width<600?8:0);camera.updateProjectionMatrix();
+      camera.position.set(...stop.position);camera.lookAt(...stop.target);return;
+    }
     camera.fov=mode==='walkthrough'?65:43;camera.updateProjectionMatrix();
     if(mode!=='dollhouse')return;
     const room=rooms.find(r=>r.id===selected);
@@ -35,7 +41,7 @@ function CameraRig({mode,selected,reset}) {
       camera.position.copy(center).addScaledVector(direction,distance);camera.lookAt(center);
     }
     if(controls.current){controls.current.target.set(...target);controls.current.update();}
-  },[mode,selected,reset,camera,size.width,size.height]);
+  },[mode,selected,reset,tourIndex,camera,size.width,size.height]);
   if(mode!=='dollhouse')return null;
   return <>
     <OrbitControls ref={controls} makeDefault minDistance={5} maxDistance={65} maxPolarAngle={Math.PI*.46} minPolarAngle={.12} enablePan={false} target={APARTMENT.overview.target}/>
@@ -83,14 +89,15 @@ function Scene(props) {
   useEffect(()=>()=>resources.dispose(),[resources]);
   return <>
     <ContextEvents onContextLost={props.onContextLost}/>
+    <StudioLighting/>
     <color attach="background" args={['#e7e7e7']}/>
-    <ambientLight intensity={props.mode==='walkthrough'?.7:.7}/>
-    <hemisphereLight color="#ffffff" groundColor="#a6a5a2" intensity={.85}/>
-    <directionalLight position={[3,15,6]} intensity={1.8} castShadow={props.quality==='high'} shadow-mapSize={[2048,2048]} shadow-camera-left={-14} shadow-camera-right={14} shadow-camera-top={14} shadow-camera-bottom={-14} shadow-normalBias={.04} shadow-bias={-.0001}/>
+    <ambientLight intensity={.3}/>
+    <hemisphereLight color="#ffffff" groundColor="#a6a5a2" intensity={.5}/>
+    <directionalLight position={[7,12,16]} intensity={2.1} castShadow={props.quality==='high'} shadow-radius={3} shadow-mapSize={[2048,2048]} shadow-camera-left={-14} shadow-camera-right={14} shadow-camera-top={14} shadow-camera-bottom={-14} shadow-normalBias={.04} shadow-bias={-.0001}/>
     {props.mode==='dollhouse'&&<mesh position={[4.5,-.27,7]} rotation={[-Math.PI/2,0,0]} receiveShadow><planeGeometry args={[200,200]}/><meshStandardMaterial color="#e7e7e7" roughness={1}/></mesh>}
     <Suspense fallback={null}>
       <Physics gravity={[0,-9.81,0]} timeStep={1/60} interpolate paused={props.suspended}>
-        <MemoArchitecture m={resources.materials} mode={props.mode} state={props.state} player={props.player} reducedMotion={props.reducedMotion}/>
+        <MemoArchitecture quality={props.quality} activeRoom={props.mode==='tour'?tourStops[props.tourIndex].room:props.currentRoom} m={resources.materials} mode={props.mode==='tour'?'walkthrough':props.mode} state={props.state} player={props.player} reducedMotion={props.reducedMotion}/>
         <Player {...props}/>
         <SceneReady onReady={props.onReady}/>
       </Physics>

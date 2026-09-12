@@ -59,3 +59,7 @@ Reviewed the six guided interior views with wall art, patterned rugs, tabletop a
 ## Bathroom fixtures — 12 September 2026
 
 The upgraded sinks, live mirrors and shower passed production compilation, subpath asset checks and all nine layout/physics tests. Browser verification covered the bathroom tour view, repeated navigation between all three bathrooms, shower orientation and Light-quality mirrors at a 390 px viewport, with no errors or failed requests. Close-up screenshots were reviewed. Only the active bathroom has a live reflection; quality controls its render resolution. No physical-phone frame-rate claim is made.
+
+## Kyrgyz panorama — 13 September 2026
+
+Production build and /Artwin/ checks passed. The six-stop guided-tour suite passed on desktop and mobile emulation with no console errors or failed requests. After adjusting the horizon, living-room and Bedroom 02 screenshots were reviewed and the 390 px layout checked; the panorama returned successfully beneath /Artwin/textures/. The existing Three.Clock and Rapier deprecation warnings remain. The panorama is illustrative, not a surveyed property view or explorable exterior.

@@ -18,11 +18,11 @@ function FabricPanel({width,sheer=false,m,position}){
 function Curtain({position,width,rotation=0,m}) {
   return <group position={position} rotation={[0,rotation,0]}>
     <Cylinder position={[0,2.61,.035]} size={[.018,width+.16,.018]} rotation={[0,0,Math.PI/2]} material={m.brass}/>
-    <FabricPanel width={width-.04} sheer m={m} position={[0,1.32,-.045]}/>
-    {[-1,1].map(side=><group key={side} position={[side*width*.35,0,.045]}>
-      <FabricPanel width={width*.3} m={m} position={[0,1.32,0]}/>
-      {Array.from({length:7},(_,i)=><mesh key={i} geometry={ringGeometry} position={[-width*.14+i*width*.047,2.58,0]} scale={[.024,.03,.024]} material={m.brass}/>)}
-      <Box position={[0,.055,.01]} size={[width*.3,.025,.055]} material={m.curtain}/>
+    {[-1,1].map(side=><group key={side} position={[side*width*.41,0,.045]}>
+      <FabricPanel width={width*.2} sheer m={m} position={[-side*width*.06,1.32,-.09]}/>
+      <FabricPanel width={width*.2} m={m} position={[0,1.32,0]}/>
+      {Array.from({length:7},(_,i)=><mesh key={i} geometry={ringGeometry} position={[-width*.09+i*width*.03,2.58,0]} scale={[.024,.03,.024]} material={m.brass}/>)}
+      <Box position={[0,.055,.01]} size={[width*.2,.025,.055]} material={m.curtain}/>
     </group>)}
   </group>;
 }

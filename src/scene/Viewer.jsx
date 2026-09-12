@@ -8,6 +8,7 @@ import { createMaterials } from './materials.js';
 import Architecture from './Architecture.jsx';
 import Player from './Player.jsx';
 import StudioLighting from './StudioLighting.jsx';
+import Exterior from './Exterior.jsx';
 import { tourStops } from '../tourConfig.js';
 const MemoArchitecture=React.memo(Architecture);
 
@@ -90,12 +91,13 @@ function Scene(props) {
   return <>
     <ContextEvents onContextLost={props.onContextLost}/>
     <StudioLighting/>
-    <color attach="background" args={['#e7e7e7']}/>
+    <color attach="background" args={[props.mode==='dollhouse'?'#e7e7e7':'#acd0ed']}/>
     <ambientLight intensity={.3}/>
     <hemisphereLight color="#ffffff" groundColor="#a6a5a2" intensity={.5}/>
     <directionalLight position={[7,12,16]} intensity={2.1} castShadow={props.quality==='high'} shadow-radius={3} shadow-mapSize={[2048,2048]} shadow-camera-left={-14} shadow-camera-right={14} shadow-camera-top={14} shadow-camera-bottom={-14} shadow-normalBias={.04} shadow-bias={-.0001}/>
     {props.mode==='dollhouse'&&<mesh position={[4.5,-.27,7]} rotation={[-Math.PI/2,0,0]} receiveShadow><planeGeometry args={[200,200]}/><meshStandardMaterial color="#e7e7e7" roughness={1}/></mesh>}
     <Suspense fallback={null}>
+      <Exterior visible={props.mode!=='dollhouse'}/>
       <Physics gravity={[0,-9.81,0]} timeStep={1/60} interpolate paused={props.suspended}>
         <MemoArchitecture quality={props.quality} activeRoom={props.mode==='tour'?tourStops[props.tourIndex].room:props.currentRoom} m={resources.materials} mode={props.mode==='tour'?'walkthrough':props.mode} state={props.state} player={props.player} reducedMotion={props.reducedMotion}/>
         <Player {...props}/>

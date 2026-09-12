@@ -71,3 +71,7 @@ The production build and /Artwin/ asset check passed. The TV browser test compar
 ## Hall reference refinement — 13 September 2026
 
 All nine layout/physics tests passed after rotating the storage unit toward the entrance. The production browser smoke suite passed all 11 room destinations, door movement/collisions, entrance recovery, light and TV interactions, and resource checks with no errors or failed requests. Hall walkthrough and dollhouse screenshots were inspected. Production build and /Artwin/ asset checks passed. Three.Clock, Rapier initialization and SVGLoader.createShapes emit library deprecation warnings.
+
+## Living-room woven rug — 13 September 2026
+
+Production build and /Artwin/ checks passed. Floor-level desktop and 390 px mobile screenshots were reviewed for continuous woven texture, band direction and bound edges. The browser check reported no runtime/console errors, failed requests or HTTP errors. Walking layout and furniture collision footprints are unchanged.

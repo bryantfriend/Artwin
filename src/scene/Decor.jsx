@@ -2,6 +2,7 @@ import React,{useMemo,useEffect,useLayoutEffect,useRef} from 'react';
 import * as THREE from 'three';
 import { Box } from './Furniture.jsx';
 import { furniture } from '../apartmentConfig.js';
+import {rugBand} from './wovenRug.js';
 import { boxGeometry,cylinderGeometry,sphereGeometry,ringGeometry,roundedGeometry } from './materials.js';
 const Cylinder=({position,size,material,...props})=><mesh geometry={cylinderGeometry} position={position} scale={size} material={material} castShadow receiveShadow {...props}/>;
 const Soft=({position,size,material,...props})=><mesh geometry={roundedGeometry} position={position} scale={size} material={material} castShadow receiveShadow {...props}/>;
@@ -44,6 +45,24 @@ function Rug({position,width,depth,index=0,m}){
     <Fringe width={width} depth={depth} m={m}/>
   </group>;
 }
+function LivingRug({m}){
+  const width=2.75,depth=3.5;
+  const geometry=useMemo(()=>{
+    const g=new THREE.PlaneGeometry(width-.024,depth-.024,192,24);g.rotateX(-Math.PI/2);
+    const p=g.attributes.position,uv=g.attributes.uv;
+    for(let i=0;i<p.count;i++)p.setY(i,.009+.004*rugBand(uv.getX(i)));
+    g.computeVertexNormals();return g;
+  },[]);
+  useEffect(()=>()=>geometry.dispose(),[geometry]);
+  return <group position={[8.05,.025,11.7]}>
+    <Soft position={[0,-.005,0]} size={[width,.018,depth]} material={m.rugBinding}/>
+    <mesh geometry={geometry} material={m.livingRug} receiveShadow/>
+    {[-1,1].map(side=><group key={side}>
+      <Soft position={[side*(width/2-.008),.004,0]} size={[.016,.014,depth]} material={m.rugBinding}/>
+      <Soft position={[0,.004,side*(depth/2-.008)]} size={[width,.014,.016]} material={m.rugBinding}/>
+    </group>)}
+  </group>;
+}
 function Books({m,small=false}){
   return <group scale={small?.62:1}>{[0,1,2].map(i=><group key={i} position={[0,.018+i*.04,0]} rotation={[0,i*.16,0]}>
     <Box size={[.28,.033,.2]} material={m.linen}/><Box position={[0,.019,0]} size={[.29,.006,.21]} material={[m.terracotta,m.sage,m.walnut][i]}/>
@@ -84,7 +103,7 @@ export default function Decor({m,mode}) {
     <Curtain position={[8.1,0,15.64]} width={3.05} m={m}/>
     <Curtain position={[1.7,0,.15]} width={3.05} m={m}/>
     <Curtain position={[6.23,0,2.1]} width={2.4} rotation={-Math.PI/2} m={m}/>
-    <Rug position={[8.05,.025,11.7]} width={2.75} depth={3.5} m={m}/>
+    <LivingRug m={m}/>
     <Rug position={[1.5,.025,12.8]} width={2.85} depth={3.1} index={1} m={m}/>
     <Rug position={[4.85,.025,12.7]} width={2.7} depth={2.9} index={2} m={m}/>
     <Rug position={[1.5,.025,1.65]} width={2.8} depth={2.95} index={1} m={m}/>

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { decorativeTexture } from './decorativeTextures.js';
+import { wovenRugTextures } from './wovenRug.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 export const boxGeometry=new THREE.BoxGeometry(1,1,1);
 export const roundedGeometry=new RoundedBoxGeometry(1,1,1,3,.09);
@@ -53,6 +54,9 @@ export function createMaterials(){
   for(const k of ['brownBedding','whiteBedding'])materials[k]=new THREE.MeshPhysicalMaterial({map:maps[k],roughness:.98,bumpMap:maps.weave,bumpScale:.01,sheen:.45,side:THREE.DoubleSide});
   for(let i=0;i<6;i++){maps['art'+i]=decorativeTexture('art',i);materials['art'+i]=new THREE.MeshStandardMaterial({map:maps['art'+i],roughness:1});}
   for(let i=0;i<3;i++){maps['carpet'+i]=decorativeTexture('rug',i);materials['carpet'+i]=new THREE.MeshStandardMaterial({map:maps['carpet'+i],bumpMap:maps.weave,bumpScale:.018,roughness:1});}
+  const woven=wovenRugTextures();maps.livingRug=woven.map;maps.livingRugBump=woven.bump;
+  materials.livingRug=new THREE.MeshPhysicalMaterial({map:woven.map,bumpMap:woven.bump,bumpScale:.012,roughness:1,sheen:.25,sheenColor:'#bbb9ae'});
+  materials.rugBinding=new THREE.MeshStandardMaterial({color:'#8e8d82',roughness:1,bumpMap:maps.weave,bumpScale:.004});
   materials.sheer=new THREE.MeshStandardMaterial({color:'#f6f1e7',transparent:true,opacity:.38,roughness:1,side:THREE.DoubleSide,depthWrite:false});
   materials.terracotta=new THREE.MeshStandardMaterial({color:'#ac6d50',roughness:.9});
   materials.curtain.side=THREE.DoubleSide;

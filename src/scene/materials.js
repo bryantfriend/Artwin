@@ -64,6 +64,9 @@ export function createMaterials(){
   for(const [name,color] of Object.entries({sofaBrown:'#755039',sofaAccent:'#9a7656',chairFabric:'#b97540'}))materials[name]=new THREE.MeshPhysicalMaterial({color,roughness:.88,bumpMap:maps.weave,bumpScale:.003,sheen:.3,sheenColor:'#d5aa7d',sheenRoughness:.85});
   materials.chairStitch=new THREE.MeshStandardMaterial({color:'#a96c3e',roughness:.95});
   materials.hallJoinery=new THREE.MeshStandardMaterial({color:'#747779',roughness:.72});
+  materials.mirrorPanel=new THREE.MeshStandardMaterial({color:'#64686b',roughness:.78});
+  materials.mirrorLED=new THREE.MeshStandardMaterial({color:'#ffe38b',emissive:'#ffc44d',emissiveIntensity:2.5,toneMapped:false});
+  materials.mirrorGlow=new THREE.MeshBasicMaterial({color:'#ffd467',transparent:true,opacity:.22,depthWrite:false,toneMapped:false});
   materials.porcelain=new THREE.MeshPhysicalMaterial({color:'#f9f7f1',roughness:.2,clearcoat:.45,clearcoatRoughness:.18});
   materials.showerGlass=new THREE.MeshPhysicalMaterial({color:'#d1e5e0',transparent:true,opacity:.15,roughness:.08,metalness:.05,side:THREE.DoubleSide,depthWrite:false});
   materials.glass=new THREE.MeshStandardMaterial({color:'#d6dce0',transparent:true,opacity:.16,roughness:.14,depthWrite:false});

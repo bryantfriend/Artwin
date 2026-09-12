@@ -5,5 +5,5 @@ export const tourStops=[
   {room:'primary',title:'A quieter retreat',description:'Layered brown textiles, a padded feature wall and soft gray curtains.',position:[2.85,1.7,10.65],target:[1.25,1,12.85],fov:70},
   {room:'bedroom3',title:'Light, texture, calm',description:'White upholstery and pale oak create a softer bedroom palette.',position:[5.9,1.65,10.6],target:[4.65,.95,12.8],fov:70},
   {room:'bedroom2',title:'A richer palette',description:'Dark marble, brass accents and striped bedding give this room its own character.',position:[2.8,1.65,3.15],target:[1.3,.95,1.3],fov:74},
-  {room:'bath2',title:'Considered details',description:'A round brass mirror, marble surfaces and a compact vanity finish the tour.',position:[1.6,1.6,5.8],target:[.3,1.25,6.7],fov:76},
+  {room:'bath2',title:'Considered details',description:'An illuminated half-circle mirror, gray panel and marble vanity finish the tour.',position:[1.6,1.6,5.8],target:[.3,1.25,6.7],fov:76},
 ];

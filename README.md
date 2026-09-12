@@ -168,3 +168,5 @@ The television plays an original animated SVG mountain-and-lake scene when switc
 The entrance hall follows the supplied hall reference with narrow warm oak planks, gray six-panel fitted storage, white end panels/header and small brass knobs. Storage faces the entrance; its rotated collision footprint is shared with the navigation checks. The hall runner, wall art and wall shelf were removed to keep this circulation area open.
 
 The living-room rug is a reference-inspired gray knitted design with six raised lengthwise bands and bound edges. Original yarn-loop color and bump maps are generated locally; the backing sits below the woven surface to avoid overlapping faces. Its footprint stays 2.75 by 3.5 metres, and other rugs retain their existing styles.
+
+Both hall bathrooms have vertical half-circle reflective mirrors mounted over gray panels, with warm yellow illuminated perimeters and a subtle light wash on the panel. The en-suite retains its round mirror. Active-room reflection targets still use 512 px High / 256 px Light resolution and are disposed when switching rooms.

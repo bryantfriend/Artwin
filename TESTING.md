@@ -75,3 +75,7 @@ All nine layout/physics tests passed after rotating the storage unit toward the 
 ## Living-room woven rug — 13 September 2026
 
 Production build and /Artwin/ checks passed. Floor-level desktop and 390 px mobile screenshots were reviewed for continuous woven texture, band direction and bound edges. The browser check reported no runtime/console errors, failed requests or HTTP errors. Walking layout and furniture collision footprints are unchanged.
+
+## Half-circle bathroom mirrors — 13 September 2026
+
+Production build and /Artwin/ checks passed. Bathroom browser verification covered live reflections, repeated navigation among all three bathrooms, the shower and mobile Light quality, with no errors or failed requests. Both hall bathroom mirrors were visually reviewed; gray panels sit in front of the wall finish and taps remain in front of the panels. The en-suite retains its round mirror.

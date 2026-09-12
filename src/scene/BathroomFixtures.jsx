@@ -9,18 +9,25 @@ const Cylinder=({position,size,material,...props})=><mesh geometry={cylinderGeom
 const bowlGeometry=new THREE.LatheGeometry([[0,0],[.45,0],[.72,.018],[.94,.07],[1,.12],[.99,.135],[.94,.143],[.88,.132],[.83,.083],[.61,.044],[.18,.032],[0,.032]].map(([x,y])=>new THREE.Vector2(x,y)),64);
 const frameGeometry=new THREE.TorusGeometry(1,.018,12,80);
 const haloGeometry=new THREE.TorusGeometry(1,.024,10,80);
+const halfOutline=new THREE.CurvePath();
+{const points=Array.from({length:81},(_,i)=>new THREE.Vector3(Math.cos(Math.PI/2+i*Math.PI/80),Math.sin(Math.PI/2+i*Math.PI/80),0));
+  points.push(points[0]);for(let i=1;i<points.length;i++)halfOutline.add(new THREE.LineCurve3(points[i-1],points[i]));}
+const halfEdgeGeometry=new THREE.TubeGeometry(halfOutline,128,.012,8,true);
+const halfGlowGeometry=new THREE.TubeGeometry(halfOutline,128,.035,8,true);
 const faucetGeometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(0,0,0),new THREE.Vector3(0,.21,0),new THREE.Vector3(0,.255,.04),new THREE.Vector3(0,.25,.115),new THREE.Vector3(0,.21,.14)]),32,.012,10,false);
-function LiveMirror({radius,quality}){
+function LiveMirror({radius,quality,half=false}){
   const resources=useMemo(()=>{
-    const geometry=new THREE.CircleGeometry(radius,80),size=quality==='high'?512:256;
+    const geometry=new THREE.CircleGeometry(radius,80,half?Math.PI/2:0,half?Math.PI:Math.PI*2),size=quality==='high'?512:256;
     const mirror=new Reflector(geometry,{textureWidth:size,textureHeight:size,color:0xffffff,clipBias:.003,multisample:0});
     return {geometry,mirror};
-  },[radius,quality]);
+  },[radius,quality,half]);
   useEffect(()=>()=>{resources.mirror.dispose();resources.geometry.dispose();},[resources]);
   return <primitive object={resources.mirror} dispose={null}/>;
 }
 export function Vanity({item,m,active,quality}){
   const w=item.size[0],d=item.size[2],radius=Math.min(w*.44,.44),back=-d/2+.025;
+  const half=item.id==='vanity2'||item.id==='vanity3';
+  const faucetBack=back+(half?.08:0);
   return <>
     <Soft position={[0,.57,0]} size={[w,.48,d]} material={m.walnut}/>
     {[-1,1].map(a=><Soft key={a} position={[a*w*.25,.57,d/2+.009]} size={[w*.5-.02,.44,.025]} material={m.oak}/>)}
@@ -30,15 +37,23 @@ export function Vanity({item,m,active,quality}){
     <mesh geometry={bowlGeometry} position={[0,.878,.025]} scale={[w*.29,1,Math.min(d*.34,.145)]} material={m.porcelain} castShadow receiveShadow/>
     <Cylinder position={[0,.913,.025]} size={[.023,.004,.023]} material={m.metal}/>
     <Cylinder position={[0,.916,.025]} size={[.017,.003,.017]} material={m.brass}/>
-    <Cylinder position={[0,.883,back+.012]} size={[.025,.013,.025]} material={m.brass}/>
-    <mesh geometry={faucetGeometry} position={[0,.882,back+.012]} material={m.brass} castShadow/>
-    <Box position={[.038,.973,back+.012]} size={[.065,.012,.022]} material={m.brass}/>
-    <group position={[0,1.7,back]}>
+    <Cylinder position={[0,.883,faucetBack+.012]} size={[.025,.013,.025]} material={m.brass}/>
+    <mesh geometry={faucetGeometry} position={[0,.882,faucetBack+.012]} material={m.brass} castShadow/>
+    <Box position={[.038,.973,faucetBack+.012]} size={[.065,.012,.022]} material={m.brass}/>
+    {half?<group position={[0,1.72,back+.09]}>
+      <Box position={[0,0,-.045]} size={[w-.04,1.42,.045]} material={m.mirrorPanel}/>
+      <group position={[.255,0,.01]}>
+        <mesh geometry={halfGlowGeometry} scale={.56} position={[0,0,.019]} material={m.mirrorGlow}/>
+        <mesh geometry={halfEdgeGeometry} scale={.56} position={[0,0,.024]} material={m.mirrorLED}/>
+        <group position={[0,0,.025]}>{active?<LiveMirror radius={.555} quality={quality} half/>:<mesh material={m.mirror}><circleGeometry args={[.555,80,Math.PI/2,Math.PI]}/></mesh>}</group>
+      </group>
+      {active&&<pointLight position={[0,0,.08]} color="#ffd269" intensity={.45} distance={1.6} decay={2}/>}
+    </group>:<group position={[0,1.7,back]}>
       <Cylinder position={[0,0,-.008]} rotation={[Math.PI/2,0,0]} size={[radius+.012,.035,radius+.012]} material={m.dark}/>
       <mesh geometry={haloGeometry} scale={radius+.015} position={[0,0,-.02]} material={m.bulb}/>
       <mesh geometry={frameGeometry} scale={radius+.004} position={[0,0,.022]} material={m.brass}/>
       <group position={[0,0,.025]}>{active?<LiveMirror radius={radius-.004} quality={quality}/>:<mesh material={m.mirror}><circleGeometry args={[radius-.004,64]}/></mesh>}</group>
-    </group>
+    </group>}
   </>;
 }
 export function Shower({item,m}){

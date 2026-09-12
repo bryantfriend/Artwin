@@ -1,6 +1,7 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 import DiningChair from './DiningChair.jsx';
+import TVScreen from './TVScreen.jsx';
 import {Vanity,Shower} from './BathroomFixtures.jsx';
 import { useFrame } from '@react-three/fiber';
 import { RigidBody, CuboidCollider } from '@react-three/rapier';
@@ -131,15 +132,15 @@ function Cabinet({item,m,state,player,mode}) {
     <Ball position={[.45,h+.17,0]} size={[.19,.14,.14]} material={m.taupe}/>
   </>;
 }
-function TV({m,state}) {
+function TV({m,state,reducedMotion}) {
   return <>
     <Box position={[0,1.05,-.1]} size={[3.1,2.1,.18]} material={m.black}/>
     <Box position={[0,.2,.06]} size={[3.1,.22,.36]} material={m.dark}/>
     <Box position={[0,.325,.06]} size={[3.1,.014,.36]} material={m.brass}/>
     <group userData={{interaction:'tv'}}>
       <Box position={[.15,1.3,.005]} size={[2.05,1.2,.08]} material={m.white}/>
-      <Box position={[.15,1.3,.055]} size={[1.78,.99,.025]} material={state.tv?m.screen:m.black}/>
-      {state.tv&&<Ball position={[.5,1.48,.08]} size={[.23,.23,.015]} material={m.linen}/>}
+      <Box position={[.15,1.3,.055]} size={[1.78,.99,.025]} material={m.black}/>
+      {state.tv&&<TVScreen reducedMotion={reducedMotion}/>}
     </group>
     {[.6,1.15,1.7].map((y,i)=><group key={y}><Box position={[-1.24,y,.055]} size={[.48,.035,.3]} material={m.brass}/><Box position={[-1.22,y+.14,.08]} size={[.12,.24,.15]} rotation={[0,0,.14]} material={[m.oak,m.white,m.taupe][i]}/><Cylinder position={[-1.4,y+.12,.08]} size={[.045,.2,.045]} material={m.ceramic}/></group>)}
   </>;
@@ -170,14 +171,14 @@ function Plant({item,m}) {
     {Array.from({length:7},(_,i)=> <Ball key={i} position={[Math.sin(i*2.4)*.17,.55+i*(h-.65)/7,Math.cos(i*2.4)*.17]} size={[.2,.12,.1]} rotation={[0,i*2.4,.5]} material={m.leaf}/>)}
   </>;
 }
-export default function Furniture({item,m,state,player,mode,activeRoom,quality}) {
+export default function Furniture({item,m,state,player,mode,activeRoom,quality,reducedMotion}) {
   const [w,h,d]=item.size;
   const content = {
     bed:()=> <Bed item={item} m={m}/>, sofa:()=> <Sofa item={item} m={m}/>,
     dining:()=> <Dining m={m}/>, breakfast:()=> <Breakfast m={m}/>, kitchen:()=> <Kitchen item={item} m={m}/>,
     chair:()=> <Chair m={m}/>, plant:()=> <Plant item={item} m={m}/>,
     cabinet:()=> <Cabinet item={item} m={m} state={state} player={player} mode={mode}/>,
-    tv:()=> <TV m={m} state={state}/>,
+    tv:()=> <TV m={m} state={state} reducedMotion={reducedMotion}/>,
     wardrobe:()=> <><Box position={[0,h/2,0]} size={item.size} material={m.padded}/>{[-1,0,1].map(x=><Box key={x} position={[x*w/3,h/2,d/2+.01]} size={[.012,h-.1,.02]} material={m.brass}/>)}</>,
     nightstand:()=> <><Soft position={[0,h/2,0]} size={item.size} material={m.padded}/><Box position={[0,h+.014,0]} size={[w+.025,.025,d+.025]} material={m.stone}/>{[.2,.4].map(y=><group key={y}><Box position={[0,y,d/2+.005]} size={[w-.04,.012,.012]} material={m.taupe}/><Box position={[0,y+.08,d/2+.015]} size={[.12,.018,.025]} material={m.brass}/></group>)}<Cylinder position={[0,h+.19,0]} size={[.025,.35,.025]} material={m.brass}/><Cylinder position={[0,h+.37,0]} size={[.16,.16,.16]} material={m.linen}/></>,
     console:()=> <><Box position={[0,h/2,0]} size={item.size} material={m.walnut}/><Box position={[0,h+.03,0]} size={[w+.04,.06,d+.04]} material={m.stone}/><Box position={[0,1.7,-.12]} size={[1.15,1.05,.055]} material={m.mirror}/></>,

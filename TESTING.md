@@ -63,3 +63,7 @@ The upgraded sinks, live mirrors and shower passed production compilation, subpa
 ## Kyrgyz panorama — 13 September 2026
 
 Production build and /Artwin/ checks passed. The six-stop guided-tour suite passed on desktop and mobile emulation with no console errors or failed requests. After adjusting the horizon, living-room and Bedroom 02 screenshots were reviewed and the 390 px layout checked; the panorama returned successfully beneath /Artwin/textures/. The existing Three.Clock and Rapier deprecation warnings remain. The panorama is illustrative, not a surveyed property view or explorable exterior.
+
+## Animated television — 13 September 2026
+
+The production build and /Artwin/ asset check passed. The TV browser test compares rendered frames: on-state frames differ, off-state frames stay identical, switching on again restarts the scene, and reduced-motion frames stay identical. Close-up frames were visually reviewed for screen fit and moving clouds/boat. No console errors, failed requests or HTTP errors occurred.

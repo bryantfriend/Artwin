@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <title>A quiet afternoon in the Kyrgyz mountains</title>
+  <rect width="640" height="360" fill="#83bbcf"/>
+  <circle cx="492" cy="79" r="40" fill="#f7ddb1"/>
+  <g id="clouds" fill="#e9f1e7">
+    <animateTransform attributeName="transform" type="translate" values="0 0;22 0;0 0;-22 0;0 0" dur="24s" repeatCount="indefinite"/>
+    <path d="M75 83 Q70 67 87 62 Q91 41 113 50 Q132 40 145 61 Q166 59 171 83Z"/>
+    <path d="M304 57 Q301 42 317 40 Q322 23 340 29 Q355 22 364 40 Q382 39 385 57Z"/>
+  </g>
+  <path d="M0 202 94 94 164 173 264 59 364 174 435 111 526 187 588 123 640 184V360H0Z" fill="#66889b"/>
+  <path d="M55 139 94 94 130 135 109 128 96 137 83 125Z M207 119 264 59 321 124 286 103 267 114 252 97 231 123Z M399 151 435 111 474 148 452 143 438 151 425 135Z M563 150 588 123 614 153 590 145 580 156Z" fill="#f1f3e9"/>
+  <path d="M0 208 72 179 143 214 230 151 314 207 394 173 473 226 546 172 640 214V360H0Z" fill="#446e78"/>
+  <path d="M0 253Q83 197 170 240T345 236T502 224T640 244V360H0Z" fill="#698766"/>
+  <path d="M0 272Q144 252 270 268T640 269V360H0Z" fill="#4e9da8"/>
+  <g id="water" fill="#a7d2ca">
+    <animateTransform attributeName="transform" type="translate" values="0 0;14 0;0 0;-14 0;0 0" dur="12s" repeatCount="indefinite"/>
+    <path d="M74 285H177V287H74Z M239 300H365V302H239Z M438 283H564V285H438Z M114 326H256V328H114Z M399 337H514V339H399Z"/>
+  </g>
+  <g id="boat">
+    <animateTransform attributeName="transform" type="translate" values="0 0;28 -2;0 0;-28 2;0 0" dur="18s" repeatCount="indefinite"/>
+    <path d="M367 293H425L415 304H381Z" fill="#313f40"/>
+    <path d="M395 242H398V293H395Z" fill="#e7d8ba"/>
+    <path d="M392 247 371 285H392Z" fill="#f6ead4"/>
+    <path d="M401 260 417 285H401Z" fill="#d3ae70"/>
+  </g>
+  <path d="M0 309Q49 284 100 321T226 360H0Z M544 360Q595 302 640 308V360Z" fill="#3b6754"/>
+  <path d="M22 325V266H28V325Z M9 291 25 248 43 291Z M35 342V287H41V342Z M25 307 38 269 54 307Z M603 339V287H609V339Z M589 311 605 266 624 311Z" fill="#294d44"/>
+</svg>

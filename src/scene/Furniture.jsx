@@ -1,5 +1,6 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
+import DiningChair from './DiningChair.jsx';
 import {Vanity,Shower} from './BathroomFixtures.jsx';
 import { useFrame } from '@react-three/fiber';
 import { RigidBody, CuboidCollider } from '@react-three/rapier';
@@ -49,14 +50,14 @@ function Sofa({item,m}) {
   const w=item.size[0];
   return <>
     <Legs width={w} depth={.8} height={.15} mat={m.walnut}/>
-    <Soft position={[0,.27,0]} size={[w,.28,.88]} material={m.linen}/>
-    <Soft position={[0,.65,-.37]} size={[w,.6,.18]} material={m.linen}/>
-    {[-1,1].map(s=><Soft key={s} position={[s*(w/2-.08),.52,0]} size={[.18,.45,.9]} material={m.linen}/>)}
+    <Soft position={[0,.27,0]} size={[w,.28,.88]} material={m.sofaBrown}/>
+    <Soft position={[0,.65,-.37]} size={[w,.6,.18]} material={m.sofaBrown}/>
+    {[-1,1].map(s=><Soft key={s} position={[s*(w/2-.08),.52,0]} size={[.18,.45,.9]} material={m.sofaBrown}/>)}
     {[-1,0,1].map((s)=><group key={s} position={[s*(w-.36)/3,0,0]}>
-      <Soft position={[0,.47,.05]} size={[(w-.42)/3,.17,.67]} material={m.upholstery}/>
-      <Pillow position={[0,.72,-.18]} size={[(w-.45)/3,.46,.18]} material={s===0?m.taupe:m.linen}/>
+      <Soft position={[0,.47,.05]} size={[(w-.42)/3,.17,.67]} material={m.sofaBrown}/>
+      <Pillow position={[0,.72,-.18]} size={[(w-.45)/3,.46,.18]} material={s===0?m.sofaAccent:m.sofaBrown}/>
     </group>)}
-    {[-1,1].map(a=><Pillow key={a} position={[a*(w/2-.4),.73,.05]} size={[.35,.35,.13]} rotation={[.1,0,a*.22]} material={a===1?m.taupe:m.upholstery}/>)}
+    {[-1,1].map(a=><Pillow key={a} position={[a*(w/2-.4),.73,.05]} size={[.35,.35,.13]} rotation={[.1,0,a*.22]} material={a===1?m.sofaAccent:m.sofaBrown}/>)}
   </>;
 }
 function Chair({m}) {
@@ -77,8 +78,8 @@ function Dining({m}) {
   return <>
     {[-.65,.65].map(z=><Cylinder key={z} position={[0,.38,z]} size={[.2,.74,.22]} material={m.brass}/>)}
     <Cylinder position={[0,.78,0]} size={[.57,.07,1.15]} material={m.stone}/>
-    {[-1,1].flatMap(x=>[-.65,0,.65].map(z=><group key={x+':'+z} position={[x*.8,0,z]} rotation={[0,-x*Math.PI/2,0]}><Chair m={m}/></group>))}
-    {[-1,1].map(z=><group key={z} position={[0,0,z*1.24]} rotation={[0,z===1?Math.PI:0,0]}><Chair m={m}/></group>)}
+    {[-1,1].flatMap(x=>[-.65,0,.65].map(z=><group key={x+':'+z} position={[x*.8,0,z]} rotation={[0,-x*Math.PI/2,0]}><DiningChair m={m}/></group>))}
+    {[-1,1].map(z=><group key={z} position={[0,0,z*1.24]} rotation={[0,z===1?Math.PI:0,0]}><DiningChair m={m}/></group>)}
     {/* Each setting faces its chair; inset the end settings from the oval edge. */}
     {[-1,1].flatMap(side=>[-.6,0,.6].map(z=><Place key={side+':'+z} position={[side*.25,.825,z]} rotation={side*Math.PI/2} m={m}/>))}
     {[-.3,.3].map(z=><group key={z} position={[0,.9,z]}><Cylinder position={[0,0,0]} size={[.07,.16,.07]} material={m.brass}/><Ball position={[0,.1,0]} size={[.13,.09,.14]} material={m.white}/></group>)}

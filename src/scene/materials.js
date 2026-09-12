@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { decorativeTexture } from './decorativeTextures.js';
 import { wovenRugTextures } from './wovenRug.js';
+import { kitchenMarbleTextures } from './kitchenMarble.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 export const boxGeometry=new THREE.BoxGeometry(1,1,1);
 export const roundedGeometry=new RoundedBoxGeometry(1,1,1,3,.09);
@@ -50,6 +51,8 @@ export function createMaterials(){
   for(const k of ['wood','stone','darkMarble'])materials[k]=new THREE.MeshPhysicalMaterial({map:maps[k],roughness:k==='wood'?.52:.26,clearcoat:k==='wood'?.12:.3,clearcoatRoughness:.3,side:THREE.DoubleSide});
   maps.hallOak=maps.wood.clone();maps.hallOak.repeat.set(3.2,2);maps.hallOak.needsUpdate=true;
   materials.hallOak=new THREE.MeshPhysicalMaterial({map:maps.hallOak,color:'#f1e6d5',roughness:.6,clearcoat:.08});
+  const marble=kitchenMarbleTextures();maps.kitchenMarble=marble.map;maps.kitchenGrout=marble.bump;
+  materials.kitchenMarble=new THREE.MeshPhysicalMaterial({map:marble.map,bumpMap:marble.bump,bumpScale:.002,roughness:.28,clearcoat:.22,clearcoatRoughness:.3});
   for(const k of ['linen','taupe','padded','rug','curtain','caramel']){materials[k].bumpMap=maps.weave;materials[k].bumpScale=k==='rug'?.022:.008;materials[k].roughness=.92;}
   for(const k of ['brownBedding','whiteBedding'])materials[k]=new THREE.MeshPhysicalMaterial({map:maps[k],roughness:.98,bumpMap:maps.weave,bumpScale:.01,sheen:.45,side:THREE.DoubleSide});
   for(let i=0;i<6;i++){maps['art'+i]=decorativeTexture('art',i);materials['art'+i]=new THREE.MeshStandardMaterial({map:maps['art'+i],roughness:1});}

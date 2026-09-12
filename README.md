@@ -170,3 +170,5 @@ The entrance hall follows the supplied hall reference with narrow warm oak plank
 The living-room rug is a reference-inspired gray knitted design with six raised lengthwise bands and bound edges. Original yarn-loop color and bump maps are generated locally; the backing sits below the woven surface to avoid overlapping faces. Its footprint stays 2.75 by 3.5 metres, and other rugs retain their existing styles.
 
 Both hall bathrooms have vertical half-circle reflective mirrors mounted over gray panels, with warm yellow illuminated perimeters and a subtle light wash on the panel. The en-suite retains its round mirror. Active-room reflection targets still use 512 px High / 256 px Light resolution and are disposed when switching rooms.
+
+The kitchen floor uses original white/gray marble tiles inspired by the supplied floor reference: 80 cm squares, fine grout, varied diagonal veining and a restrained polished finish. Color and grout relief maps are generated locally. The kitchen runner was removed to expose the tile field; counters, bathrooms and loggia finishes retain their existing materials.

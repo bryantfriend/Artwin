@@ -107,7 +107,6 @@ export default function Decor({m,mode}) {
     <Rug position={[1.5,.025,12.8]} width={2.85} depth={3.1} index={1} m={m}/>
     <Rug position={[4.85,.025,12.7]} width={2.7} depth={2.9} index={2} m={m}/>
     <Rug position={[1.5,.025,1.65]} width={2.8} depth={2.95} index={1} m={m}/>
-    <Rug position={[4.6,.025,2.55]} width={.7} depth={2.65} index={1} m={m}/>
     <Rug position={[1.2,.025,6.65]} width={.65} depth={.8} index={0} m={m}/>
     <Rug position={[1.15,.025,8.45]} width={.65} depth={.6} index={0} m={m}/>
     {mode==='walkthrough'&&<Art position={[9.69,1.8,13.4]} width={.7} height={1} rotation={-Math.PI/2} index={0} m={m}/>}

@@ -79,3 +79,7 @@ Production build and /Artwin/ checks passed. Floor-level desktop and 390 px mobi
 ## Half-circle bathroom mirrors — 13 September 2026
 
 Production build and /Artwin/ checks passed. Bathroom browser verification covered live reflections, repeated navigation among all three bathrooms, the shower and mobile Light quality, with no errors or failed requests. Both hall bathroom mirrors were visually reviewed; gray panels sit in front of the wall finish and taps remain in front of the panels. The en-suite retains its round mirror.
+
+## Kitchen marble floor — 13 September 2026
+
+Production build and /Artwin/ asset checks passed. Kitchen floor screenshots at desktop and 390 px mobile widths were checked for tile scale, grout and gray veining. Browser verification returned no runtime/console errors, failed requests or HTTP errors. Floor and collision geometry remain unchanged.

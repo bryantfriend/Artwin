@@ -84,7 +84,7 @@ async (page) => {
     await page.keyboard.press('e');
     await page.getByRole('button',{name:'E Turn Kitchen & dining light on',exact:true}).waitFor();
     await page.screenshot({path:'output/playwright/light-off.png'});
-    await select('living','Living room');await move('w',900);await aim(6.64,1.25,13.45);
+    await select('living','Living room');await aim(6.72,1.3,11.55);
     await page.getByRole('button',{name:'E Turn television on',exact:true}).waitFor();await page.keyboard.press('e');
     await page.getByRole('button',{name:'E Turn television off',exact:true}).waitFor();
     await page.screenshot({path:'output/playwright/television.png'});

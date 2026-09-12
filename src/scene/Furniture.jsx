@@ -1,24 +1,29 @@
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { RigidBody, CuboidCollider } from '@react-three/rapier';
-import { boxGeometry, sphereGeometry, cylinderGeometry } from './materials.js';
+import { boxGeometry, roundedGeometry, ringGeometry, sphereGeometry, cylinderGeometry } from './materials.js';
 
 export function Box({ position=[0,0,0], size=[1,1,1], material, ...props }) {
   return <mesh geometry={boxGeometry} material={material} position={position} scale={size} castShadow receiveShadow {...props} />;
 }
+function Soft({position,size,material,...props}) {return <mesh geometry={roundedGeometry} position={position} scale={size} material={material} castShadow receiveShadow {...props}/>;}
 function Ball({position,size,material,...props}) { return <mesh geometry={sphereGeometry} position={position} scale={size} material={material} castShadow {...props}/>; }
 function Cylinder({position,size,material,...props}) { return <mesh geometry={cylinderGeometry} position={position} scale={size} material={material} castShadow {...props}/>; }
 function Legs({width,depth,height,mat}) { return [-1,1].flatMap(x=>[-1,1].map(z=><Box key={`${x}${z}`} position={[x*(width/2-.09),height/2,z*(depth/2-.09)]} size={[.045,height,.045]} material={mat}/>)); }
 function Bed({item,m}) {
-  const [w,,d]=item.size;
+  const [w,,d]=item.size,white=item.color==='white';
   return <>
-    <Box size={[w+.06,.2,d+.07]} position={[0,.22,0]} material={m.walnut}/>
-    <Box size={[w,.3,d]} position={[0,.46,0]} material={m.white}/>
-    <Box size={[w+.15,1.4,.12]} position={[0,.72,-d/2]} material={m[item.color]}/>
-    {[-.32,.32].map(x=><Ball key={x} position={[x*w,.72,-d*.3]} size={[w*.22,.12,.3]} material={m.linen}/>)}
-    <Box size={[w+.035,.095,d*.62]} position={[0,.64,d*.18]} material={m[item.color]}/>
-    <Box size={[w+.06,.035,.3]} position={[0,.704,d*.05]} material={m.linen}/>
-    {Array.from({length:5},(_,i)=><Box key={i} position={[-w/2+.15+i*(w-.3)/4,.69,d*.36]} size={[.012,.012,d*.36]} material={m.taupe}/>)}
+    <Soft size={[w+.06,.25,d+.07]} position={[0,.22,0]} material={m.taupe}/>
+    <Soft size={[w,.3,d]} position={[0,.46,0]} material={m.white}/>
+    <Soft size={[w+.18,1.25,.18]} position={[0,.75,-d/2]} material={white?m.white:m.padded}/>
+    {[-1,1].map((a)=><group key={a}>
+      <Soft position={[a*w*.25,1.02,-d/2+.13]} size={[w*.46,.42,.17]} material={white?m.white:m.taupe}/>
+      <Soft position={[a*w*.25,.75,-d*.32]} size={[w*.43,.19,.43]} rotation={[-.2,0,a*.04]} material={m.white}/>
+      <Soft position={[a*w*.25,.83,-d*.2]} size={[w*.32,.22,.3]} material={white?m.linen:m.walnut}/>
+    </group>)}
+    <Soft size={[w+.045,.12,d*.65]} position={[0,.66,d*.18]} material={white?m.white:m.taupe}/>
+    {Array.from({length:17},(_,i)=><Box key={i} position={[0,.725,d*(-.12+i*.043)]} size={[w+.025,.012,d*.024]} material={white?(i%3?m.white:m.linen):[m.walnut,m.linen,m.dark,m.taupe,m.oak][i%5]}/>)}
+    <Soft size={[w+.07,.055,.25]} position={[0,.74,-d*.12]} material={m.linen}/>
   </>;
 }
 function Sofa({item,m}) {
@@ -30,32 +35,46 @@ function Sofa({item,m}) {
     {[-1,1].map(s=><Box key={s} position={[s*(w/2-.08),.52,0]} size={[.18,.45,.9]} material={m.linen}/>)}
     {[-1,0,1].map((s)=><group key={s} position={[s*(w-.36)/3,0,0]}>
       <Box position={[0,.47,.05]} size={[(w-.42)/3,.17,.67]} material={m.white}/>
-      <Ball position={[0,.72,-.18]} size={[(w-.45)/6,.26,.115]} material={s===0?m.taupe:m.linen}/>
+      <Soft position={[0,.72,-.18]} size={[(w-.45)/3,.46,.18]} material={s===0?m.taupe:m.linen}/>
     </group>)}
   </>;
 }
 function Chair({m}) {
-  return <><Legs width={.64} depth={.66} height={.4} mat={m.walnut}/>
-    <Box position={[0,.44,0]} size={[.65,.16,.65]} material={m.linen}/>
-    <Box position={[0,.71,-.28]} size={[.66,.49,.12]} material={m.taupe}/></>;
-}
-function Dining({m}) {
-  return <>
-    <Legs width={.85} depth={1.4} height={.74} mat={m.walnut}/>
-    <Box position={[0,.77,0]} size={[.82,.07,1.45]} material={m.stone}/>
-    {[-1,1].map(z=><group key={z} position={[0,0,z*.99]} rotation={[0,z===1?Math.PI:0,0]}><Chair m={m}/></group>)}
-    {[-.4,.4].map(z=><Cylinder key={z} position={[0,.815,z]} size={[.15,.015,.15]} material={m.ceramic}/>)}
-    <Cylinder position={[0,.89,0]} size={[.065,.18,.065]} material={m.brass}/>
-    <Ball position={[0,1.04,0]} size={[.15,.14,.13]} material={m.leaf}/>
+  return <><Legs width={.58} depth={.6} height={.42} mat={m.dark}/>
+    <Soft position={[0,.46,0]} size={[.6,.14,.58]} material={m.caramel}/>
+    <Soft position={[0,.73,-.25]} size={[.62,.48,.15]} rotation={[-.12,0,0]} material={m.caramel}/>
+    {[-1,1].map(a=><Soft key={a} position={[a*.275,.62,-.02]} size={[.07,.22,.48]} material={m.caramel}/>)}
   </>;
 }
+function Place({position,m}) {return <group position={position}>
+  <Cylinder position={[0,0,0]} size={[.18,.012,.18]} material={m.brass}/>
+  <Cylinder position={[0,.012,0]} size={[.15,.018,.15]} material={m.black}/>
+  <Cylinder position={[0,.025,0]} size={[.09,.012,.09]} material={m.ceramic}/>
+  <Box position={[.22,.01,0]} size={[.015,.012,.24]} material={m.brass}/>
+  <Cylinder position={[-.2,.075,-.14]} size={[.035,.14,.035]} material={m.glass}/>
+</group>;}
+function Dining({m}) {
+  return <>
+    {[-.65,.65].map(z=><Cylinder key={z} position={[0,.38,z]} size={[.2,.74,.22]} material={m.brass}/>)}
+    <Cylinder position={[0,.78,0]} size={[.57,.07,1.15]} material={m.stone}/>
+    {[-1,1].flatMap(x=>[-.65,0,.65].map(z=><group key={x+':'+z} position={[x*.8,0,z]} rotation={[0,-x*Math.PI/2,0]}><Chair m={m}/></group>))}
+    {[-1,1].map(z=><group key={z} position={[0,0,z*1.24]} rotation={[0,z===1?Math.PI:0,0]}><Chair m={m}/></group>)}
+    {[-1,1].flatMap(x=>[-.65,0,.65].map(z=><Place key={x+':'+z} position={[x*.32,.825,z]} m={m}/>))}
+    {[-.45,.35].map(z=><group key={z} position={[0,.9,z]}><Cylinder position={[0,0,0]} size={[.07,.16,.07]} material={m.brass}/><Ball position={[0,.1,0]} size={[.13,.09,.14]} material={m.white}/></group>)}
+  </>;
+}
+function Breakfast({m}) {return <>
+  <group position={[-.25,0,0]}><Legs width={.8} depth={1.5} height={.75} mat={m.brass}/><Box position={[0,.79,0]} size={[.85,.07,1.6]} material={m.stone}/></group>
+  {[-.46,.46].map(z=><group key={z} position={[.5,0,z]} rotation={[0,-Math.PI/2,0]}><Chair m={m}/></group>)}
+</>;}
+
 function Kitchen({item,m}) {
   const w=item.size[0];
   return <>
     <Box position={[0,.46,0]} size={[w,.88,.6]} material={m.dark}/>
     <Box position={[0,.92,.025]} size={[w+.04,.06,.65]} material={m.stone}/>
     <Box position={[0,1.23,-.29]} size={[w,.56,.03]} material={m.stone}/>
-    <Box position={[0,1.94,-.06]} size={[w,.88,.47]} material={m.walnut}/>
+    <Box position={[0,1.94,-.06]} size={[w,.88,.47]} material={m.white}/>
     {[-1.45,-.72,0,.72,1.45].map(x=><group key={x}><Box position={[x,.47,.31]} size={[.008,.8,.01]} material={m.oak}/><Box position={[x,1.94,.18]} size={[.008,.86,.012]} material={m.oak}/><Box position={[x+.15,.78,.325]} size={[.22,.018,.03]} material={m.brass}/></group>)}
     <Box position={[-.9,.957,.02]} size={[.66,.018,.45]} material={m.black}/>
     {[-1.05,-.76].flatMap(x=>[-.1,.14].map(z=><Cylinder key={`${x}${z}`} position={[x,.97,z]} size={[.09,.006,.09]} material={m.metal}/>))}
@@ -88,15 +107,16 @@ function Cabinet({item,m,state,player,mode}) {
   </>;
 }
 function TV({m,state}) {
-  const ref=useRef();
-  useFrame(({clock})=> { if(ref.current) ref.current.position.x=Math.sin(clock.elapsedTime*.6)*.35; });
   return <>
-    <Box position={[0,.25,0]} size={[2.05,.45,.38]} material={m.walnut}/>
+    <Box position={[0,1.05,-.1]} size={[3.1,2.1,.18]} material={m.black}/>
+    <Box position={[0,.2,.06]} size={[3.1,.22,.36]} material={m.dark}/>
+    <Box position={[0,.325,.06]} size={[3.1,.014,.36]} material={m.brass}/>
     <group userData={{interaction:'tv'}}>
-      <Box position={[0,1.25,-.12]} size={[1.85,1.03,.065]} material={m.black}/>
-      <Box position={[0,1.25,-.078]} size={[1.76,.93,.012]} material={state.tv?m.screen:m.black}/>
-      {state.tv&&<group><Ball ref={undefined} position={[.38,1.42,-.058]} size={[.22,.22,.015]} material={m.linen}/><mesh ref={ref} position={[0,1.04,-.04]} geometry={boxGeometry} scale={[.65,.03,.01]} material={m.bulb}/></group>}
+      <Box position={[.15,1.3,.005]} size={[2.05,1.2,.08]} material={m.white}/>
+      <Box position={[.15,1.3,.055]} size={[1.78,.99,.025]} material={state.tv?m.screen:m.black}/>
+      {state.tv&&<Ball position={[.5,1.48,.08]} size={[.23,.23,.015]} material={m.linen}/>}
     </group>
+    {[.6,1.15,1.7].map((y,i)=><group key={y}><Box position={[-1.24,y,.055]} size={[.48,.035,.3]} material={m.brass}/><Box position={[-1.22,y+.14,.08]} size={[.12,.24,.15]} rotation={[0,0,.14]} material={[m.oak,m.white,m.taupe][i]}/><Cylinder position={[-1.4,y+.12,.08]} size={[.045,.2,.045]} material={m.ceramic}/></group>)}
   </>;
 }
 function Bath({item,m}) {
@@ -124,8 +144,8 @@ function Bath({item,m}) {
     <Box position={[0,.84,0]} size={[w+.04,.07,.39]} material={m.ceramic}/>
     <Ball position={[0,.879,.015]} size={[w*.3,.035,.13]} material={m.mirror}/>
     <Box position={[.15,.97,-.13]} size={[.025,.2,.025]} material={m.brass}/>
-    <Box position={[0,1.48,-.17]} size={[w,.85,.035]} material={m.brass}/>
-    <Box position={[0,1.48,-.147]} size={[w-.045,.8,.012]} material={m.mirror}/>
+    <mesh geometry={ringGeometry} position={[0,1.55,-.14]} scale={[w*.47,.46,.2]} material={m.brass}/>
+    <Cylinder position={[0,1.55,-.16]} size={[w*.44,.015,.43]} rotation={[Math.PI/2,0,0]} material={m.mirror}/>
   </>;
 }
 function Plant({item,m}) {
@@ -141,14 +161,14 @@ export default function Furniture({item,m,state,player,mode}) {
   const [w,h,d]=item.size;
   const content = {
     bed:()=> <Bed item={item} m={m}/>, sofa:()=> <Sofa item={item} m={m}/>,
-    dining:()=> <Dining m={m}/>, kitchen:()=> <Kitchen item={item} m={m}/>,
+    dining:()=> <Dining m={m}/>, breakfast:()=> <Breakfast m={m}/>, kitchen:()=> <Kitchen item={item} m={m}/>,
     chair:()=> <Chair m={m}/>, plant:()=> <Plant item={item} m={m}/>,
     cabinet:()=> <Cabinet item={item} m={m} state={state} player={player} mode={mode}/>,
     tv:()=> <TV m={m} state={state}/>,
-    wardrobe:()=> <><Box position={[0,h/2,0]} size={item.size} material={m.dark}/>{[-1,0,1].map(x=><Box key={x} position={[x*w/3,h/2,d/2+.01]} size={[.012,h-.1,.02]} material={m.brass}/>)}</>,
+    wardrobe:()=> <><Box position={[0,h/2,0]} size={item.size} material={m.padded}/>{[-1,0,1].map(x=><Box key={x} position={[x*w/3,h/2,d/2+.01]} size={[.012,h-.1,.02]} material={m.brass}/>)}</>,
     nightstand:()=> <><Box position={[0,h/2,0]} size={item.size} material={m.walnut}/><Cylinder position={[0,h+.19,0]} size={[.025,.35,.025]} material={m.brass}/><Cylinder position={[0,h+.37,0]} size={[.16,.16,.16]} material={m.linen}/></>,
     console:()=> <><Box position={[0,h/2,0]} size={item.size} material={m.walnut}/><Box position={[0,h+.03,0]} size={[w+.04,.06,d+.04]} material={m.stone}/><Box position={[0,1.7,-.12]} size={[1.15,1.05,.055]} material={m.mirror}/></>,
-    coffee:()=> <><Cylinder position={[0,.38,0]} size={[.38,.065,.54]} material={m.stone}/><Cylinder position={[0,.18,0]} size={[.21,.36,.28]} material={m.walnut}/><Box position={[.02,.427,.05]} size={[.23,.045,.3]} rotation={[0,.2,0]} material={m.taupe}/><Cylinder position={[.02,.47,-.24]} size={[.06,.12,.06]} material={m.ceramic}/></>,
+    coffee:()=> <>{Array.from({length:7},(_,i)=><Ball key={i} position={[Math.sin(i*2.4)*.1,.5+(i%2)*.035,Math.cos(i*2.4)*.1-.15]} size={[.045,.035,.045]} material={i%2?m.pink:m.white}/>)}<Cylinder position={[.1,.28,.35]} size={[.25,.055,.25]} material={m.white}/><Cylinder position={[.1,.14,.35]} size={[.13,.28,.13]} material={m.brass}/><Cylinder position={[0,.38,-.15]} size={[.36,.065,.36]} material={m.stone}/><Cylinder position={[0,.18,0]} size={[.21,.36,.28]} material={m.walnut}/><Box position={[.02,.427,.05]} size={[.23,.045,.3]} rotation={[0,.2,0]} material={m.taupe}/><Cylinder position={[.02,.47,-.24]} size={[.06,.12,.06]} material={m.ceramic}/></>,
   }[item.kind];
   return <RigidBody type="fixed" colliders={false} position={item.position} rotation={[0,item.rotation||0,0]}>
     <CuboidCollider args={[w/2,h/2,d/2]} position={[0,h/2,0]}/>

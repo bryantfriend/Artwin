@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { RigidBody, CuboidCollider, useBeforePhysicsStep } from '@react-three/rapier';
 import { APARTMENT, rooms, walls, doors, furniture, switches } from '../apartmentConfig.js';
 import { wallSegments, doorPose, doorSweepBlocked } from '../geometry.js';
+import Decor from './Decor.jsx';
 import Furniture, { Box } from './Furniture.jsx';
 
 function Floor({room,m,mode}) {
@@ -27,7 +28,7 @@ function Floor({room,m,mode}) {
 function Wall({wall,m,mode}) {
   const segments=useMemo(()=>wallSegments(wall),[wall]);
   const cut=mode==='dollhouse'&&!wall.tall;
-  const cap=cut?.86:APARTMENT.ceiling;
+  const cap=cut?(wall.id.startsWith('baths')||wall.id==='ensuite-north'?1.65:.86):APARTMENT.ceiling;
   return <RigidBody type="fixed" colliders={false}>
     {segments.map((s,i)=> {
       const bottom=s.position[1]-s.size[1]/2, height=Math.max(0,Math.min(bottom+s.size[1],cap)-bottom);
@@ -35,7 +36,7 @@ function Wall({wall,m,mode}) {
         <CuboidCollider args={s.size.map(v=>v/2)} position={s.position}/>
         {height>0&&<>
           <Box position={[s.position[0],bottom+height/2,s.position[2]]} size={[s.size[0],height,s.size[2]]} material={m.wall}/>
-          <Box position={[s.position[0],bottom+height+.006,s.position[2]]} size={[s.size[0]+.01,.014,s.size[2]+.01]} material={m.taupe}/>
+          <Box position={[s.position[0],bottom+height+.006,s.position[2]]} size={[s.size[0]+.01,.014,s.size[2]+.01]} material={m.dark}/>
           {bottom===0&&<Box position={[s.position[0],.055,s.position[2]]} size={[s.size[0]+.024,.11,s.size[2]+.024]} material={m.trim}/>}
         </>}
       </React.Fragment>;
@@ -89,15 +90,16 @@ export default function Architecture({m,mode,state,player,reducedMotion}) {
     {rooms.map(room=><Floor key={room.id} room={room} m={m} mode={mode}/>)}
     {walls.map(wall=><Wall key={wall.id} wall={wall} m={m} mode={mode}/>)}
     {doors.map(door=><Door key={door.id} door={door} m={m} mode={mode} open={!!state.doors[door.id]} player={player} reducedMotion={reducedMotion}/>)}
-    <Box position={[7.92,.012,13.25]} size={[2.5,.02,3.8]} material={m.rug}/>
+    <Box position={[8.1,.012,11.7]} size={[2.7,.02,3.4]} material={m.rug}/>
     <Box position={[1.5,.012,12.8]} size={[2.7,.02,3.3]} material={m.rug}/>
+    <Decor m={m}/>
     {furniture.map(item=><Furniture key={item.id} item={item} m={m} state={state} player={player} mode={mode}/>)}
     {switches.map(s=><group key={s.id} position={s.position} rotation={[0,s.rotation,0]} userData={{interaction:s.id}}>
       <Box size={[.13,.2,.045]} material={m.white}/>
-      <Box position={[0,0,.027]} size={[.065,.12,.018]} material={state.lights[s.room]?m.bulb:m.dark}/>
+      <Box position={[0,0,.027]} size={[.065,.12,.018]} material={state.lights[s.room]!==false?m.bulb:m.dark}/>
     </group>)}
     {rooms.filter(r=>!r.id.startsWith('loggia')).map(r=><group key={r.id}>
-      <pointLight position={[r.label[0],2.45,r.label[1]]} color="#ffe4bd" intensity={state.lights[r.id]===false?0:mode==='walkthrough'?11:3} distance={7} decay={2}/>
+      <pointLight position={[r.label[0],2.45,r.label[1]]} color="#fff4e6" intensity={state.lights[r.id]===false?0:mode==='walkthrough'?11:3} distance={7} decay={2}/>
       {mode==='walkthrough'&&<Box position={[r.label[0],2.65,r.label[1]]} size={[.5,.04,.5]} material={state.lights[r.id]===false?m.linen:m.bulb}/>}
     </group>)}
   </>;

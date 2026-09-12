@@ -145,3 +145,5 @@ All included visual assets, SVGs, textures, and furniture geometry were created 
 This is a procedural visual reconstruction, not a photorealistic or dimensionally surveyed model. Bathrooms and decorative details are simplified. Cabinet collision is conservative and does not model shelf contents. There is no exterior world, save system, jump/sprint, audio, or automatic camera tour.
 
 Graphics quality depends on the device. Light mode disables shadows and limits pixel ratio. No real-phone or device-wide performance claim is made. The sizeable physics chunk includes WASM by design. Upstream Three.js Clock and Rapier initialization deprecation warnings may appear; they are distinct from runtime errors and failed asset requests.
+
+The furnished-reference revision adds striped brown and white bedding, padded and black/gold feature walls, gray curtains, marble kitchen surfaces, oval dining furniture, round brass mirrors, and a black TV partition. Furniture placement and collision bounds are defined together in `src/apartmentConfig.js`; decorative wall finishes are in `src/scene/Decor.jsx`.

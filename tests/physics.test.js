@@ -64,9 +64,9 @@ test('actual physics queries accept every configured destination with closed doo
 test('capsule slides along a wall and stays above the floor',()=>{
   const world=setup(false);
   try{
-    const p=movePlayer(world,[.55,.82,10.6],{x:-.018,y:-.045,z:.018},75);
+    const p=movePlayer(world,[.55,.82,10.4],{x:-.018,y:-.045,z:.018},30);
     assert(p.x>.32&&p.x<.36,`did not stop at west wall: ${p.x}`);
-    assert(p.z>11.2,`did not slide: ${p.z}`);
+    assert(p.z>10.8,`did not slide: ${p.z}`);
     assert(p.y>.78,`fell through floor: ${p.y}`);
   }finally{world.free();}
 });

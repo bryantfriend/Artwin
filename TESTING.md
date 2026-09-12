@@ -37,3 +37,9 @@ Reproduce the browser checks using the commands in README. The production physic
 - The occupied-door-swing guard is tested at the geometry level, and door contact/retreat and repeated animation are tested in the browser. Exhaustive player/door corner cases are not claimed.
 - The rejection path for an obstructed relocation is implemented against live colliders; the automated destination tests confirm the shipped destinations are clear. Arbitrarily edited/obstructed destinations were not injected in the browser.
 - No separate linter is configured; production compilation and focused Node/browser tests are the available checks.
+
+## Furnished-reference revision — 12 September 2026
+
+Reoriented the overview and beds to the furnished reference. Added two brown striped bed covers and one white upholstered bed, padded gray and black/gold marble feature walls, gray pleated curtains, a black TV partition, an eight-chair oval dining set, a separate kitchen breakfast table, marble kitchen flooring, round brass bathroom mirrors, and paired coffee tables. Materials and geometry remain generated locally with no external asset downloads.
+
+After the revision, all nine Node layout/physics tests, the production build and subpath asset check passed. The desktop browser suite passed all eleven room destinations, door collisions/interactions, lights, TV, pause and recovery. The mobile Chromium suite passed touch movement/look, cancellation, room navigation and orientation changes. Both normal browser runs had no console errors or failed requests. The two documented upstream deprecation warnings remain. The wall-sliding test now uses the clear wall segment before the added bedside table; its wall contact and floor assertions are retained.

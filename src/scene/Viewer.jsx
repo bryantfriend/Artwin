@@ -16,7 +16,7 @@ function CameraRig({mode,selected,reset,onSelect}) {
     if(mode!=='dollhouse')return;
     const room=rooms.find(r=>r.id===selected);
     const target=selected&&room?[room.label[0],0,room.label[1]]:APARTMENT.overview.target;
-    const position=selected&&room?[target[0]+9,11,target[2]+8]:APARTMENT.overview.position;
+    const position=selected&&room?[target[0]+9,11,target[2]-5]:APARTMENT.overview.position;
     camera.position.set(...position);camera.lookAt(...target);
     if(!selected) {
       const center=new THREE.Vector3(...target),direction=camera.position.clone().sub(center).normalize();
@@ -85,11 +85,11 @@ function Scene(props) {
   useEffect(()=>()=>resources.dispose(),[resources]);
   return <>
     <ContextEvents onContextLost={props.onContextLost}/>
-    <color attach="background" args={['#eeede7']}/>
+    <color attach="background" args={['#e7e7e7']}/>
     <ambientLight intensity={props.mode==='walkthrough'?.7:.7}/>
-    <hemisphereLight color="#fcf6e9" groundColor="#aaa99d" intensity={.85}/>
-    <directionalLight position={[3,15,6]} intensity={2.3} castShadow={props.quality==='high'} shadow-mapSize={[2048,2048]} shadow-camera-left={-14} shadow-camera-right={14} shadow-camera-top={14} shadow-camera-bottom={-14} shadow-normalBias={.04} shadow-bias={-.0001}/>
-    {props.mode==='dollhouse'&&<mesh position={[4.5,-.27,7]} rotation={[-Math.PI/2,0,0]} receiveShadow><planeGeometry args={[200,200]}/><meshStandardMaterial color="#eeede7" roughness={1}/></mesh>}
+    <hemisphereLight color="#ffffff" groundColor="#a6a5a2" intensity={.85}/>
+    <directionalLight position={[3,15,6]} intensity={1.8} castShadow={props.quality==='high'} shadow-mapSize={[2048,2048]} shadow-camera-left={-14} shadow-camera-right={14} shadow-camera-top={14} shadow-camera-bottom={-14} shadow-normalBias={.04} shadow-bias={-.0001}/>
+    {props.mode==='dollhouse'&&<mesh position={[4.5,-.27,7]} rotation={[-Math.PI/2,0,0]} receiveShadow><planeGeometry args={[200,200]}/><meshStandardMaterial color="#e7e7e7" roughness={1}/></mesh>}
     <Suspense fallback={null}>
       <Physics gravity={[0,-9.81,0]} timeStep={1/60} interpolate paused={props.suspended}>
         <MemoArchitecture m={resources.materials} mode={props.mode} state={props.state} player={props.player} reducedMotion={props.reducedMotion}/>

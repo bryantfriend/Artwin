@@ -15,17 +15,20 @@ function Legs({width,depth,height,mat}) { return [-1,1].flatMap(x=>[-1,1].map(z=
 function Pillow({position,size,material,...props}) {return <mesh geometry={pillowGeometry} position={position} scale={size.map(v=>v/2)} material={material} castShadow receiveShadow {...props}/>;}
 function Duvet({width,depth,material}){
   const geometry=useMemo(()=>{
-    const g=new THREE.PlaneGeometry(width+.22,depth*.7,48,40);g.rotateX(-Math.PI/2);
+    const g=new THREE.PlaneGeometry(width+.36,depth*.7,64,40);g.rotateX(-Math.PI/2);
     const p=g.attributes.position;
     for(let i=0;i<p.count;i++){
-      const x=p.getX(i),z=p.getZ(i);const edge=Math.max(0,(Math.abs(x)-width/2+.06)/.17);
+      const x=p.getX(i),z=p.getZ(i);
+      // Keep the top above the mattress; only drape after clearing its edge.
+      const edge=Math.max(0,(Math.abs(x)-width/2)/.18);
       const fold=.004*Math.sin(x*12+z*7)+.003*Math.sin(x*8-z*17);
-      p.setY(i,fold-.2*edge*edge);
+      if(edge>0)p.setX(i,Math.sign(x)*(width/2+.09*Math.sin(edge*Math.PI/2)));
+      p.setY(i,fold-.25*edge*edge);
     }
     g.computeVertexNormals();return g;
   },[width,depth]);
   useEffect(()=>()=>geometry.dispose(),[geometry]);
-  return <mesh geometry={geometry} position={[0,.73,depth*.18]} material={material} castShadow receiveShadow/>;
+  return <mesh geometry={geometry} position={[0,.67,depth*.18]} material={material} castShadow receiveShadow/>;
 }
 function Bed({item,m}) {
   const [w,,d]=item.size,white=item.color==='white';
@@ -38,9 +41,8 @@ function Bed({item,m}) {
       <Pillow position={[a*w*.25,.75,-d*.32]} size={[w*.43,.19,.43]} rotation={[-.2,0,a*.04]} material={m.white}/>
       <Pillow position={[a*w*.25,.86,-d*.2]} size={[w*.32,.38,.15]} rotation={[-.25,0,0]} material={white?m.upholstery:m.taupe}/>
     </group>)}
-    <Soft size={[w+.045,.12,d*.65]} position={[0,.66,d*.18]} material={white?m.white:m.taupe}/>
     <Duvet width={w} depth={d} material={white?m.whiteBedding:m.brownBedding}/>
-    <Soft size={[w+.07,.055,.25]} position={[0,.74,-d*.12]} material={m.linen}/>
+    <Soft size={[w-.02,.055,.25]} position={[0,.7,-d*.12]} material={m.linen}/>
   </>;
 }
 function Sofa({item,m}) {

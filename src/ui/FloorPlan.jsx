@@ -1,13 +1,36 @@
 import React from 'react';
-import { rooms } from '../apartmentConfig.js';
+import { rooms, walls } from '../apartmentConfig.js';
 
-export default function FloorPlan({selected,onSelect,position,mode}) {
-  return <svg className="floor-plan" viewBox="-1 -2 11.7 19" role="group" aria-label="Interactive apartment floor plan">
-    {rooms.map((r)=><g key={r.id} role="button" tabIndex={0} aria-label={`Go to ${r.name}`} aria-pressed={selected===r.id} onClick={()=>onSelect(r.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(r.id);}}} className={`plan-room ${selected===r.id?'selected':''}`}>
-      <polygon points={r.polygon.map(p=>p.join(',')).join(' ')}/>
-      <text x={r.label[0]} y={r.label[1]}>{r.short}</text>
+// Advertised room areas transcribed from the supplied plan, not calculated
+// from the approximate walkthrough geometry.
+const areas={living:'30.02',kitchen:'16.31',primary:'20.52',bedroom2:'15.67',bedroom3:'15.03',hall:'19.53',bath1:'3.25',bath2:'3.90',bath3:'3.79',loggia1:'3.48',loggia2:'3.18'};
+const labels={living:'Living room',kitchen:'Kitchen',primary:'Bedroom',bedroom2:'Bedroom',bedroom3:'Bedroom',hall:'Hall',bath1:'Bathroom',bath2:'Bathroom',bath3:'Bathroom',loggia1:'Loggia',loggia2:'Loggia'};
+function PlanWall({wall}) {
+  const openings=[...(wall.openings||[])].sort((a,b)=>a.at-b.at),segments=[];
+  let end=0;
+  for(const o of openings){if(o.at>end)segments.push([end,o.at]);end=o.at+o.width;}
+  if(end<wall.length)segments.push([end,wall.length]);
+  return <g transform={`translate(${wall.start[0]} ${wall.start[1]}) rotate(${wall.axis==='x'?0:90})`} className={`plan-wall ${wall.exterior?'exterior':''}`}>
+    {segments.map(([a,b],i)=><path key={i} d={`M${a} 0H${b}`}/>)}
+    {openings.map((o,i)=><g key={i} transform={`translate(${o.at} 0)`}>
+      {o.kind==='window'?<g className="plan-window"><path d={`M0 -.065H${o.width}M0 .065H${o.width}M0 0H${o.width}`}/><path d={`M${o.width/2} -.065V.065`}/></g>:o.kind!=='passage'?<g className="plan-door"><path d={`M0 0V${(o.swing||1)*o.width}`}/><path className="plan-door-arc" d={`M${o.width} 0A${o.width} ${o.width} 0 0 ${(o.swing||1)>0?1:0} 0 ${(o.swing||1)*o.width}`}/></g>:null}
     </g>)}
+  </g>;
+}
+function Dimension({x,z,width,label}) {return <g className="plan-dimension" transform={`translate(${x} ${z})`}><path d={`M0 -.1V.1M0 0H${width}M${width} -.1V.1`}/><text x={width/2} y={-.12}>{label}</text></g>;}
+export default function FloorPlan({selected,onSelect,position,mode}) {
+  return <svg className="floor-plan" viewBox="-.45 -1.65 10.7 18.2" role="group" aria-label="Interactive apartment floor plan">
+    {rooms.map(r=><g key={r.id} role="button" tabIndex={0} aria-label={`Go to ${r.name}`} aria-pressed={selected===r.id} onClick={()=>onSelect(r.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(r.id);}}} className={`plan-room ${selected===r.id?'selected':''}`}>
+      <title>{r.name} · {areas[r.id]} m² · Select to explore</title>
+      <polygon points={r.polygon.map(p=>p.join(',')).join(' ')}/>
+      <text x={r.label[0]} y={r.label[1]-.12}><tspan className="plan-room-name" x={r.label[0]}>{labels[r.id]}</tspan><tspan className="plan-room-area" x={r.label[0]} dy=".34">{areas[r.id]} m²</tspan></text>
+    </g>)}
+    <g className="plan-architecture" aria-hidden="true">{walls.map(wall=><PlanWall key={wall.id} wall={wall}/>)}</g>
+    <g className="plan-dimensions" aria-hidden="true">
+      <Dimension x={.22} z={.48} width={2.96} label="3400"/><Dimension x={3.62} z={.48} width={2.56} label="3000"/>
+      <Dimension x={.22} z={14.55} width={2.96} label="3400"/><Dimension x={3.62} z={14.55} width={2.56} label="3000"/>
+      <Dimension x={6.62} z={8.45} width={2.96} label="3400"/>
+    </g>
     {mode==='walkthrough'&&position&&<g transform={`translate(${position.x} ${position.z}) rotate(${-position.yaw*180/Math.PI})`} className="plan-player"><path d="M0 -.8 -.4 -.2 .4 -.2Z"/><circle r=".17"/></g>}
-    <g className="plan-entry"><path d="M7.1 6.7h-1m.4-.3-.4.3.4.3"/><text x="7.25" y="6.8">ENTRY</text></g>
   </svg>;
 }

@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Html } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
 import * as THREE from 'three';
 import { APARTMENT, rooms } from '../apartmentConfig.js';
@@ -9,7 +9,7 @@ import Architecture from './Architecture.jsx';
 import Player from './Player.jsx';
 const MemoArchitecture=React.memo(Architecture);
 
-function CameraRig({mode,selected,reset,onSelect}) {
+function CameraRig({mode,selected,reset}) {
   const controls=useRef(); const {camera,size}=useThree();
   useEffect(()=> {
     camera.fov=mode==='walkthrough'?65:43;camera.updateProjectionMatrix();
@@ -39,9 +39,7 @@ function CameraRig({mode,selected,reset,onSelect}) {
   if(mode!=='dollhouse')return null;
   return <>
     <OrbitControls ref={controls} makeDefault minDistance={5} maxDistance={65} maxPolarAngle={Math.PI*.46} minPolarAngle={.12} enablePan={false} target={APARTMENT.overview.target}/>
-    {rooms.filter(r=>['living','kitchen','primary','bedroom2','bedroom3','hall'].includes(r.id)).map((r,i)=><Html key={r.id} position={[r.label[0],.2,r.label[1]]} center zIndexRange={[5,0]} distanceFactor={28}>
-      <button className={`room-marker ${selected===r.id?'chosen':''}`} aria-label={`View ${r.name}`} title={r.name} onClick={e=>{e.stopPropagation();onSelect(r.id);}}>{String(i+1).padStart(2,'0')}</button>
-    </Html>)}
+
   </>;
 }
 function Targeting({mode,paused,onTarget}) {

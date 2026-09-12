@@ -53,7 +53,12 @@ async (page) => {
     await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
     await page.waitForTimeout(500);
     await page.screenshot({path:'output/playwright/dollhouse.png'});
-    check(await page.getByRole('button',{name:'View Bedroom 03',exact:true}).isVisible(),'Furnished scene markers missing');
+    check(await page.locator('.room-marker').count()===0,'Dollhouse markers should be removed');
+    await page.getByRole('button',{name:'Go to Bedroom 03',exact:true}).click();
+    check(await page.getByRole('button',{name:'Go to Bedroom 03',exact:true}).getAttribute('aria-pressed')==='true','Floor plan selection did not work');
+    await page.getByRole('button',{name:'Go to Kitchen & dining',exact:true}).focus();
+    await page.keyboard.press('Enter');
+    check(await page.getByRole('button',{name:'Go to Kitchen & dining',exact:true}).getAttribute('aria-pressed')==='true','Keyboard floor plan selection did not work');
     await page.getByRole('button',{name:'Step inside',exact:true}).click();
     await page.locator('.plan-player').waitFor();
     await page.locator('.transition-fade.active').waitFor({state:'hidden'});

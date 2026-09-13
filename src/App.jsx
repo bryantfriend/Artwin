@@ -2,6 +2,7 @@ import React,{lazy,Suspense,useEffect,useState} from 'react';
 import {resolveRoute} from './projects.js';
 import ProjectCollection,{CollectionHeader,CollectionFooter,ProjectPage} from './ui/ProjectCollection.jsx';
 import ErrorBoundary from './ui/ErrorBoundary.jsx';
+import WhatsAppContact from './ui/WhatsAppContact.jsx';
 import './projects.css';
 const ApartmentExperience=lazy(()=>import('./ApartmentExperience.jsx'));
 
@@ -19,5 +20,6 @@ export default function App(){
   return <div className="collection"><CollectionHeader/>
     {route.kind==='projects'?<ProjectCollection/>:route.kind==='project'?<ProjectPage key={route.project.id} project={route.project}/>:<main className="collection-missing"><span className="collection-kicker">LET’S FIND YOUR WAY</span><h1 data-page-title tabIndex={-1}>This space isn’t available.</h1><p>Choose a project from the collection to continue exploring.</p><a className="collection-button" href="#/projects">View all projects</a></main>}
     <CollectionFooter/>
+    <WhatsAppContact floating/>
   </div>;
 }

@@ -6,6 +6,7 @@ import FloorPlan from './ui/FloorPlan.jsx';
 import Joystick from './ui/Joystick.jsx';
 import ErrorBoundary from './ui/ErrorBoundary.jsx';
 import TourControls from './ui/TourControls.jsx';
+import WhatsAppContact from './ui/WhatsAppContact.jsx';
 
 import {projectHref} from './projects.js';
 const Viewer=lazy(()=>import('./scene/Viewer.jsx'));
@@ -116,7 +117,7 @@ export default function ApartmentExperience({project,plan}) {
     <header className="topbar">
       <a className="wordmark" href="#/projects" aria-label="Artwin home"><img src={`${import.meta.env.BASE_URL}artwin-logo.png`} alt="ARTWIN" width="287" height="88"/></a>
       <div className="header-divider"/><span className="header-caption">SPACES FOR LIVING</span>
-      <div className="header-end"><a className="apartment-project-back" href={projectHref(project)} aria-label={`Back to ${project.name} floor plans`}><Icon name="arrow" size={16}/>{project.name}<span>{plan.area.toFixed(2)} M² · FLOOR PLANS</span></a><button className="icon-button help-button" onClick={()=>{setHelp(true);clearInput(input);}} aria-label="Open controls and help"><Icon name="help"/></button></div>
+      <div className="header-end"><a className="apartment-project-back" href={projectHref(project)} aria-label={`Back to ${project.name} floor plans`}><Icon name="arrow" size={16}/>{project.name}<span>{plan.area.toFixed(2)} M² · FLOOR PLANS</span></a><WhatsAppContact/><button className="icon-button help-button" onClick={()=>{setHelp(true);clearInput(input);}} aria-label="Open controls and help"><Icon name="help"/></button></div>
     </header>
     <main>
       <aside className="sidebar">

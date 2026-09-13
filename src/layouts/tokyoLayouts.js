@@ -23,9 +23,9 @@ export const euro52=finishLayout({
   room('loggia1','Loggia','3.18',rect(0,0,1.25,3.15),[.6,1.8],P/2),
  ],
  openings:[['entrance',8.4,3.65,1.05,['hall']],['door',5.04,3.15,.9,['hall','primary'],'Bedroom door',-1,true],['door',4.5,3.82,.9,['hall','living'],'Living room door',-1],['door',6.95,2.05,.9,['hall','bath1'],'Bathroom door',1],['door',6.95,4.5,.9,['hall','storage'],'Storage door',1,true],['door',1.25,2.5,.85,['primary','loggia1'],'Loggia door',1],['window',0,1.3,1.7,['loggia1']],['window',0,4.8,1.95,['living']]],
- furniture:[...bed('primary',3.45,1.3,0,'taupe',1.7,2.15,'walnut'),wardrobe('bed-wardrobe','primary',5.3,.7,1.1,-P/2,'dark'),sofa(.7,4.95,2.3,P/2,'light'),coffee(1.65,5.5),tv(5.35,5.5,1.7,-P/2),kitchen('living',3.65,6.1,2.6,P),table('living',2.9,4.35),wardrobe('hall-wardrobe','hall',8.03,2.8,1.2,-P/2,'dark'),wardrobe('store-shelves','storage',8.02,5.6,1.4,-P/2,'oak'),vanity('vanity1','bath1',6.25,.31,.85),shower('bath1',7.75,.6,1.05,1.0),wc('bath1',7.8,1.55,P/2),plant('loggia1',.6,.4)],
- zones:[{polygon:rect(2.3,5.6,3.35,.9),material:'kitchenMarble'}],
- decor:[{kind:'art',position:[2.4,1.86,3.26],width:1.3,height:.75,index:0},{kind:'rug',position:[1.9,.025,5],width:2.7,depth:2.45,index:0}],
+ furniture:[...bed('primary',3.45,1.3,0,'taupe',1.7,2.15,'walnut'),wardrobe('bed-wardrobe','primary',5.3,.7,1.1,-P/2,'dark'),sofa(1.25,3.75,2.1,0,'gray'),f('coffee-table','coffeeOval','living',[1.3,5.12],[1.7,.45,.68]),tv(1.3,6.24,1.8,P),kitchen('living',3.65,6.1,2.6,P),{...table('living',3.1,4.22),size:[1.35,.9,1.6]},wardrobe('hall-wardrobe','hall',8.03,2.8,1.2,-P/2,'dark'),wardrobe('store-shelves','storage',8.02,5.6,1.4,-P/2,'oak'),vanity('vanity1','bath1',6.25,.31,.85),shower('bath1',7.75,.6,1.05,1.0),wc('bath1',7.8,1.55,P/2),plant('loggia1',.6,.4)],
+ zones:[{polygon:[[0,3.15],[4.5,3.15],[4.5,4.5],[5.65,4.5],[5.65,6.5],[0,6.5]],material:'kitchenMarble'}],
+ decor:[{kind:'art',position:[1.3,1.86,3.26],width:1.4,height:.75,index:0},{kind:'rug',position:[1.3,.025,4.86],width:2.35,depth:2.45,index:0}],
 });
 
 export const classic78=finishLayout({

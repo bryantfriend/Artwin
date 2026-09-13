@@ -247,3 +247,11 @@ npx --yes @playwright/cli@0.1.19 -s=artwin run-code --filename scripts/browser-l
 ```
 
 The experience script resets only this app's local language/favorite keys for deterministic checks. Existing English apartment scripts select English and dismiss the welcome popup before their checks. Browser checks do not submit forms or send WhatsApp messages.
+
+## Dining lighting and furniture
+
+The 52.10 m² apartment places a gray sofa beside the dining table, an oval coffee table in front, and the entertainment center on the opposite wall. Its previous TV corner remains clear. The compact dining set is sized to preserve a walking route through the entrance.
+
+Freestanding wardrobes share two inset doors, long silver handles, a plinth and short feet. Dark wardrobes use a matte black finish; other wardrobes keep their original finish. Fitted hall joinery remains a separate model.
+
+All eight dining and breakfast tables across the six apartments have a chandelier in walkthrough and guided-tour modes. Fixture placement follows the actual tabletop center, rotation and dimensions, including off-center breakfast tables. Warm lights follow the room's existing light state. Chandelier light nodes remain mounted with zero intensity in dollhouse mode to avoid changing shader light counts, and they do not add shadow-map passes. Run `scripts/browser-dining.js` with Playwright CLI against `npm run serve:pages` to capture every fixture, the 52.10 seating and wardrobe, the room-light toggle, and the mobile tour.

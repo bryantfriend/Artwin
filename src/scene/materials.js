@@ -64,6 +64,12 @@ export function createMaterials(){
   materials.terracotta=new THREE.MeshStandardMaterial({color:'#ac6d50',roughness:.9});
   materials.curtain.side=THREE.DoubleSide;
   materials.upholstery=new THREE.MeshPhysicalMaterial({color:'#ece8df',roughness:.93,bumpMap:maps.weave,bumpScale:.008,sheen:.4,sheenColor:'#fff8ed'});
+  for(const [name,color] of Object.entries({sofaGray:'#626563',sofaGrayAccent:'#8f9290'}))materials[name]=new THREE.MeshPhysicalMaterial({color,roughness:.94,bumpMap:maps.weave,bumpScale:.005,sheen:.3,sheenColor:'#d7d5cf'});
+  materials.cabinetBlack=new THREE.MeshStandardMaterial({color:'#121315',roughness:.66});
+  materials.cabinetDoor=new THREE.MeshStandardMaterial({color:'#191a1b',roughness:.57});
+  materials.brushedNickel=new THREE.MeshStandardMaterial({color:'#bfc3c5',metalness:.85,roughness:.3});
+  materials.chandelierGold=new THREE.MeshStandardMaterial({color:'#ac8b51',metalness:.72,roughness:.32});
+  materials.chandelierLED=new THREE.MeshStandardMaterial({color:'#fff2cb',emissive:'#ffd181',emissiveIntensity:1.15,toneMapped:false});
   for(const [name,color] of Object.entries({sofaBrown:'#755039',sofaAccent:'#9a7656',chairFabric:'#b97540'}))materials[name]=new THREE.MeshPhysicalMaterial({color,roughness:.88,bumpMap:maps.weave,bumpScale:.003,sheen:.3,sheenColor:'#d5aa7d',sheenRoughness:.85});
   materials.chairStitch=new THREE.MeshStandardMaterial({color:'#a96c3e',roughness:.95});
   materials.hallJoinery=new THREE.MeshStandardMaterial({color:'#747779',roughness:.72});

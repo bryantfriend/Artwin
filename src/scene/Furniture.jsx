@@ -93,6 +93,16 @@ function Place({position,rotation=0,m}) {return <group position={position} rotat
   <Box position={[.22,.01,0]} size={[.015,.012,.24]} material={m.brass}/>
   <Cylinder position={[-.2,.075,-.14]} size={[.035,.14,.035]} material={m.glass}/>
 </group>;}
+const servingBowlGeometry=new THREE.LatheGeometry([[0,0],[.07,0],[.115,.025],[.145,.068],[.146,.078],[.136,.083],[.128,.064],[.105,.035],[.06,.016],[0,.016]].map(([x,y])=>new THREE.Vector2(x,y)),48);
+function BorsokBowl({m}){
+  return <>
+    <mesh geometry={servingBowlGeometry} material={m.porcelain} castShadow receiveShadow/>
+    {Array.from({length:19},(_,i)=>{
+      const layer=i<10?0:i<16?1:2,n=layer===0?10:layer===1?6:3,j=i-(layer===0?0:layer===1?10:16),a=j/n*Math.PI*2+layer*.6,r=layer===0?.086:layer===1?.057:.025;
+      return <Pillow key={i} position={[Math.cos(a)*r,.047+layer*.032,Math.sin(a)*r]} size={[.044+(i%3)*.006,.036,.048+(i%2)*.009]} rotation={[Math.sin(i)*.28,a,Math.cos(i)*.2]} material={i%3===0?m.borsokGolden:m.borsok}/>;
+    })}
+  </>;
+}
 function Dining({m}) {
   return <>
     {[-.65,.65].map(z=><Cylinder key={z} position={[0,.38,z]} size={[.2,.74,.22]} material={m.brass}/>)}
@@ -101,12 +111,12 @@ function Dining({m}) {
     {[-1,1].map(z=><group key={z} position={[0,0,z*1.24]} rotation={[0,z===1?Math.PI:0,0]}><DiningChair m={m}/></group>)}
     {/* Each setting faces its chair; inset the end settings from the oval edge. */}
     {[-1,1].flatMap(side=>[-.6,0,.6].map(z=><Place key={side+':'+z} position={[side*.25,.825,z]} rotation={side*Math.PI/2} m={m}/>))}
-    {[-.3,.3].map(z=><group key={z} position={[0,.9,z]}><Cylinder position={[0,0,0]} size={[.07,.16,.07]} material={m.brass}/><Ball position={[0,.1,0]} size={[.13,.09,.14]} material={m.white}/></group>)}
+    {[-.3,.3].map(z=><group key={z} position={[0,.816,z]}><BorsokBowl m={m}/></group>)}
   </>;
 }
 function Breakfast({m}) {return <>
   <group position={[-.25,0,0]}><Legs width={.8} depth={1.5} height={.75} mat={m.brass}/><Box position={[0,.79,0]} size={[.85,.07,1.6]} material={m.stone}/></group>
-  {[-.46,.46].map(z=><group key={z} position={[.5,0,z]} rotation={[0,-Math.PI/2,0]}><Chair m={m}/></group>)}
+  {[-.46,.46].map(z=><group key={z} position={[.3,0,z]} rotation={[0,-Math.PI/2,0]}><Chair m={m}/></group>)}
 </>;}
 
 function Kitchen({item,m}) {

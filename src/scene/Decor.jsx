@@ -102,7 +102,7 @@ export default function Decor({m,mode}) {
     <Curtain position={[3.85,0,14.88]} width={.65} m={m}/><Curtain position={[5.85,0,14.88]} width={.75} m={m}/>
     <Curtain position={[8.1,0,15.64]} width={3.05} m={m}/>
     <Curtain position={[1.7,0,.15]} width={3.05} m={m}/>
-    <Curtain position={[6.23,0,2.1]} width={2.4} rotation={-Math.PI/2} m={m}/>
+    <Curtain position={[6.29,0,2.1]} width={2.4} rotation={-Math.PI/2} m={m}/>
     <LivingRug m={m}/>
     <Rug position={[1.5,.025,12.8]} width={2.85} depth={3.1} index={1} m={m}/>
     <Rug position={[4.85,.025,12.7]} width={2.7} depth={2.9} index={2} m={m}/>

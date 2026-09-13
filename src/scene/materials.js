@@ -70,6 +70,8 @@ export function createMaterials(){
   materials.mirrorPanel=new THREE.MeshStandardMaterial({color:'#64686b',roughness:.78});
   materials.mirrorLED=new THREE.MeshStandardMaterial({color:'#ffe38b',emissive:'#ffc44d',emissiveIntensity:2.5,toneMapped:false});
   materials.mirrorGlow=new THREE.MeshBasicMaterial({color:'#ffd467',transparent:true,opacity:.22,depthWrite:false,toneMapped:false});
+  materials.borsok=new THREE.MeshStandardMaterial({color:'#c48b3e',roughness:.85});
+  materials.borsokGolden=new THREE.MeshStandardMaterial({color:'#a96a29',roughness:.9});
   materials.porcelain=new THREE.MeshPhysicalMaterial({color:'#f9f7f1',roughness:.2,clearcoat:.45,clearcoatRoughness:.18});
   materials.showerGlass=new THREE.MeshPhysicalMaterial({color:'#d1e5e0',transparent:true,opacity:.15,roughness:.08,metalness:.05,side:THREE.DoubleSide,depthWrite:false});
   materials.glass=new THREE.MeshStandardMaterial({color:'#d6dce0',transparent:true,opacity:.16,roughness:.14,depthWrite:false});

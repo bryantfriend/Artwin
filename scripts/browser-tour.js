@@ -6,7 +6,7 @@ async (page) => {
   const check=(v,msg)=>{if(!v)throw Error(msg);};
   try{
     await page.setViewportSize({width:1440,height:960});
-    await page.goto('http://127.0.0.1:4173/Artwin/#/projects/tokyo-city/apartments/four-room-134');await page.reload();
+    await page.goto('http://127.0.0.1:4173/Artwin/#/projects/tokyo-city/apartments/four-room-134');await page.reload();await page.locator('.welcome-dialog .language-picker select').selectOption('en-US');await page.locator('.welcome-dialog .dialog-close').click();
     await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
     await page.getByRole('button',{name:'Take a guided tour',exact:true}).click({noWaitAfter:true});
     await page.getByRole('button',{name:'Pause tour',exact:true}).click();
@@ -43,7 +43,7 @@ async (page) => {
     await page.getByRole('button',{name:'Exit guided tour',exact:true}).click();
     await page.getByRole('button',{name:'Step inside',exact:true}).waitFor();
     await page.emulateMedia({reducedMotion:'reduce'});
-    await page.reload();await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
+    await page.reload();await page.locator('.welcome-dialog .language-picker select').selectOption('en-US');await page.locator('.welcome-dialog .dialog-close').click();await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
     await page.getByRole('button',{name:'Take a guided tour',exact:true}).click({noWaitAfter:true});
     await page.getByRole('button',{name:'Resume tour',exact:true}).waitFor();
     check(errors.length===0&&failed.length===0,JSON.stringify({errors,failed}));

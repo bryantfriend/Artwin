@@ -29,6 +29,11 @@ export function resolveRoute(hash=''){
   const path=hash.replace(/^#/, '').replace(/\/$/,'');
   if(!path||path==='/projects')return {kind:'projects'};
   const parts=path.split('/').filter(Boolean);
+  if(parts[0]==='consultations'){
+    if(parts.length===1)return {kind:'consultations'};
+    const project=parts.length===2?projects.find(p=>p.id===parts[1]):null;
+    return project?{kind:'consultations',project}:{kind:'missing'};
+  }
   if(parts[0]!=='projects')return {kind:'missing'};
   const project=projects.find(p=>p.id===parts[1]);
   if(!project)return {kind:'missing'};

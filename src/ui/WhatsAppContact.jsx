@@ -1,14 +1,18 @@
 import React from 'react';
 import './WhatsAppContact.css';
+import {useI18n} from '../i18n.js';
+
+export const whatsAppContactUrl='https://wa.me/996228880000';
 
 export default function WhatsAppContact({floating=false}) {
+  const {t}=useI18n();
   return <a
     className={`whatsapp-contact${floating?' whatsapp-contact--floating':''}`}
-    href="https://wa.me/996228880000"
+    href={whatsAppContactUrl}
     target="_blank"
     rel="noopener noreferrer"
-    aria-label="Contact Artwin on WhatsApp"
-    title="Chat with Artwin on WhatsApp (opens in a new tab)"
+    aria-label={t('Contact Artwin on WhatsApp')}
+    title={`${t('Contact Artwin on WhatsApp')} — ${t('Opens in a new tab')}`}
   >
     <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false">
       <path d="M12 3a9 9 0 0 0-7.78 13.52L3 21l4.58-1.2A9 9 0 1 0 12 3Z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/>

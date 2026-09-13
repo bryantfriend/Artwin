@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "name": "Амантай Токтоболотов",
+    "photoSource": "https://static.tildacdn.one/tild6539-6236-4439-a434-343965336466/IMG_2235.JPG",
+    "nameLatin": "Amantai Toktobolotov",
+    "photo": "consultants/1.webp"
+  },
+  {
+    "id": 2,
+    "name": "Азима Тургунбекова",
+    "photoSource": "https://static.tildacdn.one/tild6434-6364-4866-b835-353931386438/IMG_2245.JPG",
+    "nameLatin": "Azima Turgunbekova",
+    "photo": "consultants/2.webp"
+  },
+  {
+    "id": 3,
+    "name": "Акылай Абай кызы",
+    "photoSource": "https://static.tildacdn.one/tild3831-3433-4165-a439-353030623362/IMG_2246.JPG",
+    "nameLatin": "Akylai Abai kyzy",
+    "photo": "consultants/3.webp"
+  },
+  {
+    "id": 4,
+    "name": "Аиза Азимбаева",
+    "photoSource": "https://static.tildacdn.one/tild6337-3039-4265-b235-303530643337/IMG_2247.JPG",
+    "nameLatin": "Aiza Azimbaeva",
+    "photo": "consultants/4.webp"
+  },
+  {
+    "id": 5,
+    "name": "Нурлан Хамраев",
+    "photoSource": "https://static.tildacdn.one/tild3737-3838-4234-b364-313462626334/IMG_2248.JPG",
+    "nameLatin": "Nurlan Khamraev",
+    "photo": "consultants/5.webp"
+  },
+  {
+    "id": 6,
+    "name": "Дастан Сатаров",
+    "photoSource": "https://static.tildacdn.one/tild3464-3535-4939-a530-346239633234/IMG_2238.JPG",
+    "nameLatin": "Dastan Satarov",
+    "photo": "consultants/6.webp"
+  },
+  {
+    "id": 7,
+    "name": "Даанышман Калыгулов",
+    "photoSource": "https://static.tildacdn.one/tild6164-3936-4366-a636-383530643833/IMG_2244.JPG",
+    "nameLatin": "Daanyshman Kalygulov",
+    "photo": "consultants/7.webp"
+  },
+  {
+    "id": 8,
+    "name": "Адилет Алмазбек уулу",
+    "photoSource": "https://static.tildacdn.one/tild3937-3237-4365-a431-373539366230/IMG_2249.JPG",
+    "nameLatin": "Adilet Almazbek uulu",
+    "photo": "consultants/8.webp"
+  },
+  {
+    "id": 9,
+    "name": "Бексултан Кадыров",
+    "photoSource": "https://static.tildacdn.one/tild3663-3933-4961-b530-303235333538/IMG_2240.JPG",
+    "nameLatin": "Beksultan Kadyrov",
+    "photo": "consultants/9.webp"
+  },
+  {
+    "id": 10,
+    "name": "Эркин Досов",
+    "photoSource": "https://static.tildacdn.one/tild3766-3230-4661-a639-383063306130/IMG_2243.JPG",
+    "nameLatin": "Erkin Dosov",
+    "photo": "consultants/10.webp"
+  },
+  {
+    "id": 11,
+    "name": "Милена Молдомамытова",
+    "photoSource": "https://static.tildacdn.one/tild6135-6561-4663-a236-333739626636/IMG_2312.jpg",
+    "nameLatin": "Milena Moldomamytova",
+    "photo": "consultants/11.webp"
+  },
+  {
+    "id": 13,
+    "name": "Мирлан Алымбеков",
+    "photoSource": "https://static.tildacdn.one/tild3639-6663-4365-a166-613236356661/photo_2025-09-08_163.jpeg",
+    "nameLatin": "Mirlan Alymbekov",
+    "photo": "consultants/13.webp"
+  }
+]

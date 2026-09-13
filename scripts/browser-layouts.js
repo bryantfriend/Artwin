@@ -5,13 +5,13 @@ async(page)=>{
  const check=(v,m)=>{if(!v)throw Error(m);};
  try{
   await page.setViewportSize({width:1440,height:960});
-  await page.goto('http://127.0.0.1:4173/Artwin/#/projects/tokyo-city');await page.reload();
-  await page.locator('.apartment-card').first().waitFor();
-  check(await page.locator('.apartment-card').count()===6,'Expected six plans');
-  await page.getByRole('button',{name:'1 bedroom',exact:true}).click();check(await page.locator('.apartment-card').count()===2,'One bedroom filter');
-  await page.getByRole('button',{name:'2 bedrooms',exact:true}).click();check(await page.locator('.apartment-card').count()===3,'Two bedroom filter');
+  await page.goto('http://127.0.0.1:4173/Artwin/#/projects/tokyo-city');await page.reload();await page.locator('.welcome-dialog .language-picker select').selectOption('en-US');await page.locator('.welcome-dialog .dialog-close').click();
+  await page.locator('.residence-card').first().waitFor();
+  check(await page.locator('.residence-card').count()===6,'Expected six plans');
+  await page.getByRole('button',{name:'1 bedroom',exact:true}).click();check(await page.locator('.residence-card').count()===2,'One bedroom filter');
+  await page.getByRole('button',{name:'2 bedrooms',exact:true}).click();check(await page.locator('.residence-card').count()===3,'Two bedroom filter');
   await page.getByRole('button',{name:'All floor plans',exact:true}).click();
-  await page.locator('.project-plans').screenshot({path:'output/playwright/tokyo-plans.png'});
+  await page.locator('.plan-showcase').screenshot({path:'output/playwright/tokyo-plans.png'});
   const results=[];
   for(const [id,area,count,tours] of plans){
    await page.goto('http://127.0.0.1:4173/Artwin/#/projects/tokyo-city/apartments/'+id);

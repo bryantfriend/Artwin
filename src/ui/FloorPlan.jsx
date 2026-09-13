@@ -1,3 +1,4 @@
+import {translate as t,useI18n} from '../i18n.js';
 import React from 'react';
 import {originalLayout} from '../layouts/index.js';
 
@@ -19,13 +20,14 @@ function PlanWall({wall}) {
 }
 function Dimension({x,z,width,label}) {return <g className="plan-dimension" transform={`translate(${x} ${z})`}><path d={`M0 -.1V.1M0 0H${width}M${width} -.1V.1`}/><text x={width/2} y={-.12}>{label}</text></g>;}
 export default function FloorPlan({layout=originalLayout,selected,onSelect,position,mode,interactive=true}) {
+  const {number}=useI18n();
   const {rooms,walls,bounds,APARTMENT}=layout;
   const viewBox=`${bounds.minX-.45} ${bounds.minZ-.45} ${bounds.maxX-bounds.minX+.9} ${bounds.maxZ-bounds.minZ+.9}`;
-  return <svg className="floor-plan" viewBox={viewBox} role={interactive?'group':'img'} aria-label={interactive?'Interactive apartment floor plan':`${APARTMENT.advertisedArea} square metre apartment floor plan`}>
-    {rooms.map(r=><g key={r.id} {...(interactive?{role:'button',tabIndex:0,'aria-label':`Go to ${r.name}`,'aria-pressed':selected===r.id,onClick:()=>onSelect(r.id),onKeyDown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(r.id);}}}:{})} className={`plan-room ${selected===r.id?'selected':''}`}>
-      <title>{r.name} · {r.area||areas[r.id]} m²{interactive?' · Select to explore':''}</title>
+  return <svg className="floor-plan" viewBox={viewBox} role={interactive?'group':'img'} aria-label={interactive?t('Interactive apartment floor plan'):t('{area} square meter apartment floor plan',{area:number(APARTMENT.advertisedArea,2)})}>
+    {rooms.map(r=><g key={r.id} {...(interactive?{role:'button',tabIndex:0,'aria-label':t('Go to {room}',{room:t(r.name)}),'aria-pressed':selected===r.id,onClick:()=>onSelect(r.id),onKeyDown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(r.id);}}}:{})} className={`plan-room ${selected===r.id?'selected':''}`}>
+      <title>{t(r.name)} · {number(r.area||areas[r.id],2)} {t('m²')}{interactive?' · '+t('Select to explore'):''}</title>
       <polygon points={r.polygon.map(p=>p.join(',')).join(' ')}/>
-      <text x={r.label[0]} y={r.label[1]-.12}><tspan className="plan-room-name" x={r.label[0]}>{r.planName||labels[r.id]}</tspan><tspan className="plan-room-area" x={r.label[0]} dy=".34">{r.area||areas[r.id]} m²</tspan></text>
+      <text x={r.label[0]} y={r.label[1]-.12}><tspan className="plan-room-name" x={r.label[0]}>{t(r.planName||labels[r.id])}</tspan><tspan className="plan-room-area" x={r.label[0]} dy=".34">{number(r.area||areas[r.id],2)} {t('m²')}</tspan></text>
     </g>)}
     <g className="plan-architecture" aria-hidden="true">{walls.map(wall=><PlanWall key={wall.id} wall={wall}/>)}</g>
     {layout.id==='four-room-134'&&<g className="plan-dimensions" aria-hidden="true">

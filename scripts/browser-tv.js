@@ -39,7 +39,7 @@ async (page) => {
   }
   try {
       await page.setViewportSize({width:1440,height:960});
-      async function enter(){await page.goto(origin);await page.reload();await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);await page.getByRole('button',{name:'Step inside',exact:true}).click();await page.locator('.transition-fade.active').waitFor({state:'hidden'});await select('living','Living room');await aim(6.72,1.3,11.55);await page.getByRole('button',{name:'E Turn television on',exact:true}).waitFor();}
+      async function enter(){await page.goto(origin);await page.reload();await page.locator('.welcome-dialog .language-picker select').selectOption('en-US');await page.locator('.welcome-dialog .dialog-close').click();await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);await page.getByRole('button',{name:'Step inside',exact:true}).click();await page.locator('.transition-fade.active').waitFor({state:'hidden'});await select('living','Living room');await aim(6.72,1.3,11.55);await page.getByRole('button',{name:'E Turn television on',exact:true}).waitFor();}
       async function capture(path){return page.locator('canvas').screenshot(path?{path}:{});}
       await enter();
       await page.keyboard.press('e');await page.getByRole('button',{name:'E Turn television off',exact:true}).waitFor();await page.waitForTimeout(300);

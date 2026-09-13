@@ -2,7 +2,7 @@
 async (page) => {
   const origin='http://127.0.0.1:4173/Artwin/#/projects/tokyo-city/apartments/four-room-134';
   const check=(ok,message)=>{if(!ok)throw new Error(message);};
-  await page.goto(origin);await page.reload();
+  await page.goto(origin);await page.reload();await page.locator('.welcome-dialog .language-picker select').selectOption('en-US');await page.locator('.welcome-dialog .dialog-close').click();
   await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
   await page.getByRole('button',{name:'Step inside',exact:true}).click();
   await page.locator('.transition-fade.active').waitFor({state:'hidden'});
@@ -40,11 +40,11 @@ async (page) => {
   const pattern='**/assets/Viewer-*.js';
   await page.route(pattern,route=>route.abort());
   try {
-    await page.reload();
+    await page.reload();await page.locator('.welcome-dialog .language-picker select').selectOption('en-US');await page.locator('.welcome-dialog .dialog-close').click();
     await page.getByRole('heading',{name:'The apartment could not load.',exact:true}).waitFor();
     await page.getByRole('button',{name:'Reload viewer',exact:true}).waitFor();
     await page.screenshot({path:'output/playwright/asset-recovery.png'});
   }finally{await page.unroute(pattern);}
-  await page.reload();await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
+  await page.reload();await page.locator('.welcome-dialog .language-picker select').selectOption('en-US');await page.locator('.welcome-dialog .dialog-close').click();await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
   return {result:'PASS',checks:['no unsolicited pointer lock','pointer lock refusal fallback','fullscreen refusal message','blur pause','cabinet animation','graphics context recovery','failed scene chunk recovery','successful reload after restoring assets'],note:'Expected errors from deliberate fault injection are not normal-load errors.'};
 }

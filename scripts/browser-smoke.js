@@ -49,7 +49,7 @@ async (page) => {
   }
   try {
     await page.setViewportSize({width:1440,height:960});
-    await page.goto(origin);await page.reload();
+    await page.goto(origin);await page.reload();await page.locator('.welcome-dialog .language-picker select').selectOption('en-US');await page.locator('.welcome-dialog .dialog-close').click();
     await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
     await page.waitForTimeout(500);
     await page.screenshot({path:'output/playwright/dollhouse.png'});

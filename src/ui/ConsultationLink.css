@@ -1,0 +1,49 @@
+.consultation-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 12px 18px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  background: #ffd000;
+  color: #252a26;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  transition: background .18s;
+}
+.consultation-link:hover { background: #f0c400; }
+a.consultation-link:focus-visible { outline: 3px solid #8f7400; outline-offset: 4px; }
+.project-consultation { margin-top: 24px; }
+.project-consultation p { margin-top: 10px; font-size: 11px; line-height: 1.6; color: #73786f; }
+.project-consultation p a { color: #526545; text-decoration: underline; text-underline-offset: 3px; }
+.consultation-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 52px;
+  padding: 38px 40px;
+  border: 1px solid #d9ddd1;
+  border-radius: 4px;
+  background: #efefe6;
+}
+.consultation-banner h2 { margin-top: 12px; font-size: 30px; font-weight: 400; letter-spacing: -.7px; line-height: 1.2; }
+.consultation-banner p { margin-top: 13px; font-size: 12px; line-height: 1.8; color: #73786f; }
+@media (max-width: 1200px) {
+  .consultation-link--compact { width: 44px; height: 44px; padding: 0; border-radius: 50%; }
+  .consultation-link--compact span { display: none; }
+  .app .topbar .header-caption, .app .topbar .header-divider { display: none; }
+}
+@media (max-width: 680px) {
+  .collection .collection-header { gap: 12px; }
+  .consultation-banner { flex-direction: column; align-items: stretch; padding: 28px 24px; margin-bottom: 32px; gap: 24px; }
+  .consultation-banner h2 { font-size: 27px; }
+  .project-consultation .consultation-link { width: 100%; }
+}
+@media (max-width: 360px) {
+  .app .topbar .wordmark img { width: 100px; }
+}

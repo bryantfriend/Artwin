@@ -1,3 +1,4 @@
+import {translate as t,useI18n} from '../i18n.js';
 import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
@@ -73,13 +74,15 @@ function Targeting({mode,paused,onTarget}) {
 }
 function SceneReady({onReady}) {useEffect(()=>{onReady();},[onReady]);return null;}
 function ContextEvents({onContextLost}) {
+  const {language}=useI18n();
   const {gl}=useThree();
   useEffect(()=>{
     const canvas=gl.domElement;
+    canvas.setAttribute('aria-label',t('Apartment 3D canvas; drag to look or orbit'));
     const lost=e=>{e.preventDefault();onContextLost();};
     canvas.addEventListener('webglcontextlost',lost);
     return ()=>canvas.removeEventListener('webglcontextlost',lost);
-  },[gl,onContextLost]);
+  },[gl,onContextLost,language]);
   return null;
 }
 function NoGraphics({onFailure}) {
@@ -114,9 +117,10 @@ export class ViewerBoundary extends React.Component {
   state={error:null};
   static getDerivedStateFromError(error){return {error};}
   componentDidCatch(error){console.error('Viewer failed:',error);this.props.onFailure?.();}
-  render(){return this.state.error?<div className="viewer-error"><span className="eyebrow">VIEWER UNAVAILABLE</span><h2>Let’s try that again.</h2><p>Enable hardware acceleration or use a WebGL 2 browser. If loading failed, check your connection and reload.</p><button className="primary-button" onClick={()=>window.location.reload()}>Reload viewer</button></div>:this.props.children;}
+  render(){return this.state.error?<div className="viewer-error"><span className="eyebrow">{t("VIEWER UNAVAILABLE")}</span><h2>{t("Let’s try that again.")}</h2><p>{t("Enable hardware acceleration or use a WebGL 2 browser. If loading failed, check your connection and reload.")}</p><button className="primary-button" onClick={()=>window.location.reload()}>{t("Reload viewer")}</button></div>:this.props.children;}
 }
 export default function Viewer(props) {
+  useI18n();
   const [suspended,setSuspended]=useState(false);
   const supported=useMemo(()=>{
     try {
@@ -136,7 +140,7 @@ export default function Viewer(props) {
     shadows={props.quality==='high'?{type:THREE.PCFShadowMap}:false} dpr={props.quality==='high'?[1,1.6]:1}
     camera={{position:props.layout.APARTMENT.overview.position,fov:43,near:.08,far:150}}
     gl={{antialias:true,powerPreference:'high-performance'}}
-    onCreated={({gl})=>{gl.domElement.tabIndex=0;gl.domElement.setAttribute('aria-label','Apartment 3D canvas; drag to look or orbit');}}
-    fallback={<p>A browser with WebGL 2 is required to view this apartment.</p>}
+    onCreated={({gl})=>{gl.domElement.tabIndex=0;gl.domElement.setAttribute('aria-label',t('Apartment 3D canvas; drag to look or orbit'));}}
+    fallback={<p>{t("A browser with WebGL 2 is required to view this apartment.")}</p>}
   ><Scene {...props} suspended={suspended}/></Canvas></ViewerBoundary>;
 }

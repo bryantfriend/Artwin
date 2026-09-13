@@ -1,6 +1,6 @@
 # Artwin project collection & apartment walkthrough
 
-A client-side React + Vite project collection covering the 10 projects listed in [Artwin's directory](https://artwin.kg/#rec596501902), with project overviews and a floor-plan section for each. **Tokyo City** contains six distinct furnished apartments: **52.10, 70.33, 78.83, 82.30, 106.01 and 134.68 m²**. Each has its own clickable floor plan, dollhouse, guided tour and collision-aware walkthrough. Filter the selection by bedroom count. Other projects have explicit coming-soon states; their floor plans and 3D models have not been added. No server, account, database, SSR or runtime asset service is required.
+A client-side React + Vite project collection covering the 10 projects listed in [Artwin's directory](https://artwin.kg/#rec596501902), with project overviews and a floor-plan section for each. **Tokyo City** contains six distinct furnished apartments: **52.10, 70.33, 78.83, 82.30, 106.01 and 134.68 m²**. Each has its own clickable floor plan, dollhouse, guided tour and collision-aware walkthrough. Compare paired 2D/3D previews, filter by bedroom count and area, sort by size, and save favorites on this device. Other projects have explicit coming-soon states; their floor plans and 3D models have not been added. No server, account, database, SSR or runtime asset service is required.
 
 **[Open the project collection](https://bryantfriend.github.io/Artwin/)** · **[Tokyo City](https://bryantfriend.github.io/Artwin/#/projects/tokyo-city)** · **[Open the apartment directly](https://bryantfriend.github.io/Artwin/#/projects/tokyo-city/apartments/four-room-134)**
 
@@ -61,7 +61,7 @@ GitHub Pages is enabled with **GitHub Actions** as its source. The [initial depl
 - Three.js and physics have separate chunks so an interface edit need not invalidate those large assets.
 - For future file assets, prefer `import modelUrl from './assets/model.glb?url'`. For files in `public`, use `${import.meta.env.BASE_URL}models/model.glb`, never `/models/model.glb`. Apply the same rule to future WASM URLs, audio, and textures.
 - Room selection and viewing modes use React state. They do not change the URL or require a router/404 rewrite.
-- Collection, project and apartment navigation uses URL fragments (`#/projects/...`). Browser Back/Forward, refresh and shared deep links request the same `/Artwin/` HTML file, so Pages needs no server rewrites. Unknown projects/plans show a recovery page. Only opening an available apartment imports its UI, Three.js and physics; leaving unmounts the viewer and clears movement/pointer lock. Reopening starts a fresh apartment session.
+- Collection, project, consultation and apartment navigation uses URL fragments (`#/projects/...`). Browser Back/Forward, refresh and shared deep links request the same `/Artwin/` HTML file, so Pages needs no server rewrites. Unknown projects/plans show a recovery page. Only opening an available apartment imports its UI, Three.js and physics; leaving unmounts the viewer and clears movement/pointer lock. Reopening starts a fresh apartment session.
 
 See [Vite's Pages deployment guidance](https://vite.dev/guide/static-deploy.html#github-pages).
 
@@ -95,7 +95,10 @@ In walkthrough mode, floor-plan navigation fades out, checks the destination aga
 | `src/physicsController.js` | Shared character-controller setup and grounding, used by the app and tests |
 | `src/App.jsx` | Hash navigation, project pages and lazy apartment entry |
 | `src/projects.js` | Project registry, plan availability, route resolution and link helpers |
-| `src/ui/ProjectCollection.jsx` | Collection, filters/search, project overviews and floor-plan cards |
+| `src/ui/ProjectCollection.jsx` | Collection, city filters/search and project overviews |
+| `src/ui/PlanGallery.jsx` | Paired 2D/3D previews, favorites, filters and comparison |
+| `src/ui/ConsultationPage.jsx` | Project consultation paths and the published consultant roster |
+| `src/i18n.js`, `src/locales/` | Language preference, translations and number formatting |
 | `src/projects.css` | Responsive collection and project-page styling |
 | `src/ApartmentExperience.jsx` | Apartment UI, mode/interaction state, relocation requests, loading and help |
 | `docs/project-sources.json` | Official image provenance and retrieval date |
@@ -153,7 +156,7 @@ Actual verification results and limits are recorded in [TESTING.md](TESTING.md).
 
 The ARTWIN logo image was supplied by the user and is stored in `public/artwin-logo.png`. The illustrative Kyrgyz city and mountain panorama in `public/textures/kyrgyz-city-panorama.jpg` was AI-generated for this prototype. It is not a verified view from this property. Remaining SVGs, textures, and furniture geometry were created in code. No external models, fonts, apartment-reference image copies, HDR presets, music, tracking, or analytics are included. The supplied apartment screenshot remains the user's design reference; no independent license to republish it is asserted. Third-party library licenses remain with their respective packages.
 
-This is a procedural visual reconstruction, not a photorealistic or dimensionally surveyed model. Bathrooms and decorative details are simplified. Cabinet collision is conservative and does not model shelf contents. The exterior is a distant panoramic backdrop, not an explorable city. There is no save system, jump/sprint, or audio.
+This is a procedural visual reconstruction, not a photorealistic or dimensionally surveyed model. Bathrooms and decorative details are simplified. Cabinet collision is conservative and does not model shelf contents. The exterior is a distant panoramic backdrop, not an explorable city. Apartment interaction state is not saved between visits. There is no jump/sprint or audio; gallery favorites and the language preference are saved locally.
 
 Graphics quality depends on the device. Light mode disables shadows and limits pixel ratio. No real-phone or device-wide performance claim is made. The sizeable physics chunk includes WASM by design. Upstream Three.js Clock and Rapier initialization deprecation warnings may appear; they are distinct from runtime errors and failed asset requests.
 
@@ -220,3 +223,27 @@ npx --yes @playwright/cli@0.1.19 -s=artwin-mobile run-code --filename scripts/br
 ```
 
 The mobile session must be opened with `--mobile`. Node tests check per-plan route/metadata consistency, furnished footprints, connected walking paths, open-door clearance and actual Rapier capsule destinations with doors both open and closed. The grid circulation check uses a 0.27 m clearance radius at 0.1 m spacing; it is a navigation regression check, not a building-code assessment.
+
+
+## Languages, consultations and floor-plan showcase
+
+Russian is the default on a first visit. The globe in the header (and welcome popup) switches to Kyrgyz, US English or Simplified Chinese. `artwin-language` stores the preference locally. UI, accessible labels, room labels, walkthrough prompts, help, tour copy, loading/recovery messages and project descriptions use the same dictionaries. Official brand/project names and social handles remain unchanged. Native names are used for consultants in Russian/Kyrgyz, with Latin transliterations in English/Chinese. `tests/i18n.test.js` checks dictionary fields, component calls and every project's/room's/tour's dynamic copy.
+
+The consultation popup appears once per page load. Its background cycles through all ten projects; it has pause, project selection, Escape dismissal and keyboard focus containment. Reduced-motion users start with the slideshow paused. Its CTA opens **[our consultation page](https://bryantfriend.github.io/Artwin/#/consultations)**. Project-specific links use `#/consultations/{project-id}`.
+
+The consultation page covers all ten projects and shows the twelve active consultants published on [Artwin's booking page](https://artwin.kg/schedule-call), checked 13 September 2026. That page randomizes the displayed consultant assignments, so this app presents a shared team rather than asserting fixed project/person assignments. Booking is completed on Artwin's external site; Osh projects have the supplied WhatsApp contact path. We do not submit a booking, store customer details or translate the external booking provider's interface.
+
+Consultant portraits are optimized local WebP assets in `public/consultants/`; names and original image URLs are recorded in `src/consultants.json`. The official public source is the booking page above. Social destinations were read from [Artwin's homepage](https://artwin.kg/); @artwin.kg and @artwin.osh have distinct Instagram/Facebook links and share `@artwin_kg` on YouTube.
+
+Each Tokyo City card shows its own 2D plan beside a screenshot captured from its actual 3D viewer. The six PNG previews in `public/plans/` use `BASE_URL`, as do consultant portraits. Refresh those screenshots with `scripts/capture-plan-previews.js` when the model or its furnishing changes, then rebuild so the new captures are included in `dist`. They load as images without loading Three.js or physics; those chunks still load only when an apartment is opened.
+
+Favorites are stored in `artwin-saved-plans` on this browser. Area and bedroom filters can be combined. Comparison supports two or three plans and includes both images and key metrics. Filters and comparison selection are session state, not published inventory. See the [20-builder design review](docs/design-research.md) for sources and implemented ideas.
+
+Run the new production checks after `npm run build` and starting `npm run serve:pages`:
+
+```sh
+npx --yes @playwright/cli@0.1.19 -s=artwin run-code --filename scripts/browser-experience.js
+npx --yes @playwright/cli@0.1.19 -s=artwin run-code --filename scripts/browser-languages.js
+```
+
+The experience script resets only this app's local language/favorite keys for deterministic checks. Existing English apartment scripts select English and dismiss the welcome popup before their checks. Browser checks do not submit forms or send WhatsApp messages.

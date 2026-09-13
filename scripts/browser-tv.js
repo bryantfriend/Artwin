@@ -8,7 +8,7 @@ async (page) => {
   const onResponse=r=>{if(r.status()>=400)badResponses.push(`${r.status()} ${r.url()}`);};
   page.on('pageerror',onError);page.on('console',onConsole);page.on('requestfailed',onFailed);page.on('response',onResponse);
   const check=(ok,message)=>{if(!ok)throw new Error(message);};
-  const origin='http://127.0.0.1:4173/Artwin/';
+  const origin='http://127.0.0.1:4173/Artwin/#/projects/tokyo-city/apartments/four-room-134';
   let pitch=0;
   async function playerPosition() {
     const transform=await page.locator('.plan-player').getAttribute('transform');
@@ -39,7 +39,7 @@ async (page) => {
   }
   try {
       await page.setViewportSize({width:1440,height:960});
-      async function enter(){await page.goto(origin);await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);await page.getByRole('button',{name:'Step inside',exact:true}).click();await page.locator('.transition-fade.active').waitFor({state:'hidden'});await select('living','Living room');await aim(6.72,1.3,11.55);await page.getByRole('button',{name:'E Turn television on',exact:true}).waitFor();}
+      async function enter(){await page.goto(origin);await page.reload();await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);await page.getByRole('button',{name:'Step inside',exact:true}).click();await page.locator('.transition-fade.active').waitFor({state:'hidden'});await select('living','Living room');await aim(6.72,1.3,11.55);await page.getByRole('button',{name:'E Turn television on',exact:true}).waitFor();}
       async function capture(path){return page.locator('canvas').screenshot(path?{path}:{});}
       await enter();
       await page.keyboard.press('e');await page.getByRole('button',{name:'E Turn television off',exact:true}).waitFor();await page.waitForTimeout(300);

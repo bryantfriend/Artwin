@@ -18,10 +18,10 @@ function PlanWall({wall}) {
   </g>;
 }
 function Dimension({x,z,width,label}) {return <g className="plan-dimension" transform={`translate(${x} ${z})`}><path d={`M0 -.1V.1M0 0H${width}M${width} -.1V.1`}/><text x={width/2} y={-.12}>{label}</text></g>;}
-export default function FloorPlan({selected,onSelect,position,mode}) {
-  return <svg className="floor-plan" viewBox="-.45 -1.65 10.7 18.2" role="group" aria-label="Interactive apartment floor plan">
-    {rooms.map(r=><g key={r.id} role="button" tabIndex={0} aria-label={`Go to ${r.name}`} aria-pressed={selected===r.id} onClick={()=>onSelect(r.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(r.id);}}} className={`plan-room ${selected===r.id?'selected':''}`}>
-      <title>{r.name} · {areas[r.id]} m² · Select to explore</title>
+export default function FloorPlan({selected,onSelect,position,mode,interactive=true}) {
+  return <svg className="floor-plan" viewBox="-.45 -1.65 10.7 18.2" role={interactive?'group':'img'} aria-label={interactive?'Interactive apartment floor plan':'134.68 square metre four-room apartment floor plan'}>
+    {rooms.map(r=><g key={r.id} {...(interactive?{role:'button',tabIndex:0,'aria-label':`Go to ${r.name}`,'aria-pressed':selected===r.id,onClick:()=>onSelect(r.id),onKeyDown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(r.id);}}}:{})} className={`plan-room ${selected===r.id?'selected':''}`}>
+      <title>{r.name} · {areas[r.id]} m²{interactive?' · Select to explore':''}</title>
       <polygon points={r.polygon.map(p=>p.join(',')).join(' ')}/>
       <text x={r.label[0]} y={r.label[1]-.12}><tspan className="plan-room-name" x={r.label[0]}>{labels[r.id]}</tspan><tspan className="plan-room-area" x={r.label[0]} dy=".34">{areas[r.id]} m²</tspan></text>
     </g>)}

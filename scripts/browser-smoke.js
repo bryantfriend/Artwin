@@ -8,7 +8,7 @@ async (page) => {
   const onResponse=r=>{if(r.status()>=400)badResponses.push(`${r.status()} ${r.url()}`);};
   page.on('pageerror',onError);page.on('console',onConsole);page.on('requestfailed',onFailed);page.on('response',onResponse);
   const check=(ok,message)=>{if(!ok)throw new Error(message);};
-  const origin='http://127.0.0.1:4173/Artwin/';
+  const origin='http://127.0.0.1:4173/Artwin/#/projects/tokyo-city/apartments/four-room-134';
   let pitch=0;
   async function playerPosition() {
     const transform=await page.locator('.plan-player').getAttribute('transform');
@@ -49,7 +49,7 @@ async (page) => {
   }
   try {
     await page.setViewportSize({width:1440,height:960});
-    await page.goto(origin);
+    await page.goto(origin);await page.reload();
     await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
     await page.waitForTimeout(500);
     await page.screenshot({path:'output/playwright/dollhouse.png'});

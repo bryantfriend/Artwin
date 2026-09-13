@@ -12,7 +12,7 @@ async (page) => {
     const n=t.match(/-?\d+(?:\.\d+)?/g).map(Number);return {x:n[0],z:n[1],angle:n[2]};
   }
   try {
-    await page.goto('http://127.0.0.1:4173/Artwin/');
+    await page.goto('http://127.0.0.1:4173/Artwin/#/projects/tokyo-city/apartments/four-room-134');await page.reload();
     await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
     await page.waitForTimeout(500);
     check(await page.evaluate(()=>matchMedia('(pointer:coarse)').matches),'Session is not a touchscreen');

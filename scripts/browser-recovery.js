@@ -1,8 +1,8 @@
 // Fault injection is deliberately isolated from normal-load browser checks.
 async (page) => {
-  const origin='http://127.0.0.1:4173/Artwin/';
+  const origin='http://127.0.0.1:4173/Artwin/#/projects/tokyo-city/apartments/four-room-134';
   const check=(ok,message)=>{if(!ok)throw new Error(message);};
-  await page.goto(origin);
+  await page.goto(origin);await page.reload();
   await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
   await page.getByRole('button',{name:'Step inside',exact:true}).click();
   await page.locator('.transition-fade.active').waitFor({state:'hidden'});

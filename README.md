@@ -1,8 +1,8 @@
-# Artwin apartment walkthrough
+# Artwin project collection & apartment walkthrough
 
-A client-side React + Vite + Three.js reconstruction of the supplied **four-room, 134.68 m²** apartment reference. Three bedrooms, a separate kitchen/dining space, living room, central hall, three bathroom spaces, and two loggias. No server, account, database, SSR, remote model, or hosted texture service is required.
+A client-side React + Vite project collection covering the 10 projects listed in [Artwin's directory](https://artwin.kg/#rec596501902), with project overviews and a floor-plan section for each. **Tokyo City** contains the first interactive **four-room, 134.68 m²** apartment: three bedrooms, a separate kitchen/dining space, living room, central hall, three bathrooms and two loggias. Other projects have explicit coming-soon states; their floor plans and 3D models have not been added. No server, account, database, SSR or runtime asset service is required.
 
-**[Open the live apartment walkthrough](https://bryantfriend.github.io/Artwin/)**
+**[Open the project collection](https://bryantfriend.github.io/Artwin/)** · **[Tokyo City](https://bryantfriend.github.io/Artwin/#/projects/tokyo-city)** · **[Open the apartment directly](https://bryantfriend.github.io/Artwin/#/projects/tokyo-city/apartments/four-room-134)**
 
 The older pasted 52.10 m² brief is not the reference for this implementation. The subsequently supplied four-room image is.
 
@@ -53,13 +53,15 @@ GitHub Pages is enabled with **GitHub Actions** as its source. The [initial depl
 `vite.config.js` explicitly sets `base: '/Artwin/'`. Case matters. Change it if the repository is renamed; use `/` for a user site or a custom domain served at its root, and update the strict preview/check scripts accordingly.
 
 - Vite rewrites imported JS, CSS, and dynamic chunks beneath `/Artwin/assets/`.
+- Official project images are optimized local WebP files beneath `/Artwin/projects/`, loaded using `BASE_URL`. Original image URLs and retrieval date are recorded in `docs/project-sources.json`; the app makes no requests to Artwin/Tilda while browsing the collection.
 - The favicon uses `%BASE_URL%` in `index.html`.
-- Wood and stone textures are generated deterministically in the browser. There are no texture URL requests.
+- Wood and stone textures are generated deterministically in the browser. The bundled window panorama uses a local `/Artwin/textures/` URL.
 - All furniture is actual procedural geometry. There are no required GLB downloads.
 - `@react-three/rapier` uses the locked `@dimforge/rapier3d-compat` package. Its WASM bytes are embedded in the locally built physics JS chunk, so no WASM CDN or root-relative `.wasm` request is needed.
 - Three.js and physics have separate chunks so an interface edit need not invalidate those large assets.
 - For future file assets, prefer `import modelUrl from './assets/model.glb?url'`. For files in `public`, use `${import.meta.env.BASE_URL}models/model.glb`, never `/models/model.glb`. Apply the same rule to future WASM URLs, audio, and textures.
 - Room selection and viewing modes use React state. They do not change the URL or require a router/404 rewrite.
+- Collection, project and apartment navigation uses URL fragments (`#/projects/...`). Browser Back/Forward, refresh and shared deep links request the same `/Artwin/` HTML file, so Pages needs no server rewrites. Unknown projects/plans show a recovery page. Only opening an available apartment imports its UI, Three.js and physics; leaving unmounts the viewer and clears movement/pointer lock. Reopening starts a fresh apartment session.
 
 See [Vite's Pages deployment guidance](https://vite.dev/guide/static-deploy.html#github-pages).
 
@@ -87,7 +89,12 @@ In walkthrough mode, floor-plan navigation fades out, checks the destination aga
 | `src/geometry.js` | Wall segmentation, containment, movement normalization, door poses and swing checks |
 | `src/input.js` | Shared mutable input and reset logic |
 | `src/physicsController.js` | Shared character-controller setup and grounding, used by the app and tests |
-| `src/App.jsx` | UI, mode/interaction state, relocation requests, loading and help |
+| `src/App.jsx` | Hash navigation, project pages and lazy apartment entry |
+| `src/projects.js` | Project registry, plan availability, route resolution and link helpers |
+| `src/ui/ProjectCollection.jsx` | Collection, filters/search, project overviews and floor-plan cards |
+| `src/projects.css` | Responsive collection and project-page styling |
+| `src/ApartmentExperience.jsx` | Apartment UI, mode/interaction state, relocation requests, loading and help |
+| `docs/project-sources.json` | Official image provenance and retrieval date |
 | `src/scene/Viewer.jsx` | Canvas, orbit camera, scene lighting, interaction ray, error recovery |
 | `src/scene/Architecture.jsx` | Floors, ceilings, cutaways, walls, doors, and matching colliders |
 | `src/scene/Player.jsx` | Rapier capsule character controller, fixed-step movement, camera following |
@@ -176,3 +183,11 @@ The kitchen floor uses original white/gray marble tiles inspired by the supplied
 The right hall mirror is flipped so the pair faces inward. Mirror targets are allocated and their shader compiled asynchronously during scene initialization. Bathroom glow lights remain mounted with zero intensity outside the active room to keep shader light counts stable. Only the active mirror renders a reflection, capped at 24 updates/second in High and 15 in Light; hidden tabs skip updates. This trades some reflection smoothness for less GPU work. Run scripts/browser-mirrors.js to measure first and repeated bathroom-entry frame gaps.
 
 On phones and short landscape screens, the guided tour uses an 88 px compact card with a title, stop count and 44 px playback/navigation controls. Longer descriptions and direct stop bars remain on desktop. The kitchen breakfast chairs are tucked forward and the drapes sit closer to the window to prevent overlap. Two ceramic bowls of golden, pillow-shaped borsok replace the dining-table lamps; their geometry and materials are generated locally.
+
+## Expanding the collection
+
+The initial shell includes London Square, Wilton Park, Seoul, Urpaq Park, Hayat, Tokyo City, Esentai, Tokyo, French House (Osh) and Boston Tower (Osh). Names/locations are drawn from Artwin's current directory; its displayed project cards list ten entries even though an older summary counter says eight. Status labels in this application describe **interactive-preview availability**, not construction progress, pricing, or sales stock.
+
+Add project information and apartment records in `src/projects.js`, keeping stable project and plan IDs for shared links. Each plan needs its own verified reference, preview and connected viewer before becoming available. The current `tokyo-four-room` viewer and floor-plan illustration belong only to the supplied Tokyo City apartment; another project must not reuse them as if they were its own. The shell intentionally leaves block, floor, price and inventory data unspecified until provided. New room/plan models should keep the existing client-side loading and repository base-path rules.
+
+Run `scripts/browser-projects.js` through Playwright CLI against `npm run serve:pages` to check the collection and the apartment handoff. Existing apartment browser scripts now start at the Tokyo City apartment fragment so they retain their original interaction coverage.

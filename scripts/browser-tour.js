@@ -6,9 +6,9 @@ async (page) => {
   const check=(v,msg)=>{if(!v)throw Error(msg);};
   try{
     await page.setViewportSize({width:1440,height:960});
-    await page.goto('http://127.0.0.1:4173/Artwin/');
+    await page.goto('http://127.0.0.1:4173/Artwin/#/projects/tokyo-city/apartments/four-room-134');await page.reload();
     await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
-    await page.getByRole('button',{name:'Take a guided tour',exact:true}).click();
+    await page.getByRole('button',{name:'Take a guided tour',exact:true}).click({noWaitAfter:true});
     await page.getByRole('button',{name:'Pause tour',exact:true}).click();
     const stops=['Space to come together','Everyday rituals','A quieter retreat','Light, texture, calm','A richer palette','Considered details'];
     for(let i=0;i<stops.length;i++){
@@ -28,7 +28,7 @@ async (page) => {
     await page.getByRole('heading',{name:'Kitchen & dining',exact:true}).waitFor();
     check(await page.locator('.plan-player').count()===1,'Tour did not hand over to walkthrough');
     await page.getByRole('button',{name:'Dollhouse',exact:true}).click();
-    await page.getByRole('button',{name:'Take a guided tour',exact:true}).click();
+    await page.getByRole('button',{name:'Take a guided tour',exact:true}).click({noWaitAfter:true});
     await page.getByRole('button',{name:'Tour stop 6: Considered details',exact:true}).click();
     await page.getByRole('button',{name:'Replay tour',exact:true}).waitFor({timeout:12000});
     await page.getByRole('button',{name:'Replay tour',exact:true}).click();
@@ -44,7 +44,7 @@ async (page) => {
     await page.getByRole('button',{name:'Step inside',exact:true}).waitFor();
     await page.emulateMedia({reducedMotion:'reduce'});
     await page.reload();await page.waitForFunction(()=>!document.querySelector('.enter-button')?.disabled);
-    await page.getByRole('button',{name:'Take a guided tour',exact:true}).click();
+    await page.getByRole('button',{name:'Take a guided tour',exact:true}).click({noWaitAfter:true});
     await page.getByRole('button',{name:'Resume tour',exact:true}).waitFor();
     check(errors.length===0&&failed.length===0,JSON.stringify({errors,failed}));
     return {result:'PASS',checks:['six composed views','automatic advance','pause','completion and replay','Escape','walkthrough handoff','mobile controls','exit','reduced motion'],errors,failed,warnings:[...new Set(warnings)]};

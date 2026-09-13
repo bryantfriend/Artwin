@@ -1,4 +1,5 @@
-import React,{useMemo,useEffect} from 'react';
+import React,{useMemo,useEffect,useRef,useState} from 'react';
+import {useThree} from '@react-three/fiber';
 import * as THREE from 'three';
 import {Reflector} from 'three/addons/objects/Reflector.js';
 import {boxGeometry,cylinderGeometry,roundedGeometry} from './materials.js';
@@ -15,14 +16,34 @@ const halfOutline=new THREE.CurvePath();
 const halfEdgeGeometry=new THREE.TubeGeometry(halfOutline,128,.012,8,true);
 const halfGlowGeometry=new THREE.TubeGeometry(halfOutline,128,.035,8,true);
 const faucetGeometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(0,0,0),new THREE.Vector3(0,.21,0),new THREE.Vector3(0,.255,.04),new THREE.Vector3(0,.25,.115),new THREE.Vector3(0,.21,.14)]),32,.012,10,false);
-function LiveMirror({radius,quality,half=false}){
+function LiveMirror({radius,quality,half=false,active,fallback}){
+  const {gl,camera}=useThree(),enabled=useRef(active),last=useRef(0);
+  const [prepared,setPrepared]=useState(null);enabled.current=active;
   const resources=useMemo(()=>{
     const geometry=new THREE.CircleGeometry(radius,80,half?Math.PI/2:0,half?Math.PI:Math.PI*2),size=quality==='high'?512:256;
     const mirror=new Reflector(geometry,{textureWidth:size,textureHeight:size,color:0xffffff,clipBias:.003,multisample:0});
+    const render=mirror.onBeforeRender;
+    mirror.onBeforeRender=(renderer,scene,view,...args)=>{
+      const now=performance.now();
+      if(!enabled.current||document.hidden||now-last.current<1000/(quality==='high'?24:15))return;
+      last.current=now;render.call(mirror,renderer,scene,view,...args);
+    };
     return {geometry,mirror};
   },[radius,quality,half]);
-  useEffect(()=>()=>{resources.mirror.dispose();resources.geometry.dispose();},[resources]);
-  return <primitive object={resources.mirror} dispose={null}/>;
+  useEffect(()=>{last.current=0;},[active,resources]);
+  useEffect(()=>{
+    let cancelled=false;
+    // Allocate once while the apartment loads, rather than on bathroom entry.
+    gl.initRenderTarget(resources.mirror.getRenderTarget());
+    const preview=new THREE.Scene();preview.add(new THREE.Mesh(resources.geometry,resources.mirror.material));
+    gl.compileAsync(preview,camera).then(()=>{if(!cancelled)setPrepared(resources);});
+    return ()=>{cancelled=true;resources.mirror.dispose();resources.geometry.dispose();};
+  },[resources,gl,camera]);
+  const live=active&&prepared===resources;
+  return <>
+    <primitive object={resources.mirror} visible={live} dispose={null}/>
+    {!live&&<mesh geometry={resources.geometry} material={fallback}/>}
+  </>;
 }
 export function Vanity({item,m,active,quality}){
   const w=item.size[0],d=item.size[2],radius=Math.min(w*.44,.44),back=-d/2+.025;
@@ -42,17 +63,17 @@ export function Vanity({item,m,active,quality}){
     <Box position={[.038,.973,faucetBack+.012]} size={[.065,.012,.022]} material={m.brass}/>
     {half?<group position={[0,1.72,back+.09]}>
       <Box position={[0,0,-.045]} size={[w-.04,1.42,.045]} material={m.mirrorPanel}/>
-      <group position={[.255,0,.01]}>
+      <group position={[item.id==='vanity2'?-.255:.255,0,.01]} rotation={[0,0,item.id==='vanity2'?Math.PI:0]}>
         <mesh geometry={halfGlowGeometry} scale={.56} position={[0,0,.019]} material={m.mirrorGlow}/>
         <mesh geometry={halfEdgeGeometry} scale={.56} position={[0,0,.024]} material={m.mirrorLED}/>
-        <group position={[0,0,.025]}>{active?<LiveMirror radius={.555} quality={quality} half/>:<mesh material={m.mirror}><circleGeometry args={[.555,80,Math.PI/2,Math.PI]}/></mesh>}</group>
+        <group position={[0,0,.025]}><LiveMirror radius={.555} quality={quality} half active={active} fallback={m.mirror}/></group>
       </group>
-      {active&&<pointLight position={[0,0,.08]} color="#ffd269" intensity={.45} distance={1.6} decay={2}/>}
+      <pointLight position={[0,0,.08]} color="#ffd269" intensity={active?.45:0} distance={1.6} decay={2}/>
     </group>:<group position={[0,1.7,back]}>
       <Cylinder position={[0,0,-.008]} rotation={[Math.PI/2,0,0]} size={[radius+.012,.035,radius+.012]} material={m.dark}/>
       <mesh geometry={haloGeometry} scale={radius+.015} position={[0,0,-.02]} material={m.bulb}/>
       <mesh geometry={frameGeometry} scale={radius+.004} position={[0,0,.022]} material={m.brass}/>
-      <group position={[0,0,.025]}>{active?<LiveMirror radius={radius-.004} quality={quality}/>:<mesh material={m.mirror}><circleGeometry args={[radius-.004,64]}/></mesh>}</group>
+      <group position={[0,0,.025]}><LiveMirror radius={radius-.004} quality={quality} active={active} fallback={m.mirror}/></group>
     </group>}
   </>;
 }

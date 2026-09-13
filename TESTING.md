@@ -83,3 +83,7 @@ Production build and /Artwin/ checks passed. Bathroom browser verification cover
 ## Kitchen marble floor — 13 September 2026
 
 Production build and /Artwin/ asset checks passed. Kitchen floor screenshots at desktop and 390 px mobile widths were checked for tile scale, grout and gray veining. Browser verification returned no runtime/console errors, failed requests or HTTP errors. Floor and collision geometry remain unchanged.
+
+## Mirror entry performance and orientation — 13 September 2026
+
+The right-hand hall mirror was visually checked after flipping. The new browser regression script measures first entry after reload and repeated hall/bathroom transitions, failing for a frame gap over 2 seconds. Bathroom-entry maximum gaps in the final local run were 139, 111, 146 and 125 ms, with no errors or failed requests; mobile Light quality and room-switching reflection checks passed. These are test-browser observations, not an all-device guarantee. The attempted pre-change timing run was interrupted by a graphics/loading stall, so no numerical before/after speedup is claimed. Render targets persist across room changes; changing quality or unmounting still disposes them.

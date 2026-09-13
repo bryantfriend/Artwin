@@ -1,16 +1,17 @@
 import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { APARTMENT, rooms, doors, switches } from './apartmentConfig.js';
+import {getLayout} from './layouts/index.js';
 import { createInput, clearInput } from './input.js';
 import Icon from './ui/Icon.jsx';
 import FloorPlan from './ui/FloorPlan.jsx';
 import Joystick from './ui/Joystick.jsx';
 import ErrorBoundary from './ui/ErrorBoundary.jsx';
 import TourControls from './ui/TourControls.jsx';
-import { tourStops } from './tourConfig.js';
+
 import {projectHref} from './projects.js';
 const Viewer=lazy(()=>import('./scene/Viewer.jsx'));
 
 export default function ApartmentExperience({project,plan}) {
+  const layout=getLayout(plan.id),{APARTMENT,rooms,doors,switches,tourStops}=layout;
   const [tourIndex,setTourIndex]=useState(0),[tourPlaying,setTourPlaying]=useState(false),[tourComplete,setTourComplete]=useState(false);
   const [visible,setVisible]=useState(()=>!document.hidden);
   const [mode,setMode]=useState('dollhouse'),[selected,setSelected]=useState(null),[currentRoom,setCurrentRoom]=useState('hall');
@@ -20,7 +21,7 @@ export default function ApartmentExperience({project,plan}) {
   const [target,setTarget]=useState(null),[reset,setReset]=useState(0),[position,setPosition]=useState(null),[travel,setTravel]=useState(null);
   const [fade,setFade]=useState(false),[notice,setNotice]=useState(''),[contextLost,setContextLost]=useState(false);
   const viewerRef=useRef(),player=useRef(),sequence=useRef(0),travelTimer=useRef(),noticeTimer=useRef();
-  const input=useMemo(createInput,[]);
+  const input=useMemo(()=>createInput(APARTMENT.entrance.yaw),[layout]);
   useEffect(()=>()=>{clearInput(input);if(document.pointerLockElement)document.exitPointerLock();},[input]);
   const reducedMotion=useMemo(()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches,[]);
   const room=rooms.find(r=>r.id===(mode==='walkthrough'?currentRoom:selected));
@@ -115,24 +116,24 @@ export default function ApartmentExperience({project,plan}) {
     <header className="topbar">
       <a className="wordmark" href="#/projects" aria-label="Artwin home"><img src={`${import.meta.env.BASE_URL}artwin-logo.png`} alt="ARTWIN" width="287" height="88"/></a>
       <div className="header-divider"/><span className="header-caption">SPACES FOR LIVING</span>
-      <div className="header-end"><a className="apartment-project-back" href={projectHref(project)} aria-label={`Back to ${project.name} floor plans`}><Icon name="arrow" size={16}/>{project.name}<span>{plan.area} M² · FLOOR PLANS</span></a><button className="icon-button help-button" onClick={()=>{setHelp(true);clearInput(input);}} aria-label="Open controls and help"><Icon name="help"/></button></div>
+      <div className="header-end"><a className="apartment-project-back" href={projectHref(project)} aria-label={`Back to ${project.name} floor plans`}><Icon name="arrow" size={16}/>{project.name}<span>{plan.area.toFixed(2)} M² · FLOOR PLANS</span></a><button className="icon-button help-button" onClick={()=>{setHelp(true);clearInput(input);}} aria-label="Open controls and help"><Icon name="help"/></button></div>
     </header>
     <main>
       <aside className="sidebar">
-        <div className="intro"><div className="eyebrow"><span className="red-line"/> THE FOUR-ROOM RESIDENCE</div>
+        <div className="intro"><div className="eyebrow"><span className="red-line"/> {plan.name.toUpperCase()}</div>
           <h1>A little more<br/> room to <em>live.</em></h1>
           <p className="intro-copy">Explore the spaces.<br/>Imagine the everyday.</p>
-          <div className="stats"><div><strong>{APARTMENT.advertisedArea}<span> m²</span></strong><small>ADVERTISED AREA</small></div><div className="stat-divider"/><div><strong>3</strong><small>BEDROOMS</small></div></div>
+          <div className="stats"><div><strong>{APARTMENT.advertisedArea}<span> m²</span></strong><small>ADVERTISED AREA</small></div><div className="stat-divider"/><div><strong>{plan.bedrooms}</strong><small>{plan.bedrooms===1?'BEDROOM':'BEDROOMS'}</small></div></div>
         </div>
         <div className={`plan-panel ${planOpen?'open':''}`}>
           <button className="plan-heading" onClick={()=>setPlanOpen(!planOpen)} aria-expanded={planOpen}><span><Icon name="plan" size={17}/> YOUR FLOOR PLAN</span><span>{planOpen?'−':'+'}</span></button>
-          {planOpen&&<><FloorPlan selected={mode==='tour'?tourStops[tourIndex].room:mode==='walkthrough'?currentRoom:selected} onSelect={selectRoom} position={position} mode={mode}/><div className="plan-caption"><span className="plan-dot"/> Select a room to explore</div></>}
+          {planOpen&&<><FloorPlan layout={layout} selected={mode==='tour'?tourStops[tourIndex].room:mode==='walkthrough'?currentRoom:selected} onSelect={selectRoom} position={position} mode={mode}/><div className="plan-caption"><span className="plan-dot"/> Select a room to explore</div></>}
         </div>
         <p className="reference-note">Approximate visualization based on the supplied reference.</p>
       </aside>
       <section className="experience" aria-label="Interactive 3D apartment viewer">
         <div className="viewer" ref={viewerRef}>
-          <ErrorBoundary><Suspense fallback={null}><Viewer currentRoom={currentRoom} tourIndex={tourIndex} mode={mode} selected={selected} reset={reset} onSelect={selectRoom} state={state} player={player} input={input} travel={travel} onTravel={onTravel} paused={paused||help||fade} onPause={onPause} onRoom={onRoom} onTarget={setTarget} quality={quality} reducedMotion={reducedMotion} onReady={onReady} onContextLost={()=>setContextLost(true)}/></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={null}><Viewer layout={layout} currentRoom={currentRoom} tourIndex={tourIndex} mode={mode} selected={selected} reset={reset} onSelect={selectRoom} state={state} player={player} input={input} travel={travel} onTravel={onTravel} paused={paused||help||fade} onPause={onPause} onRoom={onRoom} onTarget={setTarget} quality={quality} reducedMotion={reducedMotion} onReady={onReady} onContextLost={()=>setContextLost(true)}/></Suspense></ErrorBoundary>
         </div>
         <nav className="mode-switch" aria-label="Viewing mode"><button onClick={()=>changeMode('dollhouse')} aria-pressed={mode==='dollhouse'}><Icon name="cube" size={17}/> Dollhouse</button><button disabled={!ready} onClick={()=>changeMode('walkthrough')} aria-pressed={mode==='walkthrough'}><Icon name="walk" size={17}/> Walkthrough</button></nav>
         <div className="scene-label"><span className="live-dot"/>{mode==='dollhouse'?'INTERACTIVE 3D VIEW':'INSIDE THE RESIDENCE'}</div>
@@ -145,7 +146,7 @@ export default function ApartmentExperience({project,plan}) {
           {paused&&<div className="pause-card"><Icon name="eye" size={28}/><h2>Take your time.</h2><p>Your walkthrough is paused.</p><button className="primary-button" onClick={()=>setPaused(false)}>Continue exploring <Icon name="arrow"/></button></div>}
           {!paused&&<><Joystick input={input} disabled={help||fade}/><div className="touch-look-hint">DRAG TO LOOK</div><button className="touch-interact" onClick={activate} disabled={!target}>Interact</button></>}
         </>}
-        {mode==='tour'&&<><div key={tourIndex} className="tour-scene-fade" aria-hidden="true"/><TourControls index={tourIndex} playing={tourPlaying&&!help&&visible} complete={tourComplete} onToggle={toggleTour} onStep={stepTour} onStop={()=>changeMode('dollhouse')} onExplore={exploreTourRoom}/></>}
+        {mode==='tour'&&<><div key={tourIndex} className="tour-scene-fade" aria-hidden="true"/><TourControls tourStops={tourStops} index={tourIndex} playing={tourPlaying&&!help&&visible} complete={tourComplete} onToggle={toggleTour} onStep={stepTour} onStop={()=>changeMode('dollhouse')} onExplore={exploreTourRoom}/></>}
         <div className={`transition-fade ${fade?'active':''}`} aria-hidden="true"/>
         <div className="scene-bottom" hidden={mode==='tour'}>
           <div className="scene-title"><span className="eyebrow">{mode==='dollhouse'?(room?'A CLOSER LOOK':'A NEW PERSPECTIVE'):'YOU ARE HERE'}</span><h2>{room?.name||'The whole picture.'}</h2><p>{room?.subtitle||'Thoughtful spaces. Effortlessly connected.'}</p></div>
@@ -155,6 +156,6 @@ export default function ApartmentExperience({project,plan}) {
     </main>
     <footer className="bottom-bar"><div className="navigation-hint"><Icon name={mode==='dollhouse'?'cube':'walk'} size={17}/>{mode==='tour'?'A guided look inside · Pause at any time':mode==='dollhouse'?'Drag to orbit · Scroll to zoom':'WASD to move · Drag to look · E to interact · Esc to pause'}</div><div className="footer-actions"><label className="quality-picker">DETAIL <select aria-label="Graphics quality" value={quality} onChange={e=>setQuality(e.target.value)}><option value="high">High</option><option value="low">Light</option></select></label><label className="room-picker"><select aria-label="Select a room" value={selected||''} onChange={e=>selectRoom(e.target.value)}><option value="" disabled>Explore a room</option>{rooms.map(r=><option key={r.id} value={r.id}>{r.name}</option>)}</select></label></div></footer>
     {notice&&<div className="toast" role="status">{notice}</div>}
-    {help&&<div className="modal-backdrop" onClick={()=>setHelp(false)}><section className="help-dialog" role="dialog" aria-modal="true" aria-labelledby="help-title" onClick={e=>e.stopPropagation()} onKeyDown={e=>{if(e.key==='Escape')setHelp(false);}}><button autoFocus className="icon-button modal-close" onClick={()=>setHelp(false)} aria-label="Close help"><Icon name="close"/></button><span className="eyebrow">MAKE YOURSELF AT HOME</span><h2 id="help-title">A few ways to explore.</h2><div className="help-row"><Icon name="cube"/><div><h3>See the whole apartment</h3><p>Drag to orbit. Scroll or pinch to zoom. Select a room on the plan for a closer look.</p></div></div><div className="help-row"><Icon name="walk"/><div><h3>Step inside</h3><p>Move with WASD or arrow keys. Drag to look, or choose Capture mouse. Press Escape to pause. On touchscreens, use the left joystick and drag the scene with your other finger.</p></div></div><div className="help-row"><Icon name="light"/><div><h3>Make the space your own</h3><p>Look at a nearby door, wall switch, television, or living-room cabinet. Press E or tap the prompt to interact. If a door pauses, step out of its swing.</p></div></div><div className="help-row"><Icon name="plan"/><div><h3>Go straight to a room</h3><p>The floor plan moves you to a checked destination with a brief fade. The reset button returns you to the entrance.</p></div></div><p className="help-note">134.68 m² is the advertised area. Geometry, dimensions, finishes, and furnishings are approximate. This is a visual study, not a construction drawing.</p><button className="primary-button" onClick={()=>setHelp(false)}>Got it <Icon name="arrow"/></button></section></div>}
+    {help&&<div className="modal-backdrop" onClick={()=>setHelp(false)}><section className="help-dialog" role="dialog" aria-modal="true" aria-labelledby="help-title" onClick={e=>e.stopPropagation()} onKeyDown={e=>{if(e.key==='Escape')setHelp(false);}}><button autoFocus className="icon-button modal-close" onClick={()=>setHelp(false)} aria-label="Close help"><Icon name="close"/></button><span className="eyebrow">MAKE YOURSELF AT HOME</span><h2 id="help-title">A few ways to explore.</h2><div className="help-row"><Icon name="cube"/><div><h3>See the whole apartment</h3><p>Drag to orbit. Scroll or pinch to zoom. Select a room on the plan for a closer look.</p></div></div><div className="help-row"><Icon name="walk"/><div><h3>Step inside</h3><p>Move with WASD or arrow keys. Drag to look, or choose Capture mouse. Press Escape to pause. On touchscreens, use the left joystick and drag the scene with your other finger.</p></div></div><div className="help-row"><Icon name="light"/><div><h3>Make the space your own</h3><p>Look at a nearby door, wall switch, television, or living-room cabinet. Press E or tap the prompt to interact. If a door pauses, step out of its swing.</p></div></div><div className="help-row"><Icon name="plan"/><div><h3>Go straight to a room</h3><p>The floor plan moves you to a checked destination with a brief fade. The reset button returns you to the entrance.</p></div></div><p className="help-note">{APARTMENT.advertisedArea} m² is the advertised area. Geometry, dimensions, finishes, and furnishings are approximate. This is a visual study, not a construction drawing.</p><button className="primary-button" onClick={()=>setHelp(false)}>Got it <Icon name="arrow"/></button></section></div>}
   </div>;
 }

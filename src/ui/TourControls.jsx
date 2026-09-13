@@ -1,6 +1,6 @@
 import React from 'react';
-import { tourStops } from '../tourConfig.js';
-export default function TourControls({index,playing,complete,onToggle,onStep,onStop,onExplore}) {
+import { tourStops as defaultTourStops } from '../tourConfig.js';
+export default function TourControls({tourStops=defaultTourStops,index,playing,complete,onToggle,onStep,onStop,onExplore}) {
   const stop=tourStops[index];
   const playLabel=complete?'Replay tour':playing?'Pause tour':'Resume tour';
   return <section className="tour-card" aria-label="Guided apartment tour">

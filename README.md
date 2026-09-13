@@ -1,10 +1,10 @@
 # Artwin project collection & apartment walkthrough
 
-A client-side React + Vite project collection covering the 10 projects listed in [Artwin's directory](https://artwin.kg/#rec596501902), with project overviews and a floor-plan section for each. **Tokyo City** contains the first interactive **four-room, 134.68 m²** apartment: three bedrooms, a separate kitchen/dining space, living room, central hall, three bathrooms and two loggias. Other projects have explicit coming-soon states; their floor plans and 3D models have not been added. No server, account, database, SSR or runtime asset service is required.
+A client-side React + Vite project collection covering the 10 projects listed in [Artwin's directory](https://artwin.kg/#rec596501902), with project overviews and a floor-plan section for each. **Tokyo City** contains six distinct furnished apartments: **52.10, 70.33, 78.83, 82.30, 106.01 and 134.68 m²**. Each has its own clickable floor plan, dollhouse, guided tour and collision-aware walkthrough. Filter the selection by bedroom count. Other projects have explicit coming-soon states; their floor plans and 3D models have not been added. No server, account, database, SSR or runtime asset service is required.
 
 **[Open the project collection](https://bryantfriend.github.io/Artwin/)** · **[Tokyo City](https://bryantfriend.github.io/Artwin/#/projects/tokyo-city)** · **[Open the apartment directly](https://bryantfriend.github.io/Artwin/#/projects/tokyo-city/apartments/four-room-134)**
 
-The older pasted 52.10 m² brief is not the reference for this implementation. The subsequently supplied four-room image is.
+The original four-room residence follows the previously supplied reference. The five additional layouts follow the latest Tokyo City screenshots; the duplicated 82.30 m² screenshot is represented once. Advertised apartment/room areas are transcribed labels, not measurements of the reconstructed geometry.
 
 ## Run locally
 
@@ -85,7 +85,11 @@ In walkthrough mode, floor-plan navigation fades out, checks the destination aga
 
 | File | Purpose |
 | --- | --- |
-| `src/apartmentConfig.js` | Room polygons, dimensions, doors, furniture transforms, switches, destinations, camera defaults |
+| `src/apartmentConfig.js` | Original 134.68 m² apartment and shared physical constants |
+| `src/layouts/tokyoLayouts.js` | Five additional screenshot-based room arrangements, openings and furnishings |
+| `src/layouts/buildLayout.js` | Shared-edge walls, door hinges, safe destinations, switches and per-layout tours |
+| `src/layouts/index.js` | Registry combining the original and new apartments |
+| `src/scene/LayoutDecor.jsx` | Layout-specific rugs, artwork, curtains, feature panels and floor finishes |
 | `src/geometry.js` | Wall segmentation, containment, movement normalization, door poses and swing checks |
 | `src/input.js` | Shared mutable input and reset logic |
 | `src/physicsController.js` | Shared character-controller setup and grounding, used by the app and tests |
@@ -114,7 +118,7 @@ Change furniture through its stable `id`, `kind`, `position`, `rotation`, and `s
 - The 2D plan determines adjacency: upper-left bedroom, upper-right kitchen and loggia, a central hall and bathroom strip, two lower bedrooms, lower-right living room, and the second loggia below the central bedroom.
 - The furnished view informs the neutral upholstery, wood floors, dark wardrobes and cabinetry, stone surfaces, beds, dining furniture, and plants. It is not treated as a dimensioned drawing.
 - Small room-area labels and uncertain dimensions were not copied as verified measurements. Window positions, door swings, furniture dimensions, bathroom fixtures, finishes, and concealed details remain estimates.
-- Prototype values: 2.7 m ceiling, 1.65 m eye height, 1.5 m/s walking speed. Player capsule radius 0.25 m, cylindrical half-height 0.55 m (1.60 m total height); door clearances are at least 0.90 m before framing.
+- Prototype values: 2.7 m ceiling, 1.65 m eye height, 1.5 m/s walking speed. Player capsule radius 0.25 m, cylindrical half-height 0.55 m (1.60 m total height); door openings vary by plan (0.70–1.05 m before framing), and circulation is checked with the player capsule.
 - Dollhouse lowers selected walls and panels; walkthrough restores their full appearance and ceilings. Full architectural collisions are retained.
 - The interface labels the reconstruction as approximate. This is not a construction drawing or a claim about available inventory.
 
@@ -158,7 +162,7 @@ The furnished-reference revision adds striped brown and white bedding, padded an
 
 ## Guided tour and rendering
 
-Choose **Take a guided tour** from the dollhouse for six composed interior views. Each stop stays on screen for 8.5 seconds; the tour stops at the end. Pause/resume, previous/next, direct stop selection, replay and exit are available. **Explore this room** hands over to the existing collision-checked walkthrough destination. Escape pauses playback. Opening help or hiding the browser tab suspends advancement. Reduced-motion users start with manual playback and no scene fades. Camera positions, framing and copy are in `src/tourConfig.js`. No URL navigation or server is involved.
+Choose **Take a guided tour** from the dollhouse for the selected apartment’s interior views (three to five stops for the new plans, six for the original residence). Each stop stays on screen for 8.5 seconds; the tour stops at the end. Pause/resume, previous/next, direct stop selection, replay and exit are available. **Explore this room** hands over to the existing collision-checked walkthrough destination. Escape pauses playback. Opening help or hiding the browser tab suspends advancement. Reduced-motion users start with manual playback and no scene fades. The original camera positions, framing and copy are in `src/tourConfig.js`; new plans derive their stops from their own safe room destinations and furniture in `src/layouts/buildLayout.js`. No URL navigation or server is involved.
 
 The existing React Three Fiber, Drei and Three.js packages are reused without new dependencies. Three.js RoomEnvironment and PMREM generate local image-based lighting; fabric bump maps, striped duvet maps and marble/oak finishes are generated in the browser. Pillows, duvet drape, curtain folds and sofa upholstery use shaped geometry. High quality enables shadows in the active interior room; Light quality keeps shadows off. These upgrades improve the procedural model but do not replace Artwin's original architectural models or a photorealistic production render.
 
@@ -191,3 +195,28 @@ The initial shell includes London Square, Wilton Park, Seoul, Urpaq Park, Hayat,
 Add project information and apartment records in `src/projects.js`, keeping stable project and plan IDs for shared links. Each plan needs its own verified reference, preview and connected viewer before becoming available. The current `tokyo-four-room` viewer and floor-plan illustration belong only to the supplied Tokyo City apartment; another project must not reuse them as if they were its own. The shell intentionally leaves block, floor, price and inventory data unspecified until provided. New room/plan models should keep the existing client-side loading and repository base-path rules.
 
 Run `scripts/browser-projects.js` through Playwright CLI against `npm run serve:pages` to check the collection and the apartment handoff. Existing apartment browser scripts now start at the Tokyo City apartment fragment so they retain their original interaction coverage.
+
+## Tokyo City layout expansion
+
+| Advertised area | Type | Bedrooms | Bathrooms | Additional spaces |
+| --- | --- | --- | --- | --- |
+| 52.10 m² | Two-room Euro | 1 | 1 | Open kitchen/living, storage, loggia |
+| 70.33 m² | Three-room Euro | 2 | 2 | Open kitchen/living, storage, loggia |
+| 78.83 m² | Two-room | 1 | 2 | Separate kitchen and living room, loggia |
+| 82.30 m² | Three-room Euro | 2 | 2 | Open kitchen/living, storage, loggia |
+| 106.01 m² | Three-room | 2 | 2 | Separate kitchen, living/dining, two loggias |
+| 134.68 m² | Four-room | 3 | 3 | Original furnished residence, two loggias |
+
+The 2D and 3D views share each plan’s room polygons and openings. Shared edges are deduplicated before generating walls/colliders. New plans reuse the existing furniture, lighting, mirrors, borsok bowls and mountain panorama; compact dining furniture and width-adjusted kitchens/TVs fit the smaller apartments. No new dependency, remote model service or server is introduced.
+
+These are approximate furnished reconstructions from screenshots, not surveyed CAD models. Room adjacency and footprint shape follow the floor-plan drawings; furniture dimensions, some door positions/hinges and circulation clearances are adapted for the walkthrough. Where a furnished rendering differs from the accompanying plan, the plan’s room functions take precedence. The original 134.68 m² configuration and bespoke decoration remain separate.
+
+Additional verification commands (production server running):
+
+```sh
+node scripts/audit-layouts.mjs
+npx --yes @playwright/cli@0.1.19 -s=artwin run-code --filename scripts/browser-layouts.js
+npx --yes @playwright/cli@0.1.19 -s=artwin-mobile run-code --filename scripts/browser-layouts-mobile.js
+```
+
+The mobile session must be opened with `--mobile`. Node tests check per-plan route/metadata consistency, furnished footprints, connected walking paths, open-door clearance and actual Rapier capsule destinations with doors both open and closed. The grid circulation check uses a 0.27 m clearance radius at 0.1 m spacing; it is a navigation regression check, not a building-code assessment.

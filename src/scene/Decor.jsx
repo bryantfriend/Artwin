@@ -16,7 +16,7 @@ function FabricPanel({width,sheer=false,m,position}){
   useEffect(()=>()=>geometry.dispose(),[geometry]);
   return <mesh geometry={geometry} position={position} material={sheer?m.sheer:m.curtain} castShadow={!sheer} receiveShadow/>;
 }
-function Curtain({position,width,rotation=0,m}) {
+export function Curtain({position,width,rotation=0,m}) {
   return <group position={position} rotation={[0,rotation,0]}>
     <Cylinder position={[0,2.61,.035]} size={[.018,width+.16,.018]} rotation={[0,0,Math.PI/2]} material={m.brass}/>
     {[-1,1].map(side=><group key={side} position={[side*width*.41,0,.045]}>
@@ -27,7 +27,7 @@ function Curtain({position,width,rotation=0,m}) {
     </group>)}
   </group>;
 }
-function Art({position,width=.75,height=1,rotation=0,index=0,m}){
+export function Art({position,width=.75,height=1,rotation=0,index=0,m}){
   return <group position={position} rotation={[0,rotation,0]}>
     <Box size={[width+.065,height+.065,.045]} material={index%2?m.walnut:m.brass}/>
     <Box position={[0,0,.028]} size={[width,height,.016]} material={m.white}/>
@@ -39,7 +39,7 @@ function Fringe({width,depth,m}){
   useLayoutEffect(()=>{const o=new THREE.Object3D();let i=0;for(const side of [-1,1])for(let j=0;j<count;j++){o.position.set(-width/2+.02+j*.045,-.004,side*(depth/2+.025));o.scale.set(.015,.006,.065);o.updateMatrix();ref.current.setMatrixAt(i++,o.matrix);}ref.current.instanceMatrix.needsUpdate=true;ref.current.computeBoundingSphere();},[width,depth,count]);
   return <instancedMesh ref={ref} args={[boxGeometry,m.linen,count*2]} receiveShadow/>;
 }
-function Rug({position,width,depth,index=0,m}){
+export function Rug({position,width,depth,index=0,m}){
   return <group position={position}>
     <mesh rotation={[-Math.PI/2,0,0]} material={m['carpet'+index]} receiveShadow><planeGeometry args={[width,depth]}/></mesh>
     <Fringe width={width} depth={depth} m={m}/>
@@ -74,7 +74,7 @@ function Vase({m,flowers=false}){
   </>;
 }
 function Mug({m}) {return <><Cylinder position={[0,.055,0]} size={[.04,.1,.04]} material={m.ceramic}/><Cylinder position={[0,.107,0]} size={[.032,.004,.032]} material={m.walnut}/><mesh geometry={ringGeometry} position={[.044,.062,0]} scale={[.025,.029,.025]} material={m.ceramic}/></>;}
-function SmallDetails({item,m}){
+export function SmallDetails({item,m}){
   const [w,h,d]=item.size;
   return <group position={item.position} rotation={[0,item.rotation||0,0]}>
     {item.kind==='nightstand'&&<group position={[.12,h+.03,.12]}><Books m={m} small/></group>}

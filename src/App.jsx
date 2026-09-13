@@ -15,7 +15,7 @@ export default function App(){
     const frame=requestAnimationFrame(()=>document.querySelector('[data-page-title]')?.focus({preventScroll:true}));
     return()=>cancelAnimationFrame(frame);
   },[hash]);
-  if(route.kind==='apartment')return <ErrorBoundary><Suspense fallback={<div className="collection"><CollectionHeader/><main className="collection-loading" role="status">Opening your apartment…</main></div>}><ApartmentExperience project={route.project} plan={route.plan}/></Suspense></ErrorBoundary>;
+  if(route.kind==='apartment')return <ErrorBoundary><Suspense fallback={<div className="collection"><CollectionHeader/><main className="collection-loading" role="status">Opening your apartment…</main></div>}><ApartmentExperience key={route.plan.id} project={route.project} plan={route.plan}/></Suspense></ErrorBoundary>;
   return <div className="collection"><CollectionHeader/>
     {route.kind==='projects'?<ProjectCollection/>:route.kind==='project'?<ProjectPage key={route.project.id} project={route.project}/>:<main className="collection-missing"><span className="collection-kicker">LET’S FIND YOUR WAY</span><h1 data-page-title tabIndex={-1}>This space isn’t available.</h1><p>Choose a project from the collection to continue exploring.</p><a className="collection-button" href="#/projects">View all projects</a></main>}
     <CollectionFooter/>

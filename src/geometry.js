@@ -28,7 +28,7 @@ export function pointInPolygon(x,z,polygon) {
   }
   return inside;
 }
-export function roomAt(x,z) { return rooms.find(r => pointInPolygon(x,z,r.polygon))?.id || 'hall'; }
+export function roomAt(x,z,layoutRooms=rooms) { return layoutRooms.find(r => pointInPolygon(x,z,r.polygon))?.id || 'hall'; }
 export function normalizedMovement(x,z,yaw,speed=APARTMENT.speed) {
   const length = Math.hypot(x,z);
   const scale = length > 0 ? speed/Math.max(1,length) : 0;

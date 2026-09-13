@@ -4,9 +4,11 @@ import RAPIER from '@dimforge/rapier3d-compat';
 import { APARTMENT, rooms, walls, doors, furniture } from '../src/apartmentConfig.js';
 import { wallSegments, doorPose } from '../src/geometry.js';
 import { createCharacterController, computeCharacterMovement } from '../src/physicsController.js';
+import {additionalLayouts} from '../src/layouts/tokyoLayouts.js';
 
 await RAPIER.init();
-function setup(open=false) {
+function setup(open=false,layout={rooms,walls,doors,furniture}) {
+  const {rooms,walls,doors,furniture}=layout;
   const world=new RAPIER.World({x:0,y:-9.81,z:0});world.timestep=1/60;
   for(const room of rooms){
     const xs=room.polygon.map(p=>p[0]),zs=room.polygon.map(p=>p[1]);
@@ -69,4 +71,15 @@ test('capsule slides along a wall and stays above the floor',()=>{
     assert(p.z>10.8,`did not slide: ${p.z}`);
     assert(p.y>.78,`fell through floor: ${p.y}`);
   }finally{world.free();}
+});
+
+for(const layout of additionalLayouts)test(`${layout.APARTMENT.advertisedArea} m²: Rapier accepts every room destination with doors open and closed`,()=>{
+  for(const open of [false,true]){
+    const world=setup(open,layout);
+    try{for(const r of layout.rooms){
+      const [x,y,z]=r.destination;let hit=false;
+      world.intersectionsWithShape({x,y,z},{x:0,y:0,z:0,w:1},new RAPIER.Capsule(APARTMENT.playerHalfHeight,APARTMENT.playerRadius),()=>{hit=true;return false;});
+      assert(!hit,`${r.id}: capsule intersects an obstacle (${open?'open':'closed'} doors)`);
+    }}finally{world.free();}
+  }
 });

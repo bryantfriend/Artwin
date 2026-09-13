@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { RigidBody, CapsuleCollider, useRapier, useBeforePhysicsStep } from '@react-three/rapier';
-import { APARTMENT } from '../apartmentConfig.js';
+
 import { normalizedMovement, roomAt } from '../geometry.js';
 import { clearInput } from '../input.js';
 import { createCharacterController, computeCharacterMovement } from '../physicsController.js';
 
-export default function Player({mode,paused,input,player,travel,onTravel,onRoom,onPause}) {
+export default function Player({layout,mode,paused,input,player,travel,onTravel,onRoom,onPause}) {
+  const {APARTMENT,rooms}=layout;
   const body=useRef(), capsule=useRef(), controller=useRef(), handled=useRef(-1), elapsed=useRef(0);
   const {world,rapier}=useRapier();
   const {camera,gl}=useThree();
@@ -88,7 +89,7 @@ export default function Player({mode,paused,input,player,travel,onTravel,onRoom,
     camera.position.set(p.x,p.y+APARTMENT.eyeHeight-APARTMENT.playerCenterHeight,p.z);
     camera.rotation.set(input.pitch,input.yaw,0,'YXZ');
     elapsed.current+=dt;
-    if(elapsed.current>.15){elapsed.current=0;onRoom(roomAt(p.x,p.z),{x:p.x,z:p.z,yaw:input.yaw});}
+    if(elapsed.current>.15){elapsed.current=0;onRoom(roomAt(p.x,p.z,rooms),{x:p.x,z:p.z,yaw:input.yaw});}
   });
   return <RigidBody ref={body} type="kinematicPosition" colliders={false} position={APARTMENT.entrance.position} enabledRotations={[false,false,false]}>
     <CapsuleCollider ref={capsule} args={[APARTMENT.playerHalfHeight,APARTMENT.playerRadius]}/>

@@ -1,9 +1,10 @@
 import React, { useMemo, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { RigidBody, CuboidCollider, useBeforePhysicsStep } from '@react-three/rapier';
-import { APARTMENT, rooms, walls, doors, furniture, switches } from '../apartmentConfig.js';
+import { APARTMENT } from '../apartmentConfig.js';
 import { wallSegments, doorPose, doorSweepBlocked } from '../geometry.js';
 import Decor from './Decor.jsx';
+import LayoutDecor from './LayoutDecor.jsx';
 import Furniture, { Box } from './Furniture.jsx';
 
 function Floor({room,m,mode}) {
@@ -84,12 +85,13 @@ function Door({door,m,open,mode,player,reducedMotion}) {
     </group>
   </RigidBody>;
 }
-export default function Architecture({m,mode,state,player,reducedMotion,quality,activeRoom}) {
+export default function Architecture({layout,m,mode,state,player,reducedMotion,quality,activeRoom}) {
+  const {rooms,walls,doors,furniture,switches}=layout;
   return <>
     {rooms.map(room=><Floor key={room.id} room={room} m={m} mode={mode}/>)}
     {walls.map(wall=><Wall key={wall.id} wall={wall} m={m} mode={mode}/>)}
     {doors.map(door=><Door key={door.id} door={door} m={m} mode={mode} open={!!state.doors[door.id]} player={player} reducedMotion={reducedMotion}/>)}
-    <Decor m={m} mode={mode}/>
+    {layout.id==='four-room-134'?<Decor m={m} mode={mode}/>:<LayoutDecor layout={layout} m={m} mode={mode}/>}
     {furniture.map(item=><Furniture activeRoom={activeRoom} quality={quality} key={item.id} item={item} m={m} state={state} player={player} mode={mode} reducedMotion={reducedMotion}/>)}
     {switches.map(s=><group key={s.id} position={s.position} rotation={[0,s.rotation,0]} userData={{interaction:s.id}}>
       <Box size={[.13,.2,.045]} material={m.white}/>

@@ -48,6 +48,7 @@ function Bed({item,m}) {
   </>;
 }
 function Sofa({item,m}) {
+  m={...m,sofaBrown:item.color==='light'?m.upholstery:item.color==='charcoal'?m.dark:m.sofaBrown};
   const w=item.size[0];
   return <>
     <Legs width={w} depth={.8} height={.15} mat={m.walnut}/>
@@ -119,14 +120,24 @@ function Breakfast({m}) {return <>
   {[-.46,.46].map(z=><group key={z} position={[.3,0,z]} rotation={[0,-Math.PI/2,0]}><Chair m={m}/></group>)}
 </>;}
 
-function Kitchen({item,m}) {
+function DiningCompact({m}) {return <>
+  <group position={[0,0,-.2]}><Legs width={1.28} depth={.8} height={.77} mat={m.walnut}/></group>
+  <Soft position={[0,.78,-.2]} size={[1.3,.07,.8]} material={m.stone}/>
+  {[-1,1].map(s=><group key={s}>
+    <group position={[s*.36,0,.51]} rotation={[0,Math.PI,0]}><DiningChair m={m}/></group>
+    <Place position={[s*.34,.825,-.04]} rotation={Math.PI} m={m}/>
+  </group>)}
+  <group position={[0,.818,-.42]}><BorsokBowl m={m}/></group>
+</>;}
+
+function Kitchen({item,m,mode}) {
   const w=item.size[0];
   return <>
     <Box position={[0,.46,0]} size={[w,.88,.6]} material={m.dark}/>
     <Box position={[0,.92,.025]} size={[w+.04,.06,.65]} material={m.stone}/>
     <Box position={[0,1.23,-.29]} size={[w,.56,.03]} material={m.stone}/>
-    <Box position={[0,1.94,-.06]} size={[w,.88,.47]} material={m.white}/>
-    {[-1.45,-.72,0,.72,1.45].map(x=><group key={x}><Box position={[x,.47,.31]} size={[.008,.8,.01]} material={m.oak}/><Box position={[x,1.94,.18]} size={[.008,.86,.012]} material={m.oak}/><Box position={[x+.15,.78,.325]} size={[.22,.018,.03]} material={m.brass}/></group>)}
+    {(!item.room||mode==='walkthrough')&&<Box position={[0,1.94,-.06]} size={[w,.88,.47]} material={m.white}/>}
+    {[-1.45,-.72,0,.72,1.45].map(x=><group key={x}><Box position={[x,.47,.31]} size={[.008,.8,.01]} material={m.oak}/>{(!item.room||mode==='walkthrough')&&<Box position={[x,1.94,.18]} size={[.008,.86,.012]} material={m.oak}/>}<Box position={[x+.15,.78,.325]} size={[.22,.018,.03]} material={m.brass}/></group>)}
     <Box position={[-.9,.957,.02]} size={[.66,.018,.45]} material={m.black}/>
     {[-1.05,-.76].flatMap(x=>[-.1,.14].map(z=><Cylinder key={`${x}${z}`} position={[x,.97,z]} size={[.09,.006,.09]} material={m.metal}/>))}
     <Box position={[.86,.96,.03]} size={[.55,.02,.4]} material={m.metal}/>
@@ -187,7 +198,7 @@ function Bath({item,m,activeRoom,quality,mode}) {
     <Cylinder position={[0,.46,.06]} size={[.17,.03,.23]} material={m.linen}/>
     <Box position={[0,.19,0]} size={[.28,.35,.35]} material={m.ceramic}/>
   </>;
-  return <Vanity item={item} m={m} quality={quality} active={mode==='walkthrough'&&activeRoom===({vanity1:'bath1',vanity2:'bath2',vanity3:'bath3'}[item.id])}/>;
+  return <Vanity item={item} m={m} quality={quality} active={mode==='walkthrough'&&activeRoom===(item.room||{vanity1:'bath1',vanity2:'bath2',vanity3:'bath3'}[item.id])}/>;
 }
 
 function Plant({item,m}) {
@@ -203,11 +214,11 @@ export default function Furniture({item,m,state,player,mode,activeRoom,quality,r
   const [w,h,d]=item.size;
   const content = {
     bed:()=> <Bed item={item} m={m}/>, sofa:()=> <Sofa item={item} m={m}/>, hallStorage:()=> <HallStorage item={item} m={m}/>,
-    dining:()=> <Dining m={m}/>, breakfast:()=> <Breakfast m={m}/>, kitchen:()=> <Kitchen item={item} m={m}/>,
+    dining:()=> <group scale={[w/2.2,1,d/3]}><Dining m={m}/></group>, diningCompact:()=> <DiningCompact m={m}/>, breakfast:()=> <Breakfast m={m}/>, kitchen:()=> <group scale={[w/3.7,1,1]}><Kitchen item={{...item,size:[3.7,h,d]}} m={m} mode={mode}/></group>,
     chair:()=> <Chair m={m}/>, plant:()=> <Plant item={item} m={m}/>,
     cabinet:()=> <Cabinet item={item} m={m} state={state} player={player} mode={mode}/>,
-    tv:()=> <TV m={m} state={state} reducedMotion={reducedMotion}/>,
-    wardrobe:()=> <><Box position={[0,h/2,0]} size={item.size} material={m.padded}/>{[-1,0,1].map(x=><Box key={x} position={[x*w/3,h/2,d/2+.01]} size={[.012,h-.1,.02]} material={m.brass}/>)}</>,
+    tv:()=> <group scale={[w/3.1,w/3.1,1]}><TV m={m} state={state} reducedMotion={reducedMotion}/></group>,
+    wardrobe:()=> <><Box position={[0,h/2,0]} size={item.size} material={item.color==='dark'?m.dark:item.color==='oak'?m.oak:m.padded}/>{[-1,0,1].map(x=><Box key={x} position={[x*w/3,h/2,d/2+.01]} size={[.012,h-.1,.02]} material={m.brass}/>)}</>,
     nightstand:()=> <><Soft position={[0,h/2,0]} size={item.size} material={m.padded}/><Box position={[0,h+.014,0]} size={[w+.025,.025,d+.025]} material={m.stone}/>{[.2,.4].map(y=><group key={y}><Box position={[0,y,d/2+.005]} size={[w-.04,.012,.012]} material={m.taupe}/><Box position={[0,y+.08,d/2+.015]} size={[.12,.018,.025]} material={m.brass}/></group>)}<Cylinder position={[0,h+.19,0]} size={[.025,.35,.025]} material={m.brass}/><Cylinder position={[0,h+.37,0]} size={[.16,.16,.16]} material={m.linen}/></>,
     console:()=> <><Box position={[0,h/2,0]} size={item.size} material={m.walnut}/><Box position={[0,h+.03,0]} size={[w+.04,.06,d+.04]} material={m.stone}/><Box position={[0,1.7,-.12]} size={[1.15,1.05,.055]} material={m.mirror}/></>,
     coffee:()=> <>{Array.from({length:7},(_,i)=><Ball key={i} position={[Math.sin(i*2.4)*.1,.5+(i%2)*.035,Math.cos(i*2.4)*.1-.15]} size={[.045,.035,.045]} material={i%2?m.pink:m.white}/>)}<Cylinder position={[.1,.28,.35]} size={[.25,.055,.25]} material={m.white}/><Cylinder position={[.1,.14,.35]} size={[.13,.28,.13]} material={m.brass}/><Cylinder position={[0,.38,-.15]} size={[.36,.065,.36]} material={m.stone}/><Cylinder position={[0,.18,0]} size={[.21,.36,.28]} material={m.walnut}/><Box position={[.02,.427,.05]} size={[.23,.045,.3]} rotation={[0,.2,0]} material={m.taupe}/><Cylinder position={[.02,.47,-.24]} size={[.06,.12,.06]} material={m.ceramic}/></>,

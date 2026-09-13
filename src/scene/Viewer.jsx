@@ -3,16 +3,17 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
 import * as THREE from 'three';
-import { APARTMENT, rooms } from '../apartmentConfig.js';
+import { APARTMENT } from '../apartmentConfig.js';
 import { createMaterials } from './materials.js';
 import Architecture from './Architecture.jsx';
 import Player from './Player.jsx';
 import StudioLighting from './StudioLighting.jsx';
 import Exterior from './Exterior.jsx';
-import { tourStops } from '../tourConfig.js';
+
 const MemoArchitecture=React.memo(Architecture);
 
-function CameraRig({mode,selected,reset,tourIndex=0}) {
+function CameraRig({layout,mode,selected,reset,tourIndex=0}) {
+  const {APARTMENT,rooms,tourStops,bounds}=layout;
   const controls=useRef(); const {camera,size}=useThree();
   useEffect(()=> {
     if(mode==='tour') {
@@ -33,7 +34,7 @@ function CameraRig({mode,selected,reset,tourIndex=0}) {
       for(let i=0;i<4;i++) {
         camera.position.copy(center).addScaledVector(direction,distance);camera.lookAt(center);camera.updateMatrixWorld();
         let ratio=0;
-        for(const x of [0,9.8])for(const y of [0,2.7])for(const z of [-1.2,16.1]) {
+        for(const x of [bounds.minX,bounds.maxX])for(const y of [0,2.7])for(const z of [bounds.minZ,bounds.maxZ]) {
           const p=new THREE.Vector3(x,y,z).project(camera);
           ratio=Math.max(ratio,Math.abs(p.x)/.88,Math.abs(p.y)/.65);
         }
@@ -86,6 +87,7 @@ function NoGraphics({onFailure}) {
   return null;
 }
 function Scene(props) {
+  const {tourStops}=props.layout;
   const resources=useMemo(createMaterials,[]);
   useEffect(()=>()=>resources.dispose(),[resources]);
   return <>
@@ -99,7 +101,7 @@ function Scene(props) {
     <Suspense fallback={null}>
       <Exterior visible={props.mode!=='dollhouse'}/>
       <Physics gravity={[0,-9.81,0]} timeStep={1/60} interpolate paused={props.suspended}>
-        <MemoArchitecture quality={props.quality} activeRoom={props.mode==='tour'?tourStops[props.tourIndex].room:props.currentRoom} m={resources.materials} mode={props.mode==='tour'?'walkthrough':props.mode} state={props.state} player={props.player} reducedMotion={props.reducedMotion}/>
+        <MemoArchitecture layout={props.layout} quality={props.quality} activeRoom={props.mode==='tour'?tourStops[props.tourIndex].room:props.currentRoom} m={resources.materials} mode={props.mode==='tour'?'walkthrough':props.mode} state={props.state} player={props.player} reducedMotion={props.reducedMotion}/>
         <Player {...props}/>
         <SceneReady onReady={props.onReady}/>
       </Physics>
@@ -132,7 +134,7 @@ export default function Viewer(props) {
   if(!supported)return <NoGraphics onFailure={props.onContextLost}/>;
   return <ViewerBoundary onFailure={props.onContextLost}><Canvas
     shadows={props.quality==='high'?{type:THREE.PCFShadowMap}:false} dpr={props.quality==='high'?[1,1.6]:1}
-    camera={{position:APARTMENT.overview.position,fov:43,near:.08,far:150}}
+    camera={{position:props.layout.APARTMENT.overview.position,fov:43,near:.08,far:150}}
     gl={{antialias:true,powerPreference:'high-performance'}}
     onCreated={({gl})=>{gl.domElement.tabIndex=0;gl.domElement.setAttribute('aria-label','Apartment 3D canvas; drag to look or orbit');}}
     fallback={<p>A browser with WebGL 2 is required to view this apartment.</p>}

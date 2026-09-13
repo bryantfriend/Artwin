@@ -47,7 +47,7 @@ function LiveMirror({radius,quality,half=false,active,fallback}){
 }
 export function Vanity({item,m,active,quality}){
   const w=item.size[0],d=item.size[2],radius=Math.min(w*.44,.44),back=-d/2+.025;
-  const half=item.id==='vanity2'||item.id==='vanity3';
+  const half=item.mirror==='half'||(!item.room&&(item.id==='vanity2'||item.id==='vanity3'));
   const faucetBack=back+(half?.08:0);
   return <>
     <Soft position={[0,.57,0]} size={[w,.48,d]} material={m.walnut}/>

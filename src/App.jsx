@@ -6,6 +6,9 @@ import ConsultationPage from './ui/ConsultationPage.jsx';
 import WelcomeModal from './ui/WelcomeModal.jsx';
 import ErrorBoundary from './ui/ErrorBoundary.jsx';
 import WhatsAppContact from './ui/WhatsAppContact.jsx';
+import {SalesProvider} from './ui/SalesProvider.jsx';
+import {ApartmentFinder,SharedShortlist,SalesWorkspace} from './ui/BuyerPages.jsx';
+import {track} from './sales.js';
 import './projects.css';
 import './experience.css';
 const ApartmentExperience=lazy(()=>import('./ApartmentExperience.jsx'));
@@ -16,7 +19,13 @@ export default function App(){
   const route=resolveRoute(hash);
   useEffect(()=>{const change=()=>setHash(window.location.hash);window.addEventListener('hashchange',change);return()=>window.removeEventListener('hashchange',change);},[]);
   useEffect(()=>{
+    if(route.kind==='project')track('project_view',{projectId:route.project.id});
+    if(route.kind==='apartment')track('plan_view',{projectId:route.project.id,planId:route.plan.id});
+  },[hash]);
+  useEffect(()=>{
     document.title=route.kind==='apartment'?`${route.project.name} · ${number(route.plan.area,2)} ${t('m²')} — Artwin`:route.kind==='project'?`${route.project.name} — Artwin`:route.kind==='consultations'?`${t('Consultations')} — Artwin`:`Artwin — ${t('Explore our projects')}`;
+    const buyerTitle={finder:'Find a home that fits',shortlist:'Your family shortlist',workspace:'Sales workspace'}[route.kind];
+    if(buyerTitle)document.title=`${t(buyerTitle)} — Artwin`;
     document.querySelector('meta[name="description"]')?.setAttribute('content',t('Choose a project. Explore the possibilities.'));
   },[hash,language]);
   useEffect(()=>{
@@ -25,8 +34,8 @@ export default function App(){
     return()=>cancelAnimationFrame(frame);
   },[hash]);
   const content=route.kind==='apartment'?<ErrorBoundary><Suspense fallback={<div className="collection"><CollectionHeader/><main className="collection-loading" role="status">{t('Opening your apartment…')}</main></div>}><ApartmentExperience key={route.plan.id} project={route.project} plan={route.plan}/></Suspense></ErrorBoundary>:<div className="collection"><CollectionHeader/>
-    {route.kind==='projects'?<ProjectCollection/>:route.kind==='project'?<ProjectPage key={route.project.id} project={route.project}/>:route.kind==='consultations'?<ConsultationPage key={route.project?.id||'all'} initialProject={route.project}/>:<main className="collection-missing"><span className="collection-kicker">{t('LET’S FIND YOUR WAY')}</span><h1 data-page-title tabIndex={-1}>{t('This space isn’t available.')}</h1><p>{t('Choose a project from the collection to continue exploring.')}</p><a className="collection-button" href="#/projects">{t('View all projects')}</a></main>}
+    {route.kind==='projects'?<ProjectCollection/>:route.kind==='finder'?<ApartmentFinder/>:route.kind==='shortlist'?<SharedShortlist key={hash} search={route.search}/>:route.kind==='workspace'?<SalesWorkspace/>:route.kind==='project'?<ProjectPage key={route.project.id} project={route.project}/>:route.kind==='consultations'?<ConsultationPage key={route.project?.id||'all'} initialProject={route.project}/>:<main className="collection-missing"><span className="collection-kicker">{t('LET’S FIND YOUR WAY')}</span><h1 data-page-title tabIndex={-1}>{t('This space isn’t available.')}</h1><p>{t('Choose a project from the collection to continue exploring.')}</p><a className="collection-button" href="#/projects">{t('View all projects')}</a></main>}
     <CollectionFooter/><WhatsAppContact floating/>
   </div>;
-  return <>{content}{welcome&&route.kind!=='consultations'&&<WelcomeModal onClose={()=>setWelcome(false)}/>}</>;
+  return <SalesProvider>{content}{welcome&&route.kind!=='consultations'&&route.kind!=='workspace'&&<WelcomeModal onClose={()=>setWelcome(false)}/>}</SalesProvider>;
 }

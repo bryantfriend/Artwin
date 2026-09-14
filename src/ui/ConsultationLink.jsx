@@ -3,6 +3,7 @@ import Icon from './Icon.jsx';
 import {whatsAppContactUrl} from './WhatsAppContact.jsx';
 import {useI18n} from '../i18n.js';
 import './ConsultationLink.css';
+import {track,contextMessage,whatsappHref} from '../sales.js';
 
 export const bookingUrl='https://artwin.kg/schedule-call';
 export const consultationHref=()=>bookingUrl;
@@ -12,7 +13,7 @@ export default function ConsultationLink({compact=false,projectName,projectId,on
   return <a
     className={`consultation-link${compact?' consultation-link--compact':''}`}
     href={consultationHref(projectId)}
-    onClick={onClick}
+    onClick={e=>{track('booking_opened',{projectId});onClick?.(e);}}
     aria-label={label}
     title={label}
   >
@@ -25,7 +26,7 @@ export function ProjectConsultation({project}) {
   const {t}=useI18n();
   return <div className="project-consultation">
     <ConsultationLink projectName={project.name} projectId={project.id}/>
-    <p>{t('Prefer to chat?')} <a href={whatsAppContactUrl} target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></p>
+    <p>{t('Prefer to chat?')} <a href={whatsappHref(contextMessage({project},t))} onClick={()=>track('whatsapp_opened',{projectId:project.id})} target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></p>
   </div>;
 }
 

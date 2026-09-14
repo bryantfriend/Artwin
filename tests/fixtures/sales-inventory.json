@@ -1,0 +1,88 @@
+{
+  "updatedAt": "2026-09-14",
+  "documents": [
+    {
+      "url": "https://artwin.kg/tokyo_city",
+      "date": "2026-09-14",
+      "title": {
+        "ru": "ТЕСТОВАЯ ЗАПИСЬ",
+        "zh-CN": "测试记录",
+        "ky": "СЫНОО ЖАЗУУСУ",
+        "en-US": "TEST RECORD"
+      },
+      "projectId": "tokyo-city"
+    }
+  ],
+  "units": [
+    {
+      "planId": "two-room-euro-52",
+      "currency": "KGS",
+      "updatedAt": "2026-09-14",
+      "status": "available",
+      "building": "TEST A",
+      "number": "TEST-401",
+      "orientation": "S",
+      "id": "TEST-1",
+      "handover": null,
+      "floor": 4,
+      "price": 6000000,
+      "projectId": "tokyo-city"
+    },
+    {
+      "planId": "two-room-euro-52",
+      "currency": "KGS",
+      "updatedAt": "2026-09-14",
+      "status": "reserved",
+      "building": "TEST A",
+      "number": "TEST-402",
+      "orientation": "S",
+      "id": "TEST-2",
+      "handover": null,
+      "floor": 4,
+      "price": 6000000,
+      "projectId": "tokyo-city"
+    },
+    {
+      "planId": "two-room-euro-52",
+      "currency": "KGS",
+      "updatedAt": "2026-09-14",
+      "status": "available",
+      "building": "TEST B",
+      "number": "TEST-403",
+      "orientation": "S",
+      "id": "TEST-3",
+      "handover": null,
+      "floor": 4,
+      "price": 6000000,
+      "projectId": "tokyo-city"
+    },
+    {
+      "planId": "two-room-euro-52",
+      "currency": "KGS",
+      "updatedAt": "2026-09-14",
+      "status": "sold",
+      "building": "TEST B",
+      "number": "TEST-404",
+      "orientation": "S",
+      "id": "TEST-4",
+      "handover": null,
+      "floor": 4,
+      "price": 6000000,
+      "projectId": "tokyo-city"
+    }
+  ],
+  "milestones": [
+    {
+      "url": "https://artwin.kg/tokyo_city",
+      "date": "2026-09-14",
+      "title": {
+        "ru": "ТЕСТОВАЯ ЗАПИСЬ",
+        "zh-CN": "测试记录",
+        "ky": "СЫНОО ЖАЗУУСУ",
+        "en-US": "TEST RECORD"
+      },
+      "projectId": "tokyo-city"
+    }
+  ],
+  "version": 1
+}

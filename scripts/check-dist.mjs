@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { createPagesServer } from './serve-pages.mjs';
 import { projects } from '../src/projects.js';
+import {validateSales} from '../src/sales.js';
 
 const html=await readFile(new URL('../dist/index.html',import.meta.url),'utf8');
 const references=[...html.matchAll(/(?:src|href)="([^"]+)"/g)].map(m=>m[1]);
@@ -16,7 +17,8 @@ try {
   const planImages=projects.flatMap(p=>p.plans.map(plan=>`/Artwin/plans/${plan.id}.png`));
   const consultants=JSON.parse(await readFile(new URL('../src/consultants.json',import.meta.url),'utf8'));
   const consultantImages=consultants.map(person=>`/Artwin/${person.photo}`);
-  const publicAssets=['/Artwin/artwin-logo.png','/Artwin/textures/kyrgyz-city-panorama.jpg'];
+  const publicAssets=['/Artwin/artwin-logo.png','/Artwin/textures/kyrgyz-city-panorama.jpg','/Artwin/sales-data.json'];
+  validateSales(await (await fetch(origin+'/Artwin/sales-data.json')).json());
   for(const path of [...references,...entries.map(name=>`/Artwin/assets/${name}`),...projectImages,...planImages,...consultantImages,...publicAssets]) {
     const res=await fetch(origin+path);
     assert.equal(res.status,200,`Missing asset ${path}`);

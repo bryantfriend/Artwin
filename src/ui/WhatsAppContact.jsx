@@ -1,14 +1,18 @@
 import React from 'react';
 import './WhatsAppContact.css';
+import {resolveRoute} from '../projects.js';
+import {contextMessage,whatsappHref,track} from '../sales.js';
 import {useI18n} from '../i18n.js';
 
 export const whatsAppContactUrl='https://wa.me/996228880000';
 
 export default function WhatsAppContact({floating=false}) {
   const {t}=useI18n();
+  const route=resolveRoute(window.location.hash);
+  const href=route.project?whatsappHref(contextMessage({project:route.project,plan:route.plan},t)):whatsAppContactUrl;
   return <a
     className={`whatsapp-contact${floating?' whatsapp-contact--floating':''}`}
-    href={whatsAppContactUrl}
+    href={href} onClick={()=>track('whatsapp_opened',{projectId:route.project?.id,planId:route.plan?.id})}
     target="_blank"
     rel="noopener noreferrer"
     aria-label={t('Contact Artwin on WhatsApp')}

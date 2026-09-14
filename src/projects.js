@@ -26,7 +26,11 @@ export const projectHref=project=>`#/projects/${project.id}`;
 export const apartmentHref=(project,plan)=>`${projectHref(project)}/apartments/${plan.id}`;
 
 export function resolveRoute(hash=''){
-  const path=hash.replace(/^#/, '').replace(/\/$/,'');
+  const [rawPath,search='']=hash.replace(/^#/, '').split('?');
+  const path=rawPath.replace(/\/$/,'');
+  if(path==='/finder')return {kind:'finder'};
+  if(path==='/shortlist')return {kind:'shortlist',search};
+  if(path==='/sales-workspace')return {kind:'workspace'};
   if(!path||path==='/projects')return {kind:'projects'};
   const parts=path.split('/').filter(Boolean);
   if(parts[0]==='consultations'){

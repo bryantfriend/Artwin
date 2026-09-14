@@ -272,3 +272,11 @@ On screens up to 760 px wide, floor-plan gallery cards show compact paired previ
 All six kitchen and combined kitchen/living table sets have one short end against a wall, with two upholstered chairs facing each other across the long sides. Breakfast and compact dining tables share the same model, including inset place settings and a bowl of borsok. The chandelier follows the table rotation and dimensions.
 
 The compact layouts use small furniture adjustments to preserve circulation: the 52.10 m² seating group shifts slightly and its living-room door opens toward the hall; the 70.33 m² media unit is smaller and wall mounted beside the table; the 82.30 m² sofa shifts to clear the dining chairs. Room boundaries and doorway locations are unchanged. The kitchen-table checks in `tests/dining-fixtures.test.js` cover wall alignment, furniture separation and chandelier placement, alongside the existing navigation/physics tests.
+
+## Buyer tools expansion — 14 September 2026
+
+The collection now includes a guided apartment finder, personal payment estimates, contextual WhatsApp summaries, shareable family shortlists with private device notes and printing, approximate furniture planning, expandable project information and neighbourhood maps. The viewer has a compact purchase-tools button that pauses walkthroughs while a dialog is open. New UI is translated into Russian, Kyrgyz, US English and Simplified Chinese.
+
+The building/floor/unit selector is functional but intentionally starts without sales records. `public/sales-data.json` is the approved-public-data entry point. The public sales workspace supports local inventory previews and opt-in device interaction counts; it does not publish changes or claim to be an authenticated CRM. Official drawings, real stock/prices, approved payment rules, construction records and shared sales/appointment reporting await Artwin input. Official consultation links still go directly to Artwin.
+
+See [the buyer-platform guide](docs/sales-platform.md) for the feature/dependency matrix, import schema, privacy behavior and production integration handoff. The four TEST units in `tests/fixtures/sales-inventory.json` are browser-test fixtures only, never deployed in `dist`.

@@ -263,6 +263,10 @@ At phone widths, the arrow beside the Artwin logo returns directly to the curren
 Toilet cisterns face the wall and bowls face usable bathroom space in all six layouts. The toilet geometry now follows each fixture’s declared dimensions. The 82.30 m² en suite uses a compact toilet and an outward-opening door; nearby storage is narrower and shifted to keep the path clear. `tests/toilet-clearance.test.js` checks all ten toilets for rear-wall alignment, intersections and a clear approach zone; this is a visualization check rather than a building-code certification. `scripts/browser-navigation-bathrooms.js` checks bathroom views, the en-suite exit, mobile back controls and official booking destinations.
 
 
+## Mobile floor-plan cards
+
+On screens up to 760 px wide, floor-plan gallery cards show compact paired previews, the plan name, area, save control and 3D link. “Plan details” expands the metrics, feature tags, description and comparison control for that card. Desktop cards retain the complete information. All disclosure labels are translated, and comparison selections survive collapsing a card. Run `scripts/browser-mobile-gallery.js` for the mobile disclosure checks.
+
 ## Kitchen table seating
 
 All six kitchen and combined kitchen/living table sets have one short end against a wall, with two upholstered chairs facing each other across the long sides. Breakfast and compact dining tables share the same model, including inset place settings and a bowl of borsok. The chandelier follows the table rotation and dimensions.

@@ -59,6 +59,7 @@ async (page) => {
     await page.reload();await closeWelcome();
     check(await page.locator('.save-plan.saved').count()===1,'Favorite persists after reload');
     await page.locator('.saved-filter').click();await page.locator('.save-plan.saved').click();await page.locator('.gallery-empty').waitFor();await page.locator('.gallery-empty button').click();
+    for(let i=0;i<3;i++){const toggle=page.locator('.plan-details-toggle').nth(i);if(await toggle.isVisible()&&await toggle.getAttribute('aria-expanded')==='false')await toggle.click();}
     await page.locator('.compare-choice input').nth(0).check();check(await page.locator('.compare-launch').isDisabled(),'Comparison requires two plans');
     await page.locator('.compare-choice input').nth(1).check();await page.locator('.compare-choice input').nth(2).check();
     check(await page.locator('.compare-choice input:disabled').count()===3,'Maximum three selected plans');

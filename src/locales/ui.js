@@ -1,5 +1,7 @@
 // Each entry is Russian, Kyrgyz, Simplified Chinese. The key is American English.
 export const uiMessages={
+ 'Plan details':['О планировке','Планировка тууралуу','户型详情'],
+ 'Hide details':['Скрыть детали','Маалыматты жашыруу','收起详情'],
  'Swipe sideways to see all plans.':['Сдвиньте таблицу, чтобы увидеть все планировки.','Бардык планировкаларды көрүү үчүн таблицаны жылдырыңыз.','左右滑动查看所有户型。'],
  '1 bedroom':['1 спальня','1 уктоочу бөлмө','1 间卧室'],
  '{count} bedrooms':['Спален: {count}','Уктоочу бөлмө: {count}','{count} 间卧室'],

@@ -113,5 +113,13 @@ export function createMaterials(theme){
       materials[key+'Bedding']=new THREE.MeshPhysicalMaterial({map:maps[key+'Bedding'],roughness:.96,bumpMap:maps.weave,bumpScale:.008,sheen:.3,side:THREE.DoubleSide});
     }
   }
+  const palette={
+    'urpaq-park':{curtain:'#888579',chairFabric:'#707760',padded:'#ada58e',upholstery:'#c5bba7',whiteBedding:'#d9d1bb'},
+    hayat:{curtain:'#b5aaa2',chairFabric:'#81665a',padded:'#a5917e',upholstery:'#c8beb3',whiteBedding:'#ded1c3'},
+    esentai:{curtain:'#a1a8a7',chairFabric:'#546e62',padded:'#858e8e',upholstery:'#c4c8c2',whiteBedding:'#cfd9d4'},
+    tokyo:{curtain:'#7c8177',chairFabric:'#727c69',padded:'#a09c8c',upholstery:'#c6c2b4',whiteBedding:'#d6d7c8'},
+    'boston-tower':{curtain:'#87898b',chairFabric:'#7a6354',padded:'#878788',upholstery:'#bbb8b1',whiteBedding:'#d0d0d0'},
+  }[theme];
+  if(palette)for(const [key,color] of Object.entries(palette))materials[key].color.set(color);
   return {materials,dispose(){Object.values(materials).forEach(m=>m.dispose());Object.values(maps).forEach(t=>t.dispose());}};
 }

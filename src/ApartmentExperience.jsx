@@ -135,7 +135,7 @@ export default function ApartmentExperience({project,plan}) {
           <button className="plan-heading" onClick={()=>setPlanOpen(!planOpen)} aria-expanded={planOpen}><span><Icon name="plan" size={17}/> {t("YOUR FLOOR PLAN")}</span><span>{planOpen?'−':'+'}</span></button>
           {planOpen&&<><FloorPlan layout={layout} selected={mode==='tour'?tourStops[tourIndex].room:mode==='walkthrough'?currentRoom:selected} onSelect={selectRoom} position={position} mode={mode}/><div className="plan-caption"><span className="plan-dot"/> {t("Select a room to explore")}</div></>}
         </div>
-        <p className="reference-note">{t("Approximate visualization based on the supplied reference.")}</p>
+        <p className="reference-note">{t(plan?.evidence==='render'?'Approximate arrangement reconstructed from Artwin’s furnished perspective.':'Approximate visualization based on the supplied reference.')}</p>
       </aside>
       <section className="experience" aria-label={t("Interactive 3D apartment viewer")}>
         <div className="viewer" ref={viewerRef}>

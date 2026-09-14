@@ -70,7 +70,7 @@ export function finishLayout({id,area,rooms,openings,furniture,entrance,decor=[]
   if(!pointInPolygon(...r.label,r.polygon))r.label=[best[0],best[1]];
  }
  layout.APARTMENT.entrance.position=[...rooms.find(r=>r.id==='hall').destination];
- for(const r of rooms.filter(r=>['living','kitchen','primary','bedroom2','bedroom3'].includes(r.id))){
+ for(const r of rooms.filter(r=>['living','kitchen','primary'].includes(r.id)||r.id.startsWith('bedroom'))){
   const wall=walls.find(w=>w.roomIds.includes(r.id)&&w.openings.some(o=>o.kind==='door'));
   if(!wall)continue;const opening=wall.openings.find(o=>o.kind==='door');
   let at=opening.at+opening.width+.2;if(at>wall.length-.12)at=opening.at-.2;if(at<.12||at>wall.length-.12)continue;
@@ -78,7 +78,7 @@ export function finishLayout({id,area,rooms,openings,furniture,entrance,decor=[]
   const sign=pointInPolygon(p[0]+(wall.axis==='z'?.14:0),p[1]+(wall.axis==='x'?.14:0),r.polygon)?1:-1;
   layout.switches.push({id:'light-'+r.id,room:r.id,position:[p[0]+(wall.axis==='z'?sign*.105:0),1.25,p[1]+(wall.axis==='x'?sign*.105:0)],rotation:wall.axis==='x'?(sign===1?0:Math.PI):sign*Math.PI/2});
  }
- layout.tourStops=['living','kitchen','primary','bedroom2','bedroom3','bath1'].map(id=>rooms.find(r=>r.id===id)).filter(Boolean).map(r=>{
+ layout.tourStops=['living','kitchen','primary',...rooms.filter(r=>r.id.startsWith('bedroom')).map(r=>r.id),'bath1'].map(id=>rooms.find(r=>r.id===id)).filter(Boolean).map(r=>{
   const focal=furniture.find(f=>f.room===r.id&&['sofa','bed','kitchen','vanity'].includes(f.kind));const p=focal?focal.position:[r.label[0],0,r.label[1]];
   return {room:r.id,title:r.id==='living'?'Space to come together':r.id==='kitchen'?'Everyday rituals':r.id==='primary'?'A quieter retreat':r.id.startsWith('bedroom')?'A room of your own':'Considered details',description:r.subtitle,position:[r.destination[0],1.68,r.destination[2]],target:[p[0],r.id.startsWith('bath')?1.3:.9,p[2]],fov:76};
  });

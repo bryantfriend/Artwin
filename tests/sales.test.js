@@ -23,8 +23,11 @@ test('inventory import validates identity, prices, links, language and dates wit
  assert.deepEqual(validateSales(JSON.parse(await readFile(new URL('../public/sales-data.json',import.meta.url)))),emptySales);
 });
 test('matching never treats unpriced, reserved or wrong-currency units as affordable',()=>{
- assert.equal(matchPlans({bedrooms:1}).length,4);
- assert.equal(matchPlans({city:'Osh'}).length,0);
+ assert.equal(matchPlans({bedrooms:1}).length,22);
+ assert.equal(matchPlans({bedrooms:0}).length,8);
+ assert.equal(matchPlans({bedrooms:'0'}).length,8);
+ assert.equal(matchPlans({bedrooms:4}).length,1);
+ assert.equal(matchPlans({city:'Osh'}).length,11);
  assert(matchPlans({maxPrice:7000000}).every(r=>r.budget==='unknown'));
  assert.equal(matchPlans({maxPrice:7000000},[unit])[0].budget,'match');
  assert(!matchPlans({maxPrice:5000000},[unit]).some(r=>r.plan.id===unit.planId));

@@ -39,8 +39,8 @@ function Fringe({width,depth,m}){
   useLayoutEffect(()=>{const o=new THREE.Object3D();let i=0;for(const side of [-1,1])for(let j=0;j<count;j++){o.position.set(-width/2+.02+j*.045,-.004,side*(depth/2+.025));o.scale.set(.015,.006,.065);o.updateMatrix();ref.current.setMatrixAt(i++,o.matrix);}ref.current.instanceMatrix.needsUpdate=true;ref.current.computeBoundingSphere();},[width,depth,count]);
   return <instancedMesh ref={ref} args={[boxGeometry,m.linen,count*2]} receiveShadow/>;
 }
-export function Rug({position,width,depth,index=0,m}){
-  return <group position={position}>
+export function Rug({position,width,depth,index=0,rotation=0,m}){
+  return <group position={position} rotation={[0,rotation,0]}>
     <mesh rotation={[-Math.PI/2,0,0]} material={m['carpet'+index]} receiveShadow><planeGeometry args={[width,depth]}/></mesh>
     <Fringe width={width} depth={depth} m={m}/>
   </group>;

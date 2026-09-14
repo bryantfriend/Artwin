@@ -1,3 +1,4 @@
+import {CommercialPlans,RequestedPlans} from './OfficialPlans.jsx';
 import React,{useState} from 'react';
 import {projects,projectSource,projectHref,projectImage} from '../projects.js';
 import {useI18n} from '../i18n.js';
@@ -18,7 +19,7 @@ export function ProjectImage({project,eager=false,className=''}){
   const {t}=useI18n(),[failed,setFailed]=useState(false);
   return <div className={`project-image ${className}`}>{failed?<div className="project-image-fallback"><span>{project.name}</span><small>{t('Project image unavailable')}</small></div>:<img src={projectImage(project)} alt={t('{project} — Artwin project view',{project:project.name})} loading={eager?'eager':'lazy'} decoding="async" onError={()=>setFailed(true)}/>}</div>;
 }
-function Availability({project}){const {t,number}=useI18n();return <span className={`project-availability ${project.plans.length?'available':''}`}><span/>{project.plans.length?t('Interactive apartments: {count}',{count:number(project.plans.length)}):t('Floor plans coming soon')}</span>;}
+function Availability({project}){const {t,number}=useI18n();return <span className={`project-availability ${project.plans.length?'available':''}`}><span/>{project.plans.length?t('Interactive apartments: {count}',{count:number(project.plans.length)}):t(project.id==='seoul'?'12 commercial floor plans':'Floor plans on request')}</span>;}
 export default function ProjectCollection(){
   const {t,number}=useI18n(),[city,setCity]=useState('All'),[query,setQuery]=useState('');
   const featured=projects.find(p=>p.id==='tokyo-city');
@@ -38,8 +39,8 @@ export function ProjectPage({project}){
   const {t}=useI18n();
   return <main className="project-detail"><nav className="collection-breadcrumb" aria-label={t('Breadcrumb')}><a href="#/projects">{t('All projects')}</a><Icon name="chevron" size={13}/><span aria-current="page">{project.name}</span></nav>
     <section className="project-overview"><div className="project-overview-copy"><span className="collection-kicker">{t(project.city)} <span>/</span> {t(project.type)}</span><h1 data-page-title tabIndex={-1}>{project.name}</h1><p>{t(project.description)}</p><div className="project-address">{t(project.address)}</div><Availability project={project}/><a className="project-source" href={project.sourceUrl} target="_blank" rel="noopener noreferrer">{t('About the project on Artwin')} ↗</a><ProjectConsultation project={project}/></div><ProjectImage project={project} eager/></section>
-    <BuyerTools project={project}/>
-    {project.plans.length?<PlanGallery project={project}/>:<section className="project-plans"><div className="project-coming-soon"><div className="coming-soon-mark"><Icon name="plan" size={34}/></div><div><span className="collection-kicker">{t('COMING TO THE COLLECTION')}</span><h2>{t(project.type==='Business centre'?'Space previews are on the way.':'Floor plans are on the way.')}</h2><p>{t('Interactive spaces for {project} are not available yet.',{project:project.name})}<br/>{t('For now, step inside our first residence at Tokyo City.')}</p><a href="#/projects/tokyo-city">{t('Explore {project}',{project:'Tokyo City'})} <Icon name="arrow" size={18}/></a></div></div></section>}
+    {project.plans.length>0&&<BuyerTools project={project}/>}
+    {project.plans.length?<PlanGallery project={project}/>:project.id==='seoul'?<CommercialPlans project={project}/>:<RequestedPlans project={project}/>}
     <ProjectConfidence project={project}/>
   </main>;
 }

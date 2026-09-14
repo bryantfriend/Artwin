@@ -35,7 +35,7 @@ export function validateSales(data){
 }
 function cleanRecord(r){return {projectId:r.projectId,date:r.date,url:r.url,title:Object.fromEntries(['ru','ky','en-US','zh-CN'].map(l=>[l,r.title[l]]))};}
 export function matchPlans({city='All',bedrooms='',maxArea='',maxPrice='',deposit='',monthly='',months=24,currency='KGS'},units=[]){
-  return allPlans().filter(({project,plan})=>(city==='All'||city===project.city)&&(!bedrooms||plan.bedrooms===Number(bedrooms))&&(!maxArea||plan.area<=Number(maxArea))).map(({project,plan})=>{
+  return allPlans().filter(({project,plan})=>(city==='All'||city===project.city)&&(bedrooms===''||bedrooms==null||plan.bedrooms===Number(bedrooms))&&(!maxArea||plan.area<=Number(maxArea))).map(({project,plan})=>{
     const live=units.filter(u=>u.projectId===project.id&&u.planId===plan.id&&u.status==='available'&&u.currency===currency&&u.price!==null);
     const matching=live.filter(u=>(!maxPrice||u.price<=Number(maxPrice))&&(!monthly||calculatePayment({price:u.price,deposit:Number(deposit),months:Number(months)})?.monthly<=Number(monthly)));
     const constrained=Boolean(maxPrice||monthly);

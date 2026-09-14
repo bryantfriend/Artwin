@@ -4,7 +4,7 @@ import {layouts,getLayout} from '../src/layouts/index.js';
 import {diningFixtures} from '../src/diningFixtures.js';
 import {pointInPolygon,circleIntersectsBox,wallSegments} from '../src/geometry.js';
 
-test('all six kitchen tables meet a wall at their short end and their seating clears other furniture',()=>{
+test('all kitchen tables meet a wall at their short end and their seating clears other furniture',()=>{
   let count=0;
   const bounds=f=>{const c=Math.abs(Math.cos(f.rotation||0)),s=Math.abs(Math.sin(f.rotation||0));return {x:f.position[0],z:f.position[2],w:f.size[0]*c+f.size[2]*s,d:f.size[0]*s+f.size[2]*c};};
   for(const layout of layouts)for(const table of layout.furniture.filter(f=>['breakfast','diningCompact'].includes(f.kind))){
@@ -23,7 +23,7 @@ test('all six kitchen tables meet a wall at their short end and their seating cl
       assert(Math.abs(a.x-b.x)>=(a.w+b.w)/2-.001||Math.abs(a.z-b.z)>=(a.d+b.d)/2-.001,`${context}: seating overlaps ${item.id}`);
     }
   }
-  assert.equal(count,6);
+  assert.equal(count,48);
 });
 
 test('every dining table has a chandelier centered inside its room and table surface',()=>{
@@ -48,7 +48,7 @@ test('every dining table has a chandelier centered inside its room and table sur
     }
     count+=fixtures.length;
   }
-  assert.equal(count,15);
+  assert.equal(count,57);
 });
 
 test('52.10 seating faces the TV across the coffee table and keeps the old TV corner empty',()=>{

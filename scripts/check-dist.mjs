@@ -17,9 +17,10 @@ try {
   const planImages=projects.flatMap(p=>p.plans.map(plan=>`/Artwin/plans/${plan.id}.png`));
   const consultants=JSON.parse(await readFile(new URL('../src/consultants.json',import.meta.url),'utf8'));
   const consultantImages=consultants.map(person=>`/Artwin/${person.photo}`);
+  const referenceImages=(await readdir(new URL('../dist/references/',import.meta.url))).map(name=>`/Artwin/references/${name}`);
   const publicAssets=['/Artwin/artwin-logo.png','/Artwin/textures/kyrgyz-city-panorama.jpg','/Artwin/sales-data.json'];
   validateSales(await (await fetch(origin+'/Artwin/sales-data.json')).json());
-  for(const path of [...references,...entries.map(name=>`/Artwin/assets/${name}`),...projectImages,...planImages,...consultantImages,...publicAssets]) {
+  for(const path of [...references,...entries.map(name=>`/Artwin/assets/${name}`),...projectImages,...planImages,...consultantImages,...referenceImages,...publicAssets]) {
     const res=await fetch(origin+path);
     assert.equal(res.status,200,`Missing asset ${path}`);
     const body=await res.arrayBuffer();assert(body.byteLength>0,`Empty asset ${path}`);

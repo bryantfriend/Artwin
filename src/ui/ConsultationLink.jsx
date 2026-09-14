@@ -5,7 +5,7 @@ import {useI18n} from '../i18n.js';
 import './ConsultationLink.css';
 
 export const bookingUrl='https://artwin.kg/schedule-call';
-export const consultationHref=projectId=>`#/consultations${projectId?'/'+projectId:''}`;
+export const consultationHref=()=>bookingUrl;
 export default function ConsultationLink({compact=false,projectName,projectId,onClick}) {
   const {t}=useI18n();
   const label=projectName?t('Schedule a consultation about {project}',{project:projectName}):t('Schedule a consultation');

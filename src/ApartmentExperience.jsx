@@ -118,6 +118,7 @@ export default function ApartmentExperience({project,plan}) {
     :target==='tv'?t(state.tv?'Turn television off':'Turn television on'):t(state.cabinet?'Close cabinet':'Open cabinet');
   return <div className={`app mode-${mode}`}>
     <header className="topbar">
+      <a className="mobile-project-back" href={projectHref(project)} aria-label={t('Back to {project} floor plans',{project:project.name})} title={t('Back to {project} floor plans',{project:project.name})}><Icon name="arrow" size={24}/><img src={`${import.meta.env.BASE_URL}artwin-logo.png`} alt="ARTWIN" width="287" height="88"/></a>
       <a className="wordmark" href="#/projects" aria-label={t("Artwin home")}><img src={`${import.meta.env.BASE_URL}artwin-logo.png`} alt="ARTWIN" width="287" height="88"/></a>
       <div className="header-divider"/><span className="header-caption">{t("SPACES FOR LIVING")}</span>
       <div className="header-end"><a className="apartment-project-back" href={projectHref(project)} aria-label={t('Back to {project} floor plans',{project:project.name})}><Icon name="arrow" size={16}/>{project.name}<span>{number(plan.area,2)} {t('m²')} · {t('Floor plans')}</span></a><LanguagePicker/><ConsultationLink compact projectName={project.name} projectId={project.id}/><WhatsAppContact/><button className="icon-button help-button" onClick={()=>{setHelp(true);clearInput(input);}} aria-label={t("Open controls and help")}><Icon name="help"/></button></div>

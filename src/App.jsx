@@ -28,5 +28,5 @@ export default function App(){
     {route.kind==='projects'?<ProjectCollection/>:route.kind==='project'?<ProjectPage key={route.project.id} project={route.project}/>:route.kind==='consultations'?<ConsultationPage key={route.project?.id||'all'} initialProject={route.project}/>:<main className="collection-missing"><span className="collection-kicker">{t('LET’S FIND YOUR WAY')}</span><h1 data-page-title tabIndex={-1}>{t('This space isn’t available.')}</h1><p>{t('Choose a project from the collection to continue exploring.')}</p><a className="collection-button" href="#/projects">{t('View all projects')}</a></main>}
     <CollectionFooter/><WhatsAppContact floating/>
   </div>;
-  return <>{content}{welcome&&<WelcomeModal onClose={()=>setWelcome(false)}/>}</>;
+  return <>{content}{welcome&&route.kind!=='consultations'&&<WelcomeModal onClose={()=>setWelcome(false)}/>}</>;
 }

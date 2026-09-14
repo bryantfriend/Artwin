@@ -81,7 +81,7 @@ export const furniture = [
   {id:'living-storage',kind:'cabinet',position:[8.25,0,8.45],size:[2.05,1.2,.48]},
   {id:'tub',kind:'tub',position:[.48,0,4.63],rotation:Math.PI/2,size:[1.48,.6,.68]},
   {id:'vanity1',kind:'vanity',position:[1.5,0,4.03],size:[.65,.85,.35]},
-  {id:'toilet2',kind:'toilet',position:[1.3,0,7.15],rotation:Math.PI,size:[.48,.7,.7]},
+  {id:'toilet2',kind:'toilet',position:[1.3,0,7.11],rotation:Math.PI,size:[.48,.7,.6]},
   {id:'vanity2',kind:'vanity',position:[.3,0,6.75],rotation:Math.PI/2,size:[1,.85,.45]},
   {id:'shower',kind:'shower',position:[1.5,0,9],rotation:Math.PI,size:[.8,2.1,.65]},
   {id:'vanity3',kind:'vanity',position:[.3,0,8.4],rotation:Math.PI/2,size:[1,.85,.45]},

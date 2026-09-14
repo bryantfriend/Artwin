@@ -36,22 +36,12 @@ async (page) => {
     }
     check(new Set(welcomeTitles).size===4,'All four welcome translations differ');
     await page.locator('.welcome-language select').selectOption('ru');
-    await page.locator('.welcome-copy .consultation-link').click();
-    await page.locator('.consult-projects').waitFor();
-    check(!await page.locator('dialog[open]').count(),'CTA closes welcome');
-    check(page.url().endsWith('#/consultations'),'CTA reaches our consultation page');
-    check(await page.locator('.consult-projects button').count()===10,'Ten consultation projects');
-    check(await page.locator('.consultant-card').count()===12,'Twelve active consultants');
-    for(let i=0;i<10;i++){
-      const button=page.locator('.consult-projects button').nth(i);
-      await button.click();
-      check(await button.getAttribute('aria-pressed')==='true','Consultation project selection');
-      check(await page.locator('.consult-selected .collection-button').getAttribute('href')===(i<8?'https://artwin.kg/schedule-call':'https://wa.me/996228880000'),'Correct booking/contact route');
-    }
-    for(const img of await page.locator('.consultant-card>img').all()){await img.scrollIntoViewIfNeeded();await img.evaluate(i=>i.decode());}
+    check(await page.locator('.welcome-copy .consultation-link').getAttribute('href')==='https://artwin.kg/schedule-call','Welcome links straight to official booking');
+    await closeWelcome();
+    for(const link of await page.locator('.consultation-link').all())check(await link.getAttribute('href')==='https://artwin.kg/schedule-call','Direct official consultation link');
     const social=await page.locator('.social-group a').evaluateAll(links=>links.map(a=>a.href));
     check(social.join('|')==='https://instagram.com/artwin.kg|https://www.facebook.com/artwin.kg|https://youtube.com/@artwin_kg|https://instagram.com/artwin.osh|https://www.facebook.com/artwin.osh|https://youtube.com/@artwin_kg','Exact official social links');
-    await bounds('Consultations 320');
+    await bounds('Collection 320');
     await page.goto(base+'#/projects/tokyo-city');await page.locator('.residence-card').first().waitFor();
     check(await page.locator('.residence-card').count()===6,'Six residence cards');
     const paths=[];
@@ -99,6 +89,6 @@ async (page) => {
     await page.locator('.plan-showcase').scrollIntoViewIfNeeded();await page.waitForTimeout(250);await page.screenshot({path:'output/playwright/gallery-final-desktop.png'});
     check(!requests.some(url=>/\/assets\/(?:Viewer-|ApartmentExperience-|three-|physics-)/.test(url)),'Browsing collection must not load 3D runtime');
     check(!errors.length,errors.join('\n'));
-    return {passed:true,locales:4,plans:6,consultants:12,projects:10,errors};
+    return {passed:true,locales:4,plans:6,consultations:"official Artwin",projects:10,errors};
   }finally{page.off('pageerror',onError);page.off('console',onConsole);page.off('response',onResponse);page.off('requestfailed',onFailed);page.off('request',onRequest);}
 }

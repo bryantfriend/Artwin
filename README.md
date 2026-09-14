@@ -61,7 +61,7 @@ GitHub Pages is enabled with **GitHub Actions** as its source. The [initial depl
 - Three.js and physics have separate chunks so an interface edit need not invalidate those large assets.
 - For future file assets, prefer `import modelUrl from './assets/model.glb?url'`. For files in `public`, use `${import.meta.env.BASE_URL}models/model.glb`, never `/models/model.glb`. Apply the same rule to future WASM URLs, audio, and textures.
 - Room selection and viewing modes use React state. They do not change the URL or require a router/404 rewrite.
-- Collection, project, consultation and apartment navigation uses URL fragments (`#/projects/...`). Browser Back/Forward, refresh and shared deep links request the same `/Artwin/` HTML file, so Pages needs no server rewrites. Unknown projects/plans show a recovery page. Only opening an available apartment imports its UI, Three.js and physics; leaving unmounts the viewer and clears movement/pointer lock. Reopening starts a fresh apartment session.
+- Collection, project and apartment navigation uses URL fragments (`#/projects/...`). Browser Back/Forward, refresh and shared deep links request the same `/Artwin/` HTML file, so Pages needs no server rewrites. Unknown projects/plans show a recovery page. Only opening an available apartment imports its UI, Three.js and physics; leaving unmounts the viewer and clears movement/pointer lock. Reopening starts a fresh apartment session.
 
 See [Vite's Pages deployment guidance](https://vite.dev/guide/static-deploy.html#github-pages).
 
@@ -97,7 +97,7 @@ In walkthrough mode, floor-plan navigation fades out, checks the destination aga
 | `src/projects.js` | Project registry, plan availability, route resolution and link helpers |
 | `src/ui/ProjectCollection.jsx` | Collection, city filters/search and project overviews |
 | `src/ui/PlanGallery.jsx` | Paired 2D/3D previews, favorites, filters and comparison |
-| `src/ui/ConsultationPage.jsx` | Project consultation paths and the published consultant roster |
+| `src/ui/ConsultationPage.jsx` | Redirects previously shared consultation links to official Artwin booking |
 | `src/i18n.js`, `src/locales/` | Language preference, translations and number formatting |
 | `src/projects.css` | Responsive collection and project-page styling |
 | `src/ApartmentExperience.jsx` | Apartment UI, mode/interaction state, relocation requests, loading and help |
@@ -227,15 +227,15 @@ The mobile session must be opened with `--mobile`. Node tests check per-plan rou
 
 ## Languages, consultations and floor-plan showcase
 
-Russian is the default on a first visit. The globe in the header (and welcome popup) switches to Kyrgyz, US English or Simplified Chinese. `artwin-language` stores the preference locally. UI, accessible labels, room labels, walkthrough prompts, help, tour copy, loading/recovery messages and project descriptions use the same dictionaries. Official brand/project names and social handles remain unchanged. Native names are used for consultants in Russian/Kyrgyz, with Latin transliterations in English/Chinese. `tests/i18n.test.js` checks dictionary fields, component calls and every project's/room's/tour's dynamic copy.
+Russian is the default on a first visit. The globe in the header (and welcome popup) switches to Kyrgyz, US English or Simplified Chinese. `artwin-language` stores the preference locally. UI, accessible labels, room labels, walkthrough prompts, help, tour copy, loading/recovery messages and project descriptions use the same dictionaries. Official brand/project names and social handles remain unchanged. `tests/i18n.test.js` checks dictionary fields, component calls and every project's/room's/tour's dynamic copy.
 
-The consultation popup appears once per page load. Its background cycles through all ten projects; it has pause, project selection, Escape dismissal and keyboard focus containment. Reduced-motion users start with the slideshow paused. Its CTA opens **[our consultation page](https://bryantfriend.github.io/Artwin/#/consultations)**. Project-specific links use `#/consultations/{project-id}`.
+The consultation popup appears once per page load. Its background cycles through all ten projects; it has pause, project selection, Escape dismissal and keyboard focus containment. Reduced-motion users start with the slideshow paused. Its CTA, header calendar, project buttons and comparison link open **[Artwin’s official consultation page](https://artwin.kg/schedule-call)** directly in the same tab. Previously shared `#/consultations` and `#/consultations/{project-id}` links redirect there using `location.replace`, without a welcome popup or an extra history entry.
 
-The consultation page covers all ten projects and shows the twelve active consultants published on [Artwin's booking page](https://artwin.kg/schedule-call), checked 13 September 2026. That page randomizes the displayed consultant assignments, so this app presents a shared team rather than asserting fixed project/person assignments. Booking is completed on Artwin's external site; Osh projects have the supplied WhatsApp contact path. We do not submit a booking, store customer details or translate the external booking provider's interface.
+Artwin handles project selection, consultants and appointment scheduling on its own site. The apartment viewer remains entirely client-side and does not submit bookings or store customer details.
 
-Consultant portraits are optimized local WebP assets in `public/consultants/`; names and original image URLs are recorded in `src/consultants.json`. The official public source is the booking page above. Social destinations were read from [Artwin's homepage](https://artwin.kg/); @artwin.kg and @artwin.osh have distinct Instagram/Facebook links and share `@artwin_kg` on YouTube.
+Previously imported consultant portraits and source records are retained as unused assets; the app no longer renders or downloads a consultant roster. Social destinations were read from [Artwin’s homepage](https://artwin.kg/); @artwin.kg and @artwin.osh have distinct Instagram/Facebook links and share `@artwin_kg` on YouTube.
 
-Each Tokyo City card shows its own 2D plan beside a screenshot captured from its actual 3D viewer. The six PNG previews in `public/plans/` use `BASE_URL`, as do consultant portraits. Refresh those screenshots with `scripts/capture-plan-previews.js` when the model or its furnishing changes, then rebuild so the new captures are included in `dist`. They load as images without loading Three.js or physics; those chunks still load only when an apartment is opened.
+Each Tokyo City card shows its own 2D plan beside a screenshot captured from its actual 3D viewer. The six PNG previews in `public/plans/` use `BASE_URL`. Refresh those screenshots with `scripts/capture-plan-previews.js` when the model or its furnishing changes, then rebuild so the new captures are included in `dist`. They load as images without loading Three.js or physics; those chunks still load only when an apartment is opened.
 
 Favorites are stored in `artwin-saved-plans` on this browser. Area and bedroom filters can be combined. Comparison supports two or three plans and includes both images and key metrics. Filters and comparison selection are session state, not published inventory. See the [20-builder design review](docs/design-research.md) for sources and implemented ideas.
 
@@ -255,3 +255,9 @@ The 52.10 m² apartment places a gray sofa beside the dining table, an oval coff
 Freestanding wardrobes share two inset doors, long silver handles, a plinth and short feet. Dark wardrobes use a matte black finish; other wardrobes keep their original finish. Fitted hall joinery remains a separate model.
 
 All eight dining and breakfast tables across the six apartments have a chandelier in walkthrough and guided-tour modes. Fixture placement follows the actual tabletop center, rotation and dimensions, including off-center breakfast tables. Warm lights follow the room's existing light state. Chandelier light nodes remain mounted with zero intensity in dollhouse mode to avoid changing shader light counts, and they do not add shadow-map passes. Run `scripts/browser-dining.js` with Playwright CLI against `npm run serve:pages` to capture every fixture, the 52.10 seating and wardrobe, the room-light toggle, and the mobile tour.
+
+## Mobile return navigation and bathrooms
+
+At phone widths, the arrow beside the Artwin logo returns directly to the current project’s floor plans in every viewing mode, including direct apartment links. The combined logo/back link has a 44 px touch height and translated accessible label.
+
+Toilet cisterns face the wall and bowls face usable bathroom space in all six layouts. The toilet geometry now follows each fixture’s declared dimensions. The 82.30 m² en suite uses a compact toilet and an outward-opening door; nearby storage is narrower and shifted to keep the path clear. `tests/toilet-clearance.test.js` checks all ten toilets for rear-wall alignment, intersections and a clear approach zone; this is a visualization check rather than a building-code certification. `scripts/browser-navigation-bathrooms.js` checks bathroom views, the en-suite exit, mobile back controls and official booking destinations.

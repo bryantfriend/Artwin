@@ -217,12 +217,12 @@ function Bath({item,m,activeRoom,quality,mode}) {
     <Box position={[-.5,.89,-.24]} size={[.18,.025,.025]} material={m.brass}/>
   </>;
   if(item.kind==='shower')return <Shower item={item} m={m}/>;
-  if(item.kind==='toilet') return <>
+  if(item.kind==='toilet') return <group scale={[item.size[0]/.48,item.size[1]/.8,item.size[2]/.7]}><group position={[0,0,-.01]}>
     <Box position={[0,.43,-.24]} size={[.43,.74,.2]} material={m.ceramic}/>
     <Ball position={[0,.38,.04]} size={[.24,.18,.32]} material={m.ceramic}/>
     <Cylinder position={[0,.46,.06]} size={[.17,.03,.23]} material={m.linen}/>
     <Box position={[0,.19,0]} size={[.28,.35,.35]} material={m.ceramic}/>
-  </>;
+  </group></group>;
   return <Vanity item={item} m={m} quality={quality} active={mode==='walkthrough'&&activeRoom===(item.room||{vanity1:'bath1',vanity2:'bath2',vanity3:'bath3'}[item.id])}/>;
 }
 

@@ -8,6 +8,7 @@ import {originalLayout} from '../layouts/index.js';
 const areas={living:'30.02',kitchen:'16.31',primary:'20.52',bedroom2:'15.67',bedroom3:'15.03',hall:'19.53',bath1:'3.25',bath2:'3.90',bath3:'3.79',loggia1:'3.48',loggia2:'3.18'};
 const labels={living:'Living room',kitchen:'Kitchen',primary:'Bedroom',bedroom2:'Bedroom',bedroom3:'Bedroom',hall:'Hall',bath1:'Bathroom',bath2:'Bathroom',bath3:'Bathroom',loggia1:'Loggia',loggia2:'Loggia'};
 function PlanWall({wall}) {
+  if(wall.railing)return <g transform={`translate(${wall.start[0]} ${wall.start[1]}) rotate(${-wallYaw(wall)*180/Math.PI})`} className="plan-window"><path d={`M0 -.04H${wall.length}M0 .04H${wall.length}`}/></g>;
   const openings=[...(wall.openings||[])].sort((a,b)=>a.at-b.at),segments=[];
   let end=0;
   for(const o of openings){if(o.at>end)segments.push([end,o.at]);end=o.at+o.width;}

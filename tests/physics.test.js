@@ -4,10 +4,16 @@ import RAPIER from '@dimforge/rapier3d-compat';
 import { APARTMENT, rooms, walls, doors, furniture } from '../src/apartmentConfig.js';
 import { wallSegments, doorPose } from '../src/geometry.js';
 import { createCharacterController, computeCharacterMovement } from '../src/physicsController.js';
+import {wiltonLayouts} from '../src/layouts/wiltonLayouts.js';
 import {londonLayouts} from '../src/layouts/londonLayouts.js';
 import {additionalLayouts} from '../src/layouts/tokyoLayouts.js';
 
 await RAPIER.init();
+test('Wilton balcony railings stop the walking capsule at the open edge',()=>{
+ const layout=wiltonLayouts.find(l=>l.id==='wilton-three-room-92'),world=setup(true,layout);
+ try{const start=layout.rooms.find(r=>r.outdoor).destination,p=movePlayer(world,start,{x:-.025,y:-.045,z:0},60);assert(p.x>.3&&p.x<.45,`Rail did not stop player: ${p.x}`);assert(p.y>.78);}
+ finally{world.free();}
+});
 function setup(open=false,layout={rooms,walls,doors,furniture}) {
   const {rooms,walls,doors,furniture}=layout;
   const world=new RAPIER.World({x:0,y:-9.81,z:0});world.timestep=1/60;
@@ -74,7 +80,7 @@ test('capsule slides along a wall and stays above the floor',()=>{
   }finally{world.free();}
 });
 
-for(const layout of [...additionalLayouts,...londonLayouts])test(`${layout.APARTMENT.advertisedArea} m²: Rapier accepts every room destination with doors open and closed`,()=>{
+for(const layout of [...additionalLayouts,...londonLayouts,...wiltonLayouts])test(`${layout.APARTMENT.advertisedArea} m²: Rapier accepts every room destination with doors open and closed`,()=>{
   for(const open of [false,true]){
     const world=setup(open,layout);
     try{for(const r of layout.rooms){

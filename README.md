@@ -1,6 +1,6 @@
 # Artwin project collection & apartment walkthrough
 
-A client-side React + Vite project collection covering the 10 projects listed in [Artwin's directory](https://artwin.kg/#rec596501902), with project overviews and a floor-plan section for each. **Tokyo City** contains six distinct furnished apartments: **52.10, 70.33, 78.83, 82.30, 106.01 and 134.68 m²**. Each has its own clickable floor plan, dollhouse, guided tour and collision-aware walkthrough. Compare paired 2D/3D previews, filter by bedroom count and area, sort by size, and save favorites on this device. **London Square** adds four furnished layouts: **71.95, 100.72, 110.13 and 131.20 m²**, including the polygonal bay living room. The remaining eight projects have explicit coming-soon states; their floor plans and 3D models have not been added. No server, account, database, SSR or runtime asset service is required.
+A client-side React + Vite project collection covering the 10 projects listed in [Artwin's directory](https://artwin.kg/#rec596501902), with project overviews and a floor-plan section for each. **Tokyo City** contains six distinct furnished apartments: **52.10, 70.33, 78.83, 82.30, 106.01 and 134.68 m²**. Each has its own clickable floor plan, dollhouse, guided tour and collision-aware walkthrough. Compare paired 2D/3D previews, filter by bedroom count and area, sort by size, and save favorites on this device. **London Square** adds four furnished layouts: **71.95, 100.72, 110.13 and 131.20 m²**, including the polygonal bay living room. **Wilton Park** adds three furnished layouts: **82.60, 92.70 and 122.10 m²**, including an open balcony and a distinct interior palette. The remaining seven projects have explicit coming-soon states; their floor plans and 3D models have not been added. No server, account, database, SSR or runtime asset service is required.
 
 **[Open the project collection](https://bryantfriend.github.io/Artwin/)** · **[Tokyo City](https://bryantfriend.github.io/Artwin/#/projects/tokyo-city)** · **[Open the apartment directly](https://bryantfriend.github.io/Artwin/#/projects/tokyo-city/apartments/four-room-134)**
 
@@ -90,6 +90,7 @@ In walkthrough mode, floor-plan navigation fades out, checks the destination aga
 | `src/apartmentConfig.js` | Original 134.68 m² apartment and shared physical constants |
 | `src/layouts/tokyoLayouts.js` | Five additional screenshot-based room arrangements, openings and furnishings |
 | `src/layouts/londonLayouts.js` | Four London Square layouts, with bay geometry and project-specific interiors |
+| `src/layouts/wiltonLayouts.js` | Three Wilton Park layouts, with balcony railings and project-specific interiors |
 | `src/layouts/buildLayout.js` | Shared-edge walls, door hinges, safe destinations, switches and per-layout tours |
 | `src/layouts/index.js` | Registry combining the original and new apartments |
 | `src/scene/LayoutDecor.jsx` | Layout-specific rugs, artwork, curtains, feature panels and floor finishes |
@@ -283,3 +284,8 @@ The collection now includes a guided apartment finder, personal payment estimate
 The building/floor/unit selector is functional but intentionally starts without sales records. `public/sales-data.json` is the approved-public-data entry point. The public sales workspace supports local inventory previews and opt-in device interaction counts; it does not publish changes or claim to be an authenticated CRM. Official drawings, real stock/prices, approved payment rules, construction records and shared sales/appointment reporting await Artwin input. Official consultation links still go directly to Artwin.
 
 See [the buyer-platform guide](docs/sales-platform.md) for the feature/dependency matrix, import schema, privacy behavior and production integration handoff. The four TEST units in `tests/fixtures/sales-inventory.json` are browser-test fixtures only, never deployed in `dist`.
+
+
+## Wilton Park
+
+The three unique supplied plans now have their own furnished dollhouses, tours, room navigation and paired 2D/3D previews. The repeated 82.60 m² board is included once. See [Wilton Park modelling notes](docs/wilton-park.md) for source boards, interpretation limits and browser/physics validation. Refresh previews with `scripts/capture-wilton-previews.js`, rebuild, then run `scripts/check-wilton-browser.js` against the strict production server.

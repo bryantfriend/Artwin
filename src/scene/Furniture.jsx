@@ -129,14 +129,16 @@ function BorsokBowl({m}){
     })}
   </>;
 }
-function Dining({m}) {
+function Dining({m,seats=8}) {
+  const rows=seats===6?[-.48,.48]:[-.65,0,.65];
   return <>
     {[-.65,.65].map(z=><Cylinder key={z} position={[0,.38,z]} size={[.2,.74,.22]} material={m.brass}/>)}
     <Cylinder position={[0,.78,0]} size={[.57,.07,1.15]} material={m.stone}/>
-    {[-1,1].flatMap(x=>[-.65,0,.65].map(z=><group key={x+':'+z} position={[x*.8,0,z]} rotation={[0,-x*Math.PI/2,0]}><DiningChair m={m}/></group>))}
+    {[-1,1].flatMap(x=>rows.map(z=><group key={x+':'+z} position={[x*.8,0,z]} rotation={[0,-x*Math.PI/2,0]}><DiningChair m={m}/></group>))}
     {[-1,1].map(z=><group key={z} position={[0,0,z*1.24]} rotation={[0,z===1?Math.PI:0,0]}><DiningChair m={m}/></group>)}
     {/* Each setting faces its chair; inset the end settings from the oval edge. */}
-    {[-1,1].flatMap(side=>[-.6,0,.6].map(z=><Place key={side+':'+z} position={[side*.25,.825,z]} rotation={side*Math.PI/2} m={m}/>))}
+    {[-1,1].flatMap(side=>(seats===6?[-.45,.45]:[-.6,0,.6]).map(z=><Place key={side+':'+z} position={[side*.25,.825,z]} rotation={side*Math.PI/2} m={m}/>))}
+    {seats===6&&[-1,1].map(z=><Place key={'end'+z} position={[0,.825,z*.83]} rotation={z===1?0:Math.PI} m={m}/>)}
     {[-.3,.3].map(z=><group key={z} position={[0,.816,z]}><BorsokBowl m={m}/></group>)}
   </>;
 }
@@ -149,6 +151,16 @@ function KitchenTable({item,m}) {return <group scale={[item.size[0]/1.78,1,item.
     <group position={[s*.155,.825,.17]} scale={[.82,1,.82]}><Place rotation={s*Math.PI/2} m={m}/></group>
   </group>)}
   <group position={[0,.818,-.35]}><BorsokBowl m={m}/></group>
+</group>;}
+
+function RoundDining({item,m}) {return <group scale={[item.size[0]/2.35,1,item.size[2]/2.35]} name="round-dining-four-seats">
+  <Cylinder position={[0,.38,0]} size={[.22,.73,.22]} material={m.walnut}/>
+  <Cylinder position={[0,.78,0]} size={[.62,.07,.62]} material={m.walnut}/>
+  {[0,1,2,3].map(i=>{const a=i*Math.PI/2;return <group key={i} rotation={[0,a,0]}>
+    <group position={[0,0,.845]} rotation={[0,Math.PI,0]}><DiningChair m={m}/></group>
+    <group position={[0,.825,.35]} scale={[.88,1,.88]}><Place rotation={0} m={m}/></group>
+  </group>;})}
+  <group position={[0,.816,0]}><BorsokBowl m={m}/></group>
 </group>;}
 
 function Kitchen({item,m,mode}) {
@@ -235,8 +247,11 @@ export default function Furniture({item,m,state,player,mode,activeRoom,quality,r
   const [w,h,d]=item.size;
   const content = {
     bed:()=> <Bed item={item} m={m}/>, sofa:()=> <Sofa item={item} m={m}/>, hallStorage:()=> <HallStorage item={item} m={m}/>,
-    dining:()=> <group scale={[w/2.2,1,d/3]}><Dining m={m}/></group>, diningCompact:()=> <KitchenTable item={item} m={m}/>, breakfast:()=> <KitchenTable item={item} m={m}/>, kitchen:()=> <group scale={[w/3.7,1,1]}><Kitchen item={{...item,size:[3.7,h,d]}} m={m} mode={mode}/></group>,
+    dining:()=> <group scale={[w/2.2,1,d/3]}><Dining m={m} seats={item.seats}/></group>, diningCompact:()=> <KitchenTable item={item} m={m}/>, breakfast:()=> <KitchenTable item={item} m={m}/>, kitchen:()=> <group scale={[w/3.7,1,1]}><Kitchen item={{...item,size:[3.7,h,d]}} m={m} mode={mode}/></group>,
     chair:()=> <Chair m={m}/>, plant:()=> <Plant item={item} m={m}/>,
+    diningRound:()=> <RoundDining item={item} m={m}/>,
+    shelf:()=> <><Box position={[0,h/2,-d/2+.02]} size={[w,h,.04]} material={m.walnut}/>{[-1,1].map(s=><Box key={s} position={[s*(w/2-.02),h/2,0]} size={[.04,h,d]} material={m.walnut}/>)}{[0,.25,.5,.75,1].map(s=><Box key={s} position={[0,.03+s*(h-.06),0]} size={[w,.035,d]} material={m.oak}/>)}{[.27,.52,.77].map(s=><Box key={s} position={[-w*.12,h*s+.12,0]} size={[w*.55,.22,d*.8]} material={m.linen}/>)}</>,
+    desk:()=> <><Legs width={w-.15} depth={d-.1} height={h-.04} mat={m.dark}/><Soft position={[0,h-.025,0]} size={[w,.05,d]} material={m.oak}/><Box position={[w*.2,h+.12,-d*.1]} size={[.28,.2,.025]} material={m.dark}/><Box position={[w*.2,h+.014,d*.15]} size={[.28,.015,.12]} material={m.brushedNickel}/></>,
     cabinet:()=> <Cabinet item={item} m={m} state={state} player={player} mode={mode}/>,
     tv:()=> <group scale={[w/3.1,w/3.1,1]}><TV m={m} state={state} reducedMotion={reducedMotion}/></group>,
     wardrobe:()=> <Wardrobe item={item} m={m}/>,

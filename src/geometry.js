@@ -13,6 +13,7 @@ export function wallSegments(wall) {
       yaw: wall.axis === 'diagonal' ? wallYaw(wall) : 0,
     });
   }
+  if(wall.railing){add(0,wall.length,0,1.05);return result;}
   let end = 0;
   for (const o of [...(wall.openings || [])].sort((a,b) => a.at-b.at)) {
     add(end,o.at-end,0,APARTMENT.ceiling);

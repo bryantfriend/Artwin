@@ -15,9 +15,14 @@ const londonPlans=[
  {id:'london-three-room-110',name:'Three-room · Studio layout',area:110.13,bedrooms:2,bathrooms:3,viewer:'furnished-layout',openLiving:true,description:'A generous corner living and dining room, two bedrooms and private bathroom spaces.'},
  {id:'london-four-room-131',name:'Four-room · Studio layout',area:131.20,bedrooms:3,bathrooms:3,viewer:'furnished-layout',openLiving:true,description:'A distinctive bay-shaped living room, a dining space and three private bedrooms.'},
 ];
+const wiltonPlans=[
+ {id:'wilton-two-room-82',name:'Two-room residence',area:82.60,bedrooms:1,bathrooms:2,viewer:'furnished-layout',description:'A private bedroom, a separate living room, a generous kitchen and practical storage.'},
+ {id:'wilton-three-room-92',name:'Three-room · Studio layout',area:92.70,bedrooms:2,bathrooms:2,viewer:'furnished-layout',openLiving:true,description:'Two bedrooms, an open kitchen and living space, and a long balcony with a place to unwind.'},
+ {id:'wilton-four-room-122',name:'Four-room · Studio layout',area:122.10,bedrooms:3,bathrooms:2,viewer:'furnished-layout',openLiving:true,description:'Three private bedrooms, a shared kitchen and living room, and two bathrooms around a central hall.'},
+];
 export const projects=[
   {id:'london-square',name:'London Square',city:'Bishkek',address:'Tokombaev / Duisheev',type:'Residential',description:'English-inspired architecture in the upper part of Bishkek.',sourceUrl:'https://artwin.kg/london-square',plans:londonPlans},
-  {id:'wilton-park',name:'Wilton Park',city:'Bishkek',address:'Aaly Tokombaev · AUCA district',type:'Residential',description:'European-inspired living near the mountain foothills.',sourceUrl:'https://artwin.kg/wilton',plans:[]},
+  {id:'wilton-park',name:'Wilton Park',city:'Bishkek',address:'Aaly Tokombaev · AUCA district',type:'Residential',description:'European-inspired living near the mountain foothills.',sourceUrl:'https://artwin.kg/wilton',plans:wiltonPlans},
   {id:'seoul',name:'Seoul',city:'Bishkek',address:'Yunusaliev / Suvanberdiev',type:'Business centre',description:'A contemporary business address in Bishkek.',sourceUrl:'https://artwin.kg/seoul',plans:[]},
   {id:'urpaq-park',name:'Urpaq Park',city:'Bishkek',address:'Baitik Baatyr / Tokombaev',type:'Residential',description:'Green spaces and welcoming courtyards for everyday life.',sourceUrl:'https://artwin.kg/urpaq-park',plans:[]},
   {id:'hayat',name:'Hayat',city:'Bishkek',address:'Suyumbaev / Moskovskaya',type:'Residential',description:'City living close to the Central Mosque.',sourceUrl:'https://artwin.kg/hayat',plans:[]},

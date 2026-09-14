@@ -24,13 +24,18 @@ function Floor({room,m,mode}) {
     <mesh geometry={resources.geo} material={m[room.material|| (room.id==='kitchen'?'kitchenMarble':room.id==='hall'?'hallOak':room.type)]} receiveShadow/>
     <mesh geometry={resources.slab} material={m.wall} position={[0,-.19,0]} receiveShadow/>
     <RigidBody type="fixed" colliders={false}><CuboidCollider args={[resources.w/2,.1,resources.d/2]} position={[resources.x,-.1,resources.z]}/></RigidBody>
-    {mode==='walkthrough'&&<mesh geometry={resources.geo} position={[0,APARTMENT.ceiling,0]} rotation={[0,0,0]}><meshStandardMaterial color="#f4f1ea" side={THREE.DoubleSide}/></mesh>}
+    {mode==='walkthrough'&&!room.outdoor&&<mesh geometry={resources.geo} position={[0,APARTMENT.ceiling,0]} rotation={[0,0,0]}><meshStandardMaterial color="#f4f1ea" side={THREE.DoubleSide}/></mesh>}
   </>;
 }
 function Wall({wall,m,mode}) {
   const segments=useMemo(()=>wallSegments(wall),[wall]);
   const cut=mode==='dollhouse'&&!wall.tall;
   const cap=cut?(wall.id.startsWith('baths')||wall.id==='ensuite-north'?1.65:.86):APARTMENT.ceiling;
+  if(wall.railing){const p=wallPoint(wall,wall.length/2),count=Math.ceil(wall.length/.14);return <RigidBody type="fixed" colliders={false} position={[p[0],0,p[1]]} rotation={[0,wallYaw(wall),0]}>
+    <CuboidCollider args={[wall.length/2,.525,.08]} position={[0,.525,0]}/>
+    {[.12,1.025].map(y=><Box key={y} position={[0,y,0]} size={[wall.length,.05,.06]} material={m.dark}/>)}
+    {Array.from({length:count+1},(_,i)=><Box key={i} position={[-wall.length/2+i*wall.length/count,.56,0]} size={[.025,.94,.025]} material={m.dark}/>)}
+  </RigidBody>;}
   return <RigidBody type="fixed" colliders={false}>
     {segments.map((s,i)=> {
       const bottom=s.position[1]-s.size[1]/2, height=Math.max(0,Math.min(bottom+s.size[1],cap)-bottom);
@@ -99,7 +104,7 @@ export default function Architecture({layout,m,mode,state,player,reducedMotion,q
       <Box size={[.13,.2,.045]} material={m.white}/>
       <Box position={[0,0,.027]} size={[.065,.12,.018]} material={state.lights[s.room]!==false?m.bulb:m.dark}/>
     </group>)}
-    {rooms.filter(r=>!r.id.startsWith('loggia')).map(r=><group key={r.id}>
+    {rooms.filter(r=>!r.id.startsWith('loggia')&&!r.outdoor).map(r=><group key={r.id}>
       <pointLight castShadow={quality==='high'&&mode==='walkthrough'&&activeRoom===r.id} shadow-mapSize={[512,512]} shadow-bias={-.0005} shadow-normalBias={.035} shadow-radius={2} position={[r.label[0],2.45,r.label[1]]} color="#fff4e6" intensity={state.lights[r.id]===false?0:mode==='walkthrough'?11:3} distance={7} decay={2}/>
       {mode==='walkthrough'&&<Box position={[r.label[0],2.65,r.label[1]]} size={[.5,.04,.5]} material={state.lights[r.id]===false?m.linen:m.bulb}/>}
     </group>)}

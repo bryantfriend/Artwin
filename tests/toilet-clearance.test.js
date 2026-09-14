@@ -26,5 +26,5 @@ test('all furnished toilets have their cistern toward a wall and clear space in 
    }
   }
  }
- assert.equal(count,19);
+ assert.equal(count,25);
 });

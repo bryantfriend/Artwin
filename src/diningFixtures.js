@@ -1,5 +1,6 @@
 // Chandelier dimensions follow the tabletop, excluding the seating footprint.
 export function diningFixture(item){
+  if(item.kind==='diningRound')return {offset:[0,0],radii:[.32*item.size[0]/2.35,.32*item.size[2]/2.35]};
   if(item.kind==='dining')return {offset:[0,0],radii:[.33*item.size[0]/2.2,.7*item.size[2]/3]};
   if(item.kind==='diningCompact'||item.kind==='breakfast')return {offset:[0,0],radii:[.23*item.size[0]/1.78,.4*item.size[2]/1.2]};
   return null;

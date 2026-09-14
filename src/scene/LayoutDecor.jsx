@@ -26,7 +26,7 @@ export default function LayoutDecor({layout,m,mode}){
     }))}
     {layout.furniture.filter(f=>f.kind==='bed').map((f,i)=>{
       const back=[f.position[0]-Math.sin(f.rotation)*(f.size[2]/2+.1),f.position[2]-Math.cos(f.rotation)*(f.size[2]/2+.1)];
-      const cut=layout.theme==='london'&&mode==='dollhouse'&&layout.walls.some(w=>!w.tall&&w.exterior&&w.roomIds.includes(f.room)&&Math.abs((back[0]-w.start[0])*Math.sin(wallYaw(w))+(back[1]-w.start[1])*Math.cos(wallYaw(w)))<.25);
+      const cut=['london','wilton'].includes(layout.theme)&&mode==='dollhouse'&&layout.walls.some(w=>!w.tall&&w.exterior&&w.roomIds.includes(f.room)&&Math.abs((back[0]-w.start[0])*Math.sin(wallYaw(w))+(back[1]-w.start[1])*Math.cos(wallYaw(w)))<.25);
       return <group key={f.id} position={f.position} rotation={[0,f.rotation,0]}>
       <Box position={[0,cut?.7:1.35,-f.size[2]/2-.1]} size={[f.size[0]+.7,cut?1.3:2.55,.025]} material={m[f.feature]||m.padded}/>
       {!cut&&<Art position={[0,2.04,-f.size[2]/2-.075]} width={f.size[0]*.75} height={.65} index={i===0?3:5} m={m}/>}

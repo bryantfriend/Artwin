@@ -30,7 +30,7 @@ test('every dining table has a chandelier centered inside its room and table sur
   let count=0;
   for(const layout of layouts){
     const fixtures=diningFixtures(layout);
-    const tables=layout.furniture.filter(f=>['dining','diningCompact','breakfast'].includes(f.kind));
+    const tables=layout.furniture.filter(f=>['dining','diningCompact','breakfast','diningRound'].includes(f.kind));
     assert.deepEqual(fixtures.map(f=>f.id),tables.map(t=>t.id));
     for(const fixture of fixtures){
       const table=tables.find(t=>t.id===fixture.id),room=layout.rooms.find(r=>r.id===fixture.room);
@@ -38,7 +38,7 @@ test('every dining table has a chandelier centered inside its room and table sur
       const dx=fixture.position[0]-table.position[0],dz=fixture.position[2]-table.position[2],yaw=table.rotation||0;
       const local=[dx*Math.cos(yaw)-dz*Math.sin(yaw),dx*Math.sin(yaw)+dz*Math.cos(yaw)];
       // Measured tabletop centers/extents exclude the seating footprint.
-      const surface=['breakfast','diningCompact'].includes(table.kind)?[0,0,.35*table.size[0]/1.78,.6*table.size[2]/1.2]:[0,0,.57*table.size[0]/2.2,1.15*table.size[2]/3];
+      const surface=table.kind==='diningRound'?[0,0,.62*table.size[0]/2.35,.62*table.size[2]/2.35]:['breakfast','diningCompact'].includes(table.kind)?[0,0,.35*table.size[0]/1.78,.6*table.size[2]/1.2]:[0,0,.57*table.size[0]/2.2,1.15*table.size[2]/3];
       assert(Math.abs(local[0]-surface[0])<1e-8&&Math.abs(local[1]-surface[1])<1e-8,`${layout.id}/${table.id} is off center`);
       assert(fixture.radii[0]<surface[2]&&fixture.radii[1]<surface[3],'Chandelier extends past tabletop');
       for(let a=0;a<Math.PI*2;a+=Math.PI/8){
@@ -48,7 +48,7 @@ test('every dining table has a chandelier centered inside its room and table sur
     }
     count+=fixtures.length;
   }
-  assert.equal(count,12);
+  assert.equal(count,15);
 });
 
 test('52.10 seating faces the TV across the coffee table and keeps the old TV corner empty',()=>{

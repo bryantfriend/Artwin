@@ -14,9 +14,9 @@ function texture(kind) {
   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=1024;
   const c=canvas.getContext('2d');let seed=193;
   const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
-  if(kind==='wood'||kind==='londonFloor') {
+  if(['wood','londonFloor','wiltonFloor'].includes(kind)) {
     c.fillStyle='#d5c7b2';c.fillRect(0,0,512,1024);
-    const palette=kind==='londonFloor'?['#e3e0d8','#d8d6cf','#e8e5dc','#d0cec5','#e1ded5']:['#d9cbb6','#c6ad8e','#bea07b','#e0d5c4','#d2bda0','#b79a78'];
+    const palette=kind==='wiltonFloor'?['#d3c4b5','#c4b3a1','#ded1c1','#cdbdab','#d9cbba']:kind==='londonFloor'?['#e3e0d8','#d8d6cf','#e8e5dc','#d0cec5','#e1ded5']:['#d9cbb6','#c6ad8e','#bea07b','#e0d5c4','#d2bda0','#b79a78'];
     for(let col=0;col<8;col++) {
       for(let row=-1;row<3;row++) {c.fillStyle=palette[Math.floor(random()*palette.length)];c.fillRect(col*64+1,row*430+(col%3)*130,63,429);}
       for(let i=0;i<100;i++){const x=col*64+random()*63;c.strokeStyle=`rgba(66,43,25,${random()*(kind==='londonFloor'?.035:.10)})`;c.beginPath();c.moveTo(x,0);c.bezierCurveTo(x+5,300,x-5,700,x,1024);c.stroke();}
@@ -84,6 +84,20 @@ export function createMaterials(theme){
   materials.mirror=new THREE.MeshStandardMaterial({color:'#dedbd2',metalness:.6,roughness:.2});
   materials.bulb=new THREE.MeshStandardMaterial({color:'#fff7e5',emissive:'#ffe2ab',emissiveIntensity:.8});
   materials.screen=new THREE.MeshStandardMaterial({color:'#567b79',emissive:'#537c78',emissiveIntensity:.5});
+  if(theme==='wilton'){
+    materials.curtain.color.set('#b9b8b3');materials.sheer.color.set('#fafaf6');
+    materials.chairFabric.color.set('#486a70');materials.chairStitch.color.set('#739295');
+    materials.upholstery.color.set('#c7bcab');materials.sofaAccent.color.set('#6b655d');
+    materials.walnut.color.set('#665043');materials.padded.color.set('#9b9b99');
+    maps.wiltonFloor=texture('wiltonFloor');maps.wiltonFloor.repeat.set(2,2);
+    materials.wiltonFloor=new THREE.MeshStandardMaterial({map:maps.wiltonFloor,roughness:.68});
+    for(const [key,color] of Object.entries({charcoal:'#41494e',pearl:'#aca9a2',mocha:'#6d6051'})){
+      const cloth=document.createElement('canvas');cloth.width=cloth.height=256;const paint=cloth.getContext('2d');
+      paint.fillStyle=color;paint.fillRect(0,0,256,256);paint.fillStyle='#e6e3db';paint.fillRect(0,198,256,58);
+      maps[key+'Bedding']=new THREE.CanvasTexture(cloth);maps[key+'Bedding'].colorSpace=THREE.SRGBColorSpace;
+      materials[key+'Bedding']=new THREE.MeshPhysicalMaterial({map:maps[key+'Bedding'],roughness:.96,bumpMap:maps.weave,bumpScale:.008,sheen:.3,side:THREE.DoubleSide});
+    }
+  }
   if(theme==='london'){
     materials.curtain.color.set('#20483c');
     materials.chairFabric.color.set('#666a60');materials.chairStitch.color.set('#777e70');

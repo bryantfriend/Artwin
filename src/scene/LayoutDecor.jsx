@@ -32,6 +32,6 @@ export default function LayoutDecor({layout,m,mode}){
     </group>)}
     {layout.decor.filter(d=>d.kind==='rug').map((d,i)=><Rug key={i} {...d} m={m}/>)}
     {mode==='walkthrough'&&layout.decor.filter(d=>d.kind==='art').map((d,i)=><Art key={i} {...d} m={m}/>)}
-    {layout.furniture.filter(f=>['nightstand','kitchen','breakfast','vanity','cabinet'].includes(f.kind)).map(f=>f.kind==='kitchen'?<group key={f.id} position={f.position} rotation={[0,f.rotation,0]} scale={[f.size[0]/3.7,1,1]}><SmallDetails item={{...f,position:[0,0,0],rotation:0}} m={m}/></group>:<SmallDetails key={f.id} item={f} m={m}/>)}
+    {layout.furniture.filter(f=>['nightstand','kitchen','vanity','cabinet'].includes(f.kind)).map(f=>f.kind==='kitchen'?<group key={f.id} position={f.position} rotation={[0,f.rotation,0]} scale={[f.size[0]/3.7,1,1]}><SmallDetails item={{...f,position:[0,0,0],rotation:0}} m={m}/></group>:<SmallDetails key={f.id} item={f} m={m}/>)}
   </>;
 }

@@ -2,7 +2,29 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {layouts,getLayout} from '../src/layouts/index.js';
 import {diningFixtures} from '../src/diningFixtures.js';
-import {pointInPolygon,circleIntersectsBox} from '../src/geometry.js';
+import {pointInPolygon,circleIntersectsBox,wallSegments} from '../src/geometry.js';
+
+test('all six kitchen tables meet a wall at their short end and their seating clears other furniture',()=>{
+  let count=0;
+  const bounds=f=>{const c=Math.abs(Math.cos(f.rotation||0)),s=Math.abs(Math.sin(f.rotation||0));return {x:f.position[0],z:f.position[2],w:f.size[0]*c+f.size[2]*s,d:f.size[0]*s+f.size[2]*c};};
+  for(const layout of layouts)for(const table of layout.furniture.filter(f=>['breakfast','diningCompact'].includes(f.kind))){
+    count++;
+    const yaw=table.rotation||0,[x,,z]=table.position,context=`${layout.id}/${table.id}`;
+    const walls=layout.walls.flatMap(w=>wallSegments(w)).filter(s=>s.position[1]-s.size[1]/2<.78).map(s=>({x:s.position[0],z:s.position[2],width:s.size[0],depth:s.size[2]}));
+    // Sample across the short tabletop edge, including under kitchen windows.
+    for(const side of [-.25,0,.25]){
+      const edge=[x+side*Math.cos(yaw)-table.size[2]/2*Math.sin(yaw),z-side*Math.sin(yaw)-table.size[2]/2*Math.cos(yaw)];
+      assert(!walls.some(w=>circleIntersectsBox(...edge,.005,w)),`${context}: tabletop penetrates wall`);
+      assert([.02,.04,.06,.08].some(gap=>walls.some(w=>circleIntersectsBox(edge[0]-gap*Math.sin(yaw),edge[1]-gap*Math.cos(yaw),.005,w))),`${context}: short end is not against wall`);
+    }
+    const a=bounds(table);
+    for(const item of layout.furniture.filter(f=>f!==table)){
+      const b=bounds(item);
+      assert(Math.abs(a.x-b.x)>=(a.w+b.w)/2-.001||Math.abs(a.z-b.z)>=(a.d+b.d)/2-.001,`${context}: seating overlaps ${item.id}`);
+    }
+  }
+  assert.equal(count,6);
+});
 
 test('every dining table has a chandelier centered inside its room and table surface',()=>{
   let count=0;
@@ -16,7 +38,7 @@ test('every dining table has a chandelier centered inside its room and table sur
       const dx=fixture.position[0]-table.position[0],dz=fixture.position[2]-table.position[2],yaw=table.rotation||0;
       const local=[dx*Math.cos(yaw)-dz*Math.sin(yaw),dx*Math.sin(yaw)+dz*Math.cos(yaw)];
       // Measured tabletop centers/extents exclude the seating footprint.
-      const surface=table.kind==='breakfast'?[-.25,0,.85/2,1.6/2]:table.kind==='diningCompact'?[0,-.2*table.size[2]/1.6,.65*table.size[0]/1.55,.4*table.size[2]/1.6]:[0,0,.57*table.size[0]/2.2,1.15*table.size[2]/3];
+      const surface=['breakfast','diningCompact'].includes(table.kind)?[0,0,.35*table.size[0]/1.78,.6*table.size[2]/1.2]:[0,0,.57*table.size[0]/2.2,1.15*table.size[2]/3];
       assert(Math.abs(local[0]-surface[0])<1e-8&&Math.abs(local[1]-surface[1])<1e-8,`${layout.id}/${table.id} is off center`);
       assert(fixture.radii[0]<surface[2]&&fixture.radii[1]<surface[3],'Chandelier extends past tabletop');
       for(let a=0;a<Math.PI*2;a+=Math.PI/8){

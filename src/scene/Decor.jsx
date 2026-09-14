@@ -84,7 +84,6 @@ export function SmallDetails({item,m}){
       <group position={[-1.6,.97,.03]}><Vase m={m}/></group>
       <Cylinder position={[1.3,1.08,.12]} size={[.045,.22,.045]} material={m.ceramic}/>
     </>}
-    {item.kind==='breakfast'&&<group position={[-.3,.835,.45]}><Cylinder position={[0,.02,0]} size={[.15,.035,.15]} material={m.oak}/>{[-.06,.02,.08].map((x,i)=><mesh key={x} geometry={sphereGeometry} position={[x,.075,i*.03-.035]} scale={[.055,.055,.055]} material={i%2?m.terracotta:m.sage}/>)}</group>}
     {item.kind==='vanity'&&<>
       <Soft position={[-w*.39,.91,.04]} size={[w*.18,.07,.19]} material={m.linen}/>
       <Cylinder position={[w*.4,.955,.02]} size={[.025,.15,.025]} material={m.terracotta}/><Box position={[w*.4,1.035,.025]} size={[.045,.012,.016]} material={m.brass}/>
@@ -119,7 +118,7 @@ export default function Decor({m,mode}) {
     {mode==='walkthrough'&&<Art position={[5.8,1.8,.11]} width={.65} height={.85} index={2} m={m}/>}
     {mode==='walkthrough'&&<Art position={[1.2,1.85,7.39]} width={.48} height={.65} rotation={Math.PI} index={4} m={m}/>}
     {mode==='walkthrough'&&<Art position={[.5,1.85,9.29]} width={.48} height={.65} rotation={Math.PI} index={2} m={m}/>}
-    {furniture.filter(f=>['nightstand','kitchen','breakfast','vanity','cabinet'].includes(f.kind)).map(item=><SmallDetails key={item.id} item={item} m={m}/>)}
+    {furniture.filter(f=>['nightstand','kitchen','vanity','cabinet'].includes(f.kind)).map(item=><SmallDetails key={item.id} item={item} m={m}/>)}
     <group position={[.65,.64,4.75]}><Soft position={[0,0,0]} size={[.18,.08,.4]} material={m.linen}/></group>
   </>;
 }

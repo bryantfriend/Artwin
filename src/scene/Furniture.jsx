@@ -140,20 +140,16 @@ function Dining({m}) {
     {[-.3,.3].map(z=><group key={z} position={[0,.816,z]}><BorsokBowl m={m}/></group>)}
   </>;
 }
-function Breakfast({m}) {return <>
-  <group position={[-.25,0,0]}><Legs width={.8} depth={1.5} height={.75} mat={m.brass}/><Box position={[0,.79,0]} size={[.85,.07,1.6]} material={m.stone}/></group>
-  {[-.46,.46].map(z=><group key={z} position={[.3,0,z]} rotation={[0,-Math.PI/2,0]}><Chair m={m}/></group>)}
-</>;}
-
-function DiningCompact({m}) {return <>
-  <group position={[0,0,-.2]}><Legs width={1.28} depth={.8} height={.77} mat={m.walnut}/></group>
-  <Soft position={[0,.78,-.2]} size={[1.3,.07,.8]} material={m.stone}/>
+// The short -Z end meets the wall; both diners face across the long sides.
+function KitchenTable({item,m}) {return <group scale={[item.size[0]/1.78,1,item.size[2]/1.2]} name="kitchen-table-two-seats">
+  <Legs width={.65} depth={1.1} height={.77} mat={item.kind==='breakfast'?m.brass:m.walnut}/>
+  <Soft position={[0,.78,0]} size={[.7,.07,1.2]} material={m.stone}/>
   {[-1,1].map(s=><group key={s}>
-    <group position={[s*.36,0,.51]} rotation={[0,Math.PI,0]}><DiningChair m={m}/></group>
-    <Place position={[s*.34,.825,-.04]} rotation={Math.PI} m={m}/>
+    <group position={[s*.55,0,.12]} rotation={[0,-s*Math.PI/2,0]}><DiningChair m={m}/></group>
+    <group position={[s*.155,.825,.17]} scale={[.82,1,.82]}><Place rotation={s*Math.PI/2} m={m}/></group>
   </group>)}
-  <group position={[0,.818,-.42]}><BorsokBowl m={m}/></group>
-</>;}
+  <group position={[0,.818,-.35]}><BorsokBowl m={m}/></group>
+</group>;}
 
 function Kitchen({item,m,mode}) {
   const w=item.size[0];
@@ -239,7 +235,7 @@ export default function Furniture({item,m,state,player,mode,activeRoom,quality,r
   const [w,h,d]=item.size;
   const content = {
     bed:()=> <Bed item={item} m={m}/>, sofa:()=> <Sofa item={item} m={m}/>, hallStorage:()=> <HallStorage item={item} m={m}/>,
-    dining:()=> <group scale={[w/2.2,1,d/3]}><Dining m={m}/></group>, diningCompact:()=> <group scale={[w/1.55,1,d/1.6]}><DiningCompact m={m}/></group>, breakfast:()=> <Breakfast m={m}/>, kitchen:()=> <group scale={[w/3.7,1,1]}><Kitchen item={{...item,size:[3.7,h,d]}} m={m} mode={mode}/></group>,
+    dining:()=> <group scale={[w/2.2,1,d/3]}><Dining m={m}/></group>, diningCompact:()=> <KitchenTable item={item} m={m}/>, breakfast:()=> <KitchenTable item={item} m={m}/>, kitchen:()=> <group scale={[w/3.7,1,1]}><Kitchen item={{...item,size:[3.7,h,d]}} m={m} mode={mode}/></group>,
     chair:()=> <Chair m={m}/>, plant:()=> <Plant item={item} m={m}/>,
     cabinet:()=> <Cabinet item={item} m={m} state={state} player={player} mode={mode}/>,
     tv:()=> <group scale={[w/3.1,w/3.1,1]}><TV m={m} state={state} reducedMotion={reducedMotion}/></group>,

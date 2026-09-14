@@ -254,10 +254,17 @@ The 52.10 m² apartment places a gray sofa beside the dining table, an oval coff
 
 Freestanding wardrobes share two inset doors, long silver handles, a plinth and short feet. Dark wardrobes use a matte black finish; other wardrobes keep their original finish. Fitted hall joinery remains a separate model.
 
-All eight dining and breakfast tables across the six apartments have a chandelier in walkthrough and guided-tour modes. Fixture placement follows the actual tabletop center, rotation and dimensions, including off-center breakfast tables. Warm lights follow the room's existing light state. Chandelier light nodes remain mounted with zero intensity in dollhouse mode to avoid changing shader light counts, and they do not add shadow-map passes. Run `scripts/browser-dining.js` with Playwright CLI against `npm run serve:pages` to capture every fixture, the 52.10 seating and wardrobe, the room-light toggle, and the mobile tour.
+All eight dining and breakfast tables across the six apartments have a chandelier in walkthrough and guided-tour modes. Fixture placement follows the actual tabletop center, rotation and dimensions. Warm lights follow the room's existing light state. Chandelier light nodes remain mounted with zero intensity in dollhouse mode to avoid changing shader light counts, and they do not add shadow-map passes. Run `scripts/browser-dining.js` with Playwright CLI against `npm run serve:pages` to capture every fixture, the 52.10 seating and wardrobe, the room-light toggle, and the mobile tour.
 
 ## Mobile return navigation and bathrooms
 
 At phone widths, the arrow beside the Artwin logo returns directly to the current project’s floor plans in every viewing mode, including direct apartment links. The combined logo/back link has a 44 px touch height and translated accessible label.
 
 Toilet cisterns face the wall and bowls face usable bathroom space in all six layouts. The toilet geometry now follows each fixture’s declared dimensions. The 82.30 m² en suite uses a compact toilet and an outward-opening door; nearby storage is narrower and shifted to keep the path clear. `tests/toilet-clearance.test.js` checks all ten toilets for rear-wall alignment, intersections and a clear approach zone; this is a visualization check rather than a building-code certification. `scripts/browser-navigation-bathrooms.js` checks bathroom views, the en-suite exit, mobile back controls and official booking destinations.
+
+
+## Kitchen table seating
+
+All six kitchen and combined kitchen/living table sets have one short end against a wall, with two upholstered chairs facing each other across the long sides. Breakfast and compact dining tables share the same model, including inset place settings and a bowl of borsok. The chandelier follows the table rotation and dimensions.
+
+The compact layouts use small furniture adjustments to preserve circulation: the 52.10 m² seating group shifts slightly and its living-room door opens toward the hall; the 70.33 m² media unit is smaller and wall mounted beside the table; the 82.30 m² sofa shifts to clear the dining chairs. Room boundaries and doorway locations are unchanged. The kitchen-table checks in `tests/dining-fixtures.test.js` cover wall alignment, furniture separation and chandelier placement, alongside the existing navigation/physics tests.

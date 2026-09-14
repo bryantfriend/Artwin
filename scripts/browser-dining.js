@@ -24,7 +24,7 @@ async(page)=>{
   await page.goto('about:blank');await page.setViewportSize({width:1440,height:1000});
   await page.goto('http://127.0.0.1:4173/Artwin/#/projects/tokyo-city');
   await page.locator('.welcome-dialog .language-picker select').selectOption('en-US');await page.locator('.welcome-dialog .dialog-close').click();
-  const plans=[['two-room-euro-52',[['living',3.1,4.02]]],['three-room-euro-70',[['living',2.95,5.13]]],['two-room-78',[['kitchen',12.45,5.25]]],['three-room-euro-82',[['living',4.8,4.75]]],['three-room-106',[['kitchen',1.91,2.7],['living',5.15,9.5]]],['four-room-134',[['kitchen',5.275,2.6],['living',8.1,14.4]]]];
+  const plans=[['two-room-euro-52',[['living',3,3.865]]],['three-room-euro-70',[['living',1.715,5.82]]],['two-room-78',[['kitchen',12.45,5.685]]],['three-room-euro-82',[['living',3.765,5.55]]],['three-room-106',[['kitchen',2.385,2.7],['living',5.15,9.5]]],['four-room-134',[['kitchen',5.685,2.2],['living',8.1,14.4]]]];
   for(const [id,views] of plans){
    await page.goto('http://127.0.0.1:4173/Artwin/#/projects/tokyo-city/apartments/'+id);
    await page.waitForFunction(()=>document.querySelector('.enter-button')?.disabled===false,null,{timeout:90000});
@@ -32,7 +32,9 @@ async(page)=>{
    await page.getByRole('button',{name:'Step inside',exact:true}).click({noWaitAfter:true});
    await page.locator('.plan-player').waitFor();
    for(const [room,x,z] of views){
-    await select(room);await aim(x,1.5,z);
+    await select(room);await aim(x,.9,z);
+    await page.screenshot({path:`output/playwright/kitchen-table-${id}-${room}.png`});
+    await aim(x,1.5,z);
     await page.screenshot({path:`output/playwright/chandelier-${id}-${room}.png`});
     results.push(`${id}/${room}`);
    }
@@ -44,13 +46,22 @@ async(page)=>{
     await page.getByRole('button',{name:'E Turn television on',exact:true}).waitFor();await page.keyboard.press('e');
     await page.getByRole('button',{name:'E Turn television off',exact:true}).waitFor();await page.waitForTimeout(500);
     await page.screenshot({path:'output/playwright/relocated-tv-52.png'});
+    await select('living');
+    for(const [x,z] of [[4.1,4.62],[4.1,3.83]]){
+     await aim(x,1.645,z);await page.keyboard.down('w');
+     try{await page.waitForFunction(([x,z])=>{const p=document.querySelector('.plan-player').getAttribute('transform').match(/-?\d+(?:\.\d+)?/g).map(Number);return Math.hypot(p[0]-x,p[1]-z)<.09;},[x,z],{timeout:5000});}finally{await page.keyboard.up('w');}
+    }
+    await aim(4.5,1.05,3.82);await page.getByRole('button',{name:'E Open Living room door',exact:true}).waitFor();await page.keyboard.press('e');await page.waitForTimeout(800);
+    await aim(5.65,1.645,3.83);await page.keyboard.down('w');
+    try{await page.waitForFunction(()=>Number(document.querySelector('.plan-player').getAttribute('transform').match(/-?\d+(?:\.\d+)?/g)[0])>5.5,null,{timeout:5000});}finally{await page.keyboard.up('w');}
+    await page.screenshot({path:'output/playwright/kitchen-table-52-door-exit.png'});
     await select('primary');await aim(5.3,1.35,.7);await page.screenshot({path:'output/playwright/black-cabinet-52.png'});
    }
    if(id==='four-room-134'){
     await select('kitchen');await aim(5.52,1.25,5.37);
     await page.getByRole('button',{name:'E Turn Kitchen & dining light off',exact:true}).waitFor();await page.keyboard.press('e');
     await page.getByRole('button',{name:'E Turn Kitchen & dining light on',exact:true}).waitFor();
-    await aim(5.275,1.5,2.6);await page.screenshot({path:'output/playwright/chandelier-light-off.png'});
+    await aim(5.685,1.5,2.2);await page.screenshot({path:'output/playwright/chandelier-light-off.png'});
     await aim(5.52,1.25,5.37);await page.keyboard.press('e');
     await page.getByRole('button',{name:'E Turn Kitchen & dining light off',exact:true}).waitFor();
    }

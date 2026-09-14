@@ -1,8 +1,7 @@
-// Table centers differ from furniture footprints because the latter include chairs.
+// Chandelier dimensions follow the tabletop, excluding the seating footprint.
 export function diningFixture(item){
   if(item.kind==='dining')return {offset:[0,0],radii:[.33*item.size[0]/2.2,.7*item.size[2]/3]};
-  if(item.kind==='diningCompact')return {offset:[0,-.2*item.size[2]/1.6],radii:[.43*item.size[0]/1.55,.24*item.size[2]/1.6]};
-  if(item.kind==='breakfast')return {offset:[-.25,0],radii:[.25,.52]};
+  if(item.kind==='diningCompact'||item.kind==='breakfast')return {offset:[0,0],radii:[.23*item.size[0]/1.78,.4*item.size[2]/1.2]};
   return null;
 }
 

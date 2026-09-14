@@ -70,7 +70,7 @@ export const furniture = [
   {id:'hall-console',kind:'hallStorage',position:[3.35,0,7.35],rotation:Math.PI/2,size:[1.7,2.15,.45]},
   {id:'kitchen-cabinets',kind:'kitchen',position:[3.76,0,2.5],rotation:Math.PI/2,size:[3.7,.92,.62]},
   {id:'dining',kind:'dining',position:[8.1,0,14.4],rotation:Math.PI/2,size:[2.2,.8,3]},
-  {id:'breakfast',kind:'breakfast',position:[5.525,0,2.6],size:[1.4,.82,2]},
+  {id:'breakfast',kind:'breakfast',position:[5.685,0,2.2],rotation:-Math.PI/2,size:[1.78,.98,1.2]},
   {id:'nightstand-north-2',kind:'nightstand',position:[.4,0,2.75],rotation:Math.PI/2,size:[.45,.55,.5]},
   {id:'nightstand-primary-2',kind:'nightstand',position:[.4,0,11.45],size:[.45,.55,.5]},
   {id:'nightstand-south-2',kind:'nightstand',position:[3.8,0,11.55],size:[.45,.55,.5]},

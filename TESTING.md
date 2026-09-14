@@ -147,3 +147,11 @@ All twelve bathroom destinations were opened in the production viewer and screen
 Consultation buttons now link directly to `https://artwin.kg/schedule-call`. The welcome CTA and legacy consultation hash redirects were checked by intercepting the official destination with a minimal test response: this verifies navigation without submitting a booking or loading external trackers. The collection browser suite passed language switching, slideshow, all six previews, filtering, sorting, favorites, comparison, social links and responsive layouts. Completed checks reported no runtime/console errors or missing requests/assets. Existing upstream deprecation warnings remain. These checks use desktop Chrome with resized viewports, not physical phones.
 
 All six 3D preview assets were refreshed. The final production build and strict `/Artwin/` asset check passed; unknown paths still return 404 and no server-side rewrites are used.
+
+## Kitchen tables against the wall — 14 September 2026
+
+All six kitchen table sets now put a short tabletop end against a wall, with two chairs facing each other across the long sides. Shared place settings and borsok bowls remain on the tabletop, and chandeliers follow the new positions. The compact apartments include small furniture and door-swing adjustments to preserve access; room outlines and doorway locations remain unchanged.
+
+All **38 Node tests passed**, including the new six-table wall-alignment and furniture-separation check, chandelier alignment, every room's open-door walking path and actual Rapier destination queries. The production dining browser suite reviewed all six kitchen arrangements, all eight table chandeliers, the relocated 52.10 TV interaction, the kitchen light switch and the mobile guided tour at 390 × 844. It also physically walked around the 52.10 table, opened the living-room door and exited into the hall. The final run reported no runtime/console errors, failed requests or HTTP errors. Chair/drape clearance and the centered tabletop decorations were visually reviewed. Checks use desktop Chrome and resized viewports, not physical phones; existing upstream deprecation warnings remain.
+
+The six gallery previews were recaptured from these production models. The final build and strict `/Artwin/` asset check passed with those refreshed assets.

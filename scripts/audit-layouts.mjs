@@ -1,7 +1,7 @@
 import {pathToFileURL} from 'node:url';
 import {additionalLayouts} from '../src/layouts/tokyoLayouts.js';
 import {pointInPolygon,circleIntersectsBox,wallSegments,doorPose} from '../src/geometry.js';
-export function obstacles(layout){return [...layout.walls.flatMap(w=>wallSegments(w).filter(s=>s.position[1]-s.size[1]/2<1.6).map(s=>({x:s.position[0],z:s.position[2],width:s.size[0],depth:s.size[2]}))),...layout.doors.map(d=>({...doorPose(d,d.swing*Math.PI/2),width:d.width,depth:.07})),...layout.furniture.map(f=>({x:f.position[0],z:f.position[2],width:f.size[0],depth:f.size[2],yaw:f.rotation}))];}
+export function obstacles(layout){return [...layout.walls.flatMap(w=>wallSegments(w).filter(s=>s.position[1]-s.size[1]/2<1.6).map(s=>({x:s.position[0],z:s.position[2],width:s.size[0],depth:s.size[2],yaw:s.yaw}))),...layout.doors.map(d=>({...doorPose(d,d.swing*Math.PI/2),width:d.width,depth:.07})),...layout.furniture.map(f=>({x:f.position[0],z:f.position[2],width:f.size[0],depth:f.size[2],yaw:f.rotation}))];}
 export function connectedRooms(layout){
  const boxes=obstacles(layout),b=layout.bounds,step=.1,nx=Math.ceil((b.maxX-b.minX)/step),nz=Math.ceil((b.maxZ-b.minZ)/step),free=new Uint8Array(nx*nz),visited=new Uint8Array(nx*nz);
  const world=(ix,iz)=>[b.minX+(ix+.5)*step,b.minZ+(iz+.5)*step];

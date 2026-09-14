@@ -4,6 +4,7 @@ import RAPIER from '@dimforge/rapier3d-compat';
 import { APARTMENT, rooms, walls, doors, furniture } from '../src/apartmentConfig.js';
 import { wallSegments, doorPose } from '../src/geometry.js';
 import { createCharacterController, computeCharacterMovement } from '../src/physicsController.js';
+import {londonLayouts} from '../src/layouts/londonLayouts.js';
 import {additionalLayouts} from '../src/layouts/tokyoLayouts.js';
 
 await RAPIER.init();
@@ -16,7 +17,7 @@ function setup(open=false,layout={rooms,walls,doors,furniture}) {
     const floor=world.createRigidBody(RAPIER.RigidBodyDesc.fixed());
     world.createCollider(RAPIER.ColliderDesc.cuboid(w/2,.1,d/2).setTranslation(x,-.1,z),floor);
   }
-  for(const wall of walls)for(const s of wallSegments(wall))world.createCollider(RAPIER.ColliderDesc.cuboid(...s.size.map(v=>v/2)).setTranslation(...s.position));
+  for(const wall of walls)for(const s of wallSegments(wall))world.createCollider(RAPIER.ColliderDesc.cuboid(...s.size.map(v=>v/2)).setTranslation(...s.position).setRotation({x:0,y:Math.sin((s.yaw||0)/2),z:0,w:Math.cos((s.yaw||0)/2)}));
   for(const door of doors) {
     const p=doorPose(door,open?door.swing*Math.PI/2:0);
     world.createCollider(RAPIER.ColliderDesc.cuboid(door.width/2,1.08,.035).setTranslation(p.x,1.08,p.z).setRotation({x:0,y:Math.sin(p.yaw/2),z:0,w:Math.cos(p.yaw/2)}));
@@ -73,7 +74,7 @@ test('capsule slides along a wall and stays above the floor',()=>{
   }finally{world.free();}
 });
 
-for(const layout of additionalLayouts)test(`${layout.APARTMENT.advertisedArea} m²: Rapier accepts every room destination with doors open and closed`,()=>{
+for(const layout of [...additionalLayouts,...londonLayouts])test(`${layout.APARTMENT.advertisedArea} m²: Rapier accepts every room destination with doors open and closed`,()=>{
   for(const open of [false,true]){
     const world=setup(open,layout);
     try{for(const r of layout.rooms){

@@ -9,7 +9,7 @@ import {connectedRooms} from '../scripts/audit-layouts.mjs';
 test('Tokyo City exposes six distinct furnished plans, without duplicating the 82.30 reference',()=>{
  const project=projects.find(p=>p.id==='tokyo-city');
  assert.deepEqual(project.plans.map(p=>p.area),[52.10,70.33,78.83,82.30,106.01,134.68]);
- assert.equal(new Set(layouts.map(l=>JSON.stringify(l.rooms.map(r=>r.polygon)))).size,6);
+ assert.equal(new Set(project.plans.map(p=>JSON.stringify(getLayout(p.id).rooms.map(r=>r.polygon)))).size,6);
  for(const plan of project.plans){
   const l=getLayout(plan.id);assert(l);assert.equal(Number(l.APARTMENT.advertisedArea),plan.area);
   assert.equal(l.furniture.filter(f=>f.kind==='bed').length,plan.bedrooms);

@@ -48,7 +48,7 @@ test('every dining table has a chandelier centered inside its room and table sur
     }
     count+=fixtures.length;
   }
-  assert.equal(count,8);
+  assert.equal(count,12);
 });
 
 test('52.10 seating faces the TV across the coffee table and keeps the old TV corner empty',()=>{

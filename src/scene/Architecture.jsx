@@ -2,7 +2,7 @@ import React, { useMemo, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { RigidBody, CuboidCollider, useBeforePhysicsStep } from '@react-three/rapier';
 import { APARTMENT } from '../apartmentConfig.js';
-import { wallSegments, doorPose, doorSweepBlocked } from '../geometry.js';
+import { wallSegments, doorPose, doorSweepBlocked, wallPoint, wallYaw } from '../geometry.js';
 import Decor from './Decor.jsx';
 import LayoutDecor from './LayoutDecor.jsx';
 import DiningChandeliers from './DiningChandeliers.jsx';
@@ -21,7 +21,7 @@ function Floor({room,m,mode}) {
   },[room]);
   useEffect(()=>()=>{resources.geo.dispose();resources.slab.dispose();},[resources]);
   return <>
-    <mesh geometry={resources.geo} material={m[room.id==='kitchen'?'kitchenMarble':room.id==='hall'?'hallOak':room.type]} receiveShadow/>
+    <mesh geometry={resources.geo} material={m[room.material|| (room.id==='kitchen'?'kitchenMarble':room.id==='hall'?'hallOak':room.type)]} receiveShadow/>
     <mesh geometry={resources.slab} material={m.wall} position={[0,-.19,0]} receiveShadow/>
     <RigidBody type="fixed" colliders={false}><CuboidCollider args={[resources.w/2,.1,resources.d/2]} position={[resources.x,-.1,resources.z]}/></RigidBody>
     {mode==='walkthrough'&&<mesh geometry={resources.geo} position={[0,APARTMENT.ceiling,0]} rotation={[0,0,0]}><meshStandardMaterial color="#f4f1ea" side={THREE.DoubleSide}/></mesh>}
@@ -35,17 +35,17 @@ function Wall({wall,m,mode}) {
     {segments.map((s,i)=> {
       const bottom=s.position[1]-s.size[1]/2, height=Math.max(0,Math.min(bottom+s.size[1],cap)-bottom);
       return <React.Fragment key={i}>
-        <CuboidCollider args={s.size.map(v=>v/2)} position={s.position}/>
+        <CuboidCollider args={s.size.map(v=>v/2)} position={s.position} rotation={[0,s.yaw,0]}/>
         {height>0&&<>
-          <Box position={[s.position[0],bottom+height/2,s.position[2]]} size={[s.size[0],height,s.size[2]]} material={m.wall}/>
-          <Box position={[s.position[0],bottom+height+.006,s.position[2]]} size={[s.size[0]+.01,.014,s.size[2]+.01]} material={m.dark}/>
-          {bottom===0&&<Box position={[s.position[0],.055,s.position[2]]} size={[s.size[0]+.024,.11,s.size[2]+.024]} material={m.trim}/>}
+          <Box rotation={[0,s.yaw,0]} position={[s.position[0],bottom+height/2,s.position[2]]} size={[s.size[0],height,s.size[2]]} material={m.wall}/>
+          <Box rotation={[0,s.yaw,0]} position={[s.position[0],bottom+height+.006,s.position[2]]} size={[s.size[0]+.01,.014,s.size[2]+.01]} material={m.dark}/>
+          {bottom===0&&<Box rotation={[0,s.yaw,0]} position={[s.position[0],.055,s.position[2]]} size={[s.size[0]+.024,.11,s.size[2]+.024]} material={m.trim}/>}
         </>}
       </React.Fragment>;
     })}
     {(wall.openings||[]).map((o,i)=> {
-      const pos=wall.axis==='x'?[wall.start[0]+o.at+o.width/2,0,wall.start[1]]:[wall.start[0],0,wall.start[1]+o.at+o.width/2];
-      const yaw=wall.axis==='x'?0:-Math.PI/2;
+      const p=wallPoint(wall,o.at+o.width/2),pos=[p[0],0,p[1]];
+      const yaw=wallYaw(wall);
       return <group key={i} position={pos} rotation={[0,yaw,0]}>
         {o.kind==='window'?<>
           <CuboidCollider args={[o.width/2,.75,.045]} position={[0,1.6,0]}/>

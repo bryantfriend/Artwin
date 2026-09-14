@@ -9,8 +9,14 @@ const tokyoPlans=[
   {id:'three-room-106',name:'Three-room residence',area:106.01,bedrooms:2,bathrooms:2,viewer:'tokyo-layout',description:'Living and dining together, a separate kitchen, two bedrooms and a loggia at each end of the apartment.'},
   {id:'four-room-134',name:'Four-room residence',area:134.68,bedrooms:3,bathrooms:3,viewer:'tokyo-four-room',description:'A generous living and dining space, three bedrooms and two loggias. Explore the furnished apartment at your own pace.'},
 ];
+const londonPlans=[
+ {id:'london-two-room-71',name:'Two-room residence',area:71.95,bedrooms:1,bathrooms:1,viewer:'furnished-layout',description:'A private bedroom, separate living and dining rooms, and a sheltered loggia.'},
+ {id:'london-studio-100',name:'Studio residence',area:100.72,bedrooms:3,bathrooms:2,viewer:'furnished-layout',openLiving:true,description:'An open living and kitchen space, three furnished sleeping rooms and a separate dressing room.'},
+ {id:'london-three-room-110',name:'Three-room · Studio layout',area:110.13,bedrooms:2,bathrooms:3,viewer:'furnished-layout',openLiving:true,description:'A generous corner living and dining room, two bedrooms and private bathroom spaces.'},
+ {id:'london-four-room-131',name:'Four-room · Studio layout',area:131.20,bedrooms:3,bathrooms:3,viewer:'furnished-layout',openLiving:true,description:'A distinctive bay-shaped living room, a dining space and three private bedrooms.'},
+];
 export const projects=[
-  {id:'london-square',name:'London Square',city:'Bishkek',address:'Tokombaev / Duisheev',type:'Residential',description:'English-inspired architecture in the upper part of Bishkek.',sourceUrl:'https://artwin.kg/london-square',plans:[]},
+  {id:'london-square',name:'London Square',city:'Bishkek',address:'Tokombaev / Duisheev',type:'Residential',description:'English-inspired architecture in the upper part of Bishkek.',sourceUrl:'https://artwin.kg/london-square',plans:londonPlans},
   {id:'wilton-park',name:'Wilton Park',city:'Bishkek',address:'Aaly Tokombaev · AUCA district',type:'Residential',description:'European-inspired living near the mountain foothills.',sourceUrl:'https://artwin.kg/wilton',plans:[]},
   {id:'seoul',name:'Seoul',city:'Bishkek',address:'Yunusaliev / Suvanberdiev',type:'Business centre',description:'A contemporary business address in Bishkek.',sourceUrl:'https://artwin.kg/seoul',plans:[]},
   {id:'urpaq-park',name:'Urpaq Park',city:'Bishkek',address:'Baitik Baatyr / Tokombaev',type:'Residential',description:'Green spaces and welcoming courtyards for everyday life.',sourceUrl:'https://artwin.kg/urpaq-park',plans:[]},
@@ -43,5 +49,5 @@ export function resolveRoute(hash=''){
   if(!project)return {kind:'missing'};
   if(parts.length===2)return {kind:'project',project};
   const plan=parts.length===4&&parts[2]==='apartments'?project.plans.find(p=>p.id===parts[3]):null;
-  return plan&&['tokyo-four-room','tokyo-layout'].includes(plan.viewer)?{kind:'apartment',project,plan}:{kind:'missing'};
+  return plan&&['tokyo-four-room','tokyo-layout','furnished-layout'].includes(plan.viewer)?{kind:'apartment',project,plan}:{kind:'missing'};
 }

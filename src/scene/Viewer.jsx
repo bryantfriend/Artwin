@@ -91,7 +91,7 @@ function NoGraphics({onFailure}) {
 }
 function Scene(props) {
   const {tourStops}=props.layout;
-  const resources=useMemo(createMaterials,[]);
+  const resources=useMemo(()=>createMaterials(props.layout.theme),[props.layout.theme]);
   useEffect(()=>()=>resources.dispose(),[resources]);
   return <>
     <ContextEvents onContextLost={props.onContextLost}/>

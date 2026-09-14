@@ -43,7 +43,7 @@ function Bed({item,m}) {
       <Pillow position={[a*w*.25,.75,-d*.32]} size={[w*.43,.19,.43]} rotation={[-.2,0,a*.04]} material={m.white}/>
       <Pillow position={[a*w*.25,.86,-d*.2]} size={[w*.32,.38,.15]} rotation={[-.25,0,0]} material={white?m.upholstery:m.taupe}/>
     </group>)}
-    <Duvet width={w} depth={d} material={white?m.whiteBedding:m.brownBedding}/>
+    <Duvet width={w} depth={d} material={m[item.color+'Bedding']||(white?m.whiteBedding:m.brownBedding)}/>
     <Soft size={[w-.02,.055,.25]} position={[0,.7,-d*.12]} material={m.linen}/>
   </>;
 }

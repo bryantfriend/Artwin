@@ -1,5 +1,6 @@
 import {translate as t,useI18n} from '../i18n.js';
 import React from 'react';
+import {wallYaw} from '../geometry.js';
 import {originalLayout} from '../layouts/index.js';
 
 // Advertised room areas transcribed from the supplied plan, not calculated
@@ -11,7 +12,7 @@ function PlanWall({wall}) {
   let end=0;
   for(const o of openings){if(o.at>end)segments.push([end,o.at]);end=o.at+o.width;}
   if(end<wall.length)segments.push([end,wall.length]);
-  return <g transform={`translate(${wall.start[0]} ${wall.start[1]}) rotate(${wall.axis==='x'?0:90})`} className={`plan-wall ${wall.exterior?'exterior':''}`}>
+  return <g transform={`translate(${wall.start[0]} ${wall.start[1]}) rotate(${-wallYaw(wall)*180/Math.PI})`} className={`plan-wall ${wall.exterior?'exterior':''}`}>
     {segments.map(([a,b],i)=><path key={i} d={`M${a} 0H${b}`}/>)}
     {openings.map((o,i)=>{const sign=wall.roomIds?(o.hingeAtEnd?1:-1)*(o.swing||1):(o.swing||1);return <g key={i} transform={`translate(${o.at+(o.hingeAtEnd?o.width:0)} 0) scale(${o.hingeAtEnd?-1:1} 1)`}>
       {o.kind==='window'?<g className="plan-window"><path d={`M0 -.065H${o.width}M0 .065H${o.width}M0 0H${o.width}`}/><path d={`M${o.width/2} -.065V.065`}/></g>:o.kind!=='passage'?<g className="plan-door"><path d={`M0 0V${sign*o.width}`}/><path className="plan-door-arc" d={`M${o.width} 0A${o.width} ${o.width} 0 0 ${sign>0?1:0} 0 ${sign*o.width}`}/></g>:null}
@@ -25,9 +26,9 @@ export default function FloorPlan({layout=originalLayout,selected,onSelect,posit
   const viewBox=`${bounds.minX-.45} ${bounds.minZ-.45} ${bounds.maxX-bounds.minX+.9} ${bounds.maxZ-bounds.minZ+.9}`;
   return <svg className="floor-plan" viewBox={viewBox} role={interactive?'group':'img'} aria-label={interactive?t('Interactive apartment floor plan'):t('{area} square meter apartment floor plan',{area:number(APARTMENT.advertisedArea,2)})}>
     {rooms.map(r=><g key={r.id} {...(interactive?{role:'button',tabIndex:0,'aria-label':t('Go to {room}',{room:t(r.name)}),'aria-pressed':selected===r.id,onClick:()=>onSelect(r.id),onKeyDown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(r.id);}}}:{})} className={`plan-room ${selected===r.id?'selected':''}`}>
-      <title>{t(r.name)} · {number(r.area||areas[r.id],2)} {t('m²')}{interactive?' · '+t('Select to explore'):''}</title>
+      <title>{t(r.name)}{(r.area||layout.id==='four-room-134')&&<> · {number(r.area||areas[r.id],2)} {t('m²')}</>}{interactive?' · '+t('Select to explore'):''}</title>
       <polygon points={r.polygon.map(p=>p.join(',')).join(' ')}/>
-      <text x={r.label[0]} y={r.label[1]-.12}><tspan className="plan-room-name" x={r.label[0]}>{t(r.planName||labels[r.id])}</tspan><tspan className="plan-room-area" x={r.label[0]} dy=".34">{number(r.area||areas[r.id],2)} {t('m²')}</tspan></text>
+      <text x={r.label[0]} y={r.label[1]-.12}><tspan className="plan-room-name" x={r.label[0]}>{t(r.planName||labels[r.id])}</tspan><tspan className="plan-room-area" x={r.label[0]} dy=".34">{(r.area||layout.id==='four-room-134')&&<>{number(r.area||areas[r.id],2)} {t('m²')}</>}</tspan></text>
     </g>)}
     <g className="plan-architecture" aria-hidden="true">{walls.map(wall=><PlanWall key={wall.id} wall={wall}/>)}</g>
     {layout.id==='four-room-134'&&<g className="plan-dimensions" aria-hidden="true">

@@ -1,10 +1,12 @@
 # Artwin project collection & apartment walkthrough
 
-A client-side React + Vite project collection covering the 10 projects listed in [Artwin's directory](https://artwin.kg/#rec596501902), with project overviews and a floor-plan section for each. **Tokyo City** contains six distinct furnished apartments: **52.10, 70.33, 78.83, 82.30, 106.01 and 134.68 m²**. Each has its own clickable floor plan, dollhouse, guided tour and collision-aware walkthrough. Compare paired 2D/3D previews, filter by bedroom count and area, sort by size, and save favorites on this device. Other projects have explicit coming-soon states; their floor plans and 3D models have not been added. No server, account, database, SSR or runtime asset service is required.
+A client-side React + Vite project collection covering the 10 projects listed in [Artwin's directory](https://artwin.kg/#rec596501902), with project overviews and a floor-plan section for each. **Tokyo City** contains six distinct furnished apartments: **52.10, 70.33, 78.83, 82.30, 106.01 and 134.68 m²**. Each has its own clickable floor plan, dollhouse, guided tour and collision-aware walkthrough. Compare paired 2D/3D previews, filter by bedroom count and area, sort by size, and save favorites on this device. **London Square** adds four furnished layouts: **71.95, 100.72, 110.13 and 131.20 m²**, including the polygonal bay living room. The remaining eight projects have explicit coming-soon states; their floor plans and 3D models have not been added. No server, account, database, SSR or runtime asset service is required.
 
 **[Open the project collection](https://bryantfriend.github.io/Artwin/)** · **[Tokyo City](https://bryantfriend.github.io/Artwin/#/projects/tokyo-city)** · **[Open the apartment directly](https://bryantfriend.github.io/Artwin/#/projects/tokyo-city/apartments/four-room-134)**
 
 The original four-room residence follows the previously supplied reference. The five additional layouts follow the latest Tokyo City screenshots; the duplicated 82.30 m² screenshot is represented once. Advertised apartment/room areas are transcribed labels, not measurements of the reconstructed geometry.
+
+London Square's room outlines and interiors are reconstructed from the official presentation boards. The overall areas are advertised values; unconfirmed room areas are omitted. See [London Square modelling notes](docs/london-square.md) for the source boards and classification ambiguities.
 
 ## Run locally
 
@@ -87,6 +89,7 @@ In walkthrough mode, floor-plan navigation fades out, checks the destination aga
 | --- | --- |
 | `src/apartmentConfig.js` | Original 134.68 m² apartment and shared physical constants |
 | `src/layouts/tokyoLayouts.js` | Five additional screenshot-based room arrangements, openings and furnishings |
+| `src/layouts/londonLayouts.js` | Four London Square layouts, with bay geometry and project-specific interiors |
 | `src/layouts/buildLayout.js` | Shared-edge walls, door hinges, safe destinations, switches and per-layout tours |
 | `src/layouts/index.js` | Registry combining the original and new apartments |
 | `src/scene/LayoutDecor.jsx` | Layout-specific rugs, artwork, curtains, feature panels and floor finishes |

@@ -1,12 +1,16 @@
 import { APARTMENT, rooms } from './apartmentConfig.js';
 
+export const wallYaw = wall => wall.yaw ?? (wall.axis === 'x' ? 0 : -Math.PI/2);
+export const wallPoint = (wall, at) => [wall.start[0]+Math.cos(wallYaw(wall))*at,wall.start[1]-Math.sin(wallYaw(wall))*at];
+
 export function wallSegments(wall) {
   const result = [];
   function add(from, length, bottom, height) {
     if (length <= 0 || height <= 0) return;
     result.push({
-      position: wall.axis === 'x' ? [wall.start[0]+from+length/2,bottom+height/2,wall.start[1]] : [wall.start[0],bottom+height/2,wall.start[1]+from+length/2],
-      size: wall.axis === 'x' ? [length,height,.16] : [.16,height,length],
+      position: wall.axis === 'diagonal' ? [wallPoint(wall,from+length/2)[0],bottom+height/2,wallPoint(wall,from+length/2)[1]] : wall.axis === 'x' ? [wall.start[0]+from+length/2,bottom+height/2,wall.start[1]] : [wall.start[0],bottom+height/2,wall.start[1]+from+length/2],
+      size: wall.axis !== 'z' ? [length,height,.16] : [.16,height,length],
+      yaw: wall.axis === 'diagonal' ? wallYaw(wall) : 0,
     });
   }
   let end = 0;

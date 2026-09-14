@@ -3,9 +3,10 @@ import {uiMessages} from './locales/ui.js';
 import {dataMessages} from './locales/data.js';
 import {viewerMessages} from './locales/viewer.js';
 import {buyerMessages} from './locales/buyer.js';
+import {londonMessages} from './locales/london.js';
 
 export const languages=[{id:'ru',label:'Русский',short:'RU'},{id:'ky',label:'Кыргызча',short:'KY'},{id:'en-US',label:'English (US)',short:'EN'},{id:'zh-CN',label:'中文',short:'中文'}];
-export const messages={...uiMessages,...dataMessages,...viewerMessages,...buyerMessages};
+export const messages={...uiMessages,...dataMessages,...viewerMessages,...buyerMessages,...londonMessages};
 export function validLanguage(value){return languages.some(l=>l.id===value)?value:'ru';}
 let language='ru';
 try{language=validLanguage(localStorage.getItem('artwin-language'));}catch{/* Storage is optional. */}

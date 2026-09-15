@@ -7,3 +7,4 @@
 .presentation-page{width:100%;min-width:0}.presentation-stage{min-width:0}
 
 .presentation-images{background:#e0e0e0}.presentation-images>img{mix-blend-mode:normal}@media print{body:has(.proposal-print),body:has(.proposal-print) #root,body:has(.proposal-print) .collection,body:has(.proposal-print) .presentation-page{background:white!important;min-height:0}}
+@media print{html:has(.proposal-print){background:white!important}}

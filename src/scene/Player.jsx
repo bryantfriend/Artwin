@@ -1,17 +1,19 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { RigidBody, CapsuleCollider, useRapier, useBeforePhysicsStep } from '@react-three/rapier';
 
 import { normalizedMovement, roomAt } from '../geometry.js';
 import { clearInput } from '../input.js';
 import { createCharacterController, computeCharacterMovement } from '../physicsController.js';
+import {createMotionCamera} from './motionCamera.js';
 
-export default function Player({layout,mode,paused,input,player,travel,onTravel,onRoom,onPause}) {
+export default function Player({layout,mode,paused,input,player,travel,onTravel,onRoom,onPause,motionSession,suspended}) {
   const {APARTMENT,rooms}=layout;
   const body=useRef(), capsule=useRef(), controller=useRef(), handled=useRef(-1), elapsed=useRef(0);
   const {world,rapier}=useRapier();
   const {camera,gl}=useThree();
   const walking=mode==='walkthrough';
+  const motionCamera=useMemo(()=>createMotionCamera(),[]);
   useEffect(()=> {
     const cc=createCharacterController(world);
     controller.current=cc;
@@ -65,7 +67,7 @@ export default function Player({layout,mode,paused,input,player,travel,onTravel,
       const [x,y,z]=travel.position;
       let blocked=false;
       world.intersectionsWithShape({x,y,z},{x:0,y:0,z:0,w:1},new rapier.Capsule(APARTMENT.playerHalfHeight,APARTMENT.playerRadius),()=>{blocked=true;return false;},undefined,undefined,capsule.current,body.current);
-      clearInput(input);
+      clearInput(input);motionCamera.reset();
       if(!blocked) {
         body.current.setTranslation({x,y,z},true);body.current.setNextKinematicTranslation({x,y,z});
         input.yaw=travel.yaw;input.pitch=0;player.current={x,y,z,yaw:input.yaw};
@@ -84,7 +86,8 @@ export default function Player({layout,mode,paused,input,player,travel,onTravel,
     player.current={x:p.x,y:p.y,z:p.z,yaw:input.yaw};
   });
   useFrame((_,dt)=>{
-    if(!walking||!body.current)return;
+    if(!walking||!body.current){motionCamera.reset();return;}
+    motionCamera.update(motionSession?.sample,input,dt,!paused&&!input.paused&&!suspended&&motionSession?.status==='active');
     const p=body.current.translation();
     camera.position.set(p.x,p.y+APARTMENT.eyeHeight-APARTMENT.playerCenterHeight,p.z);
     camera.rotation.set(input.pitch,input.yaw,0,'YXZ');

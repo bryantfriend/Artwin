@@ -1,5 +1,7 @@
 import React from 'react';
 const paths={
+  motion:<><rect x="8" y="3" width="8" height="18" rx="2"/><path d="M11 17h2M4 7 2 10l2 3m16-6 2 3-2 3"/></>,
+  center:<><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/><circle cx="12" cy="12" r="3"/></>,
   pin:<><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></>,
   external:<><path d="M14 3h7v7m0-7L10 14M10 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/></>,
   school:<><path d="m2 7 10-5 10 5-10 5-10-5ZM6 9v6c4 3 8 3 12 0V9M21 8v9"/></>,

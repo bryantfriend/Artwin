@@ -16,6 +16,7 @@ import {pageMetadata} from './pageMetadata.js';
 import './showroom.css';
 import './projects.css';
 import './experience.css';
+import ApartmentLoading from './ui/ApartmentLoading.jsx';
 const ApartmentExperience=lazy(()=>import('./ApartmentExperience.jsx'));
 const Presentation=lazy(()=>import('./ui/Presentation.jsx'));
 const positions=new Map();
@@ -55,7 +56,7 @@ export default function App(){
     const save=()=>positions.set(hash,window.scrollY);window.addEventListener('scroll',save,{passive:true});
     return()=>{cancelAnimationFrame(frame);window.removeEventListener('scroll',save);};
   },[hash]);
-  const content=route.kind==='apartment'?<ErrorBoundary><Suspense fallback={<div className="collection"><CollectionHeader/><main className="collection-loading" role="status">{t('Opening your apartment…')}</main></div>}><ApartmentExperience key={route.plan.id} project={route.project} plan={route.plan}/></Suspense></ErrorBoundary>:<div className="collection"><CollectionHeader/>
+  const content=route.kind==='apartment'?<ErrorBoundary><Suspense fallback={<div className="collection"><CollectionHeader/><main className="apartment-loading-page"><ApartmentLoading standalone selection={`${route.project.name} · ${number(route.plan.area,2)} ${t('m²')}`}/></main></div>}><ApartmentExperience key={route.plan.id} project={route.project} plan={route.plan}/></Suspense></ErrorBoundary>:<div className="collection"><CollectionHeader/>
     {route.kind==='projects'?<ProjectCollection/>:route.kind==='finder'?<ApartmentFinder/>:route.kind==='shortlist'?<SharedShortlist key={hash} search={route.search}/>:route.kind==='presentation'?<Suspense fallback={<p role="status">{t('Preparing presentation…')}</p>}><Presentation key={hash} search={route.search}/></Suspense>:route.kind==='workspace'?<SalesWorkspace/>:route.kind==='project'?<ProjectPage key={route.project.id} project={route.project}/>:route.kind==='consultations'?<ConsultationPage key={route.project?.id||'all'} initialProject={route.project}/>:<main className="collection-missing"><span className="collection-kicker">{t('LET’S FIND YOUR WAY')}</span><h1 data-page-title tabIndex={-1}>{t('This space isn’t available.')}</h1><p>{t('Choose a project from the collection to continue exploring.')}</p><a className="collection-button" href={routeHref('/projects')}>{t('View all projects')}</a></main>}
     <CollectionFooter/><WhatsAppContact floating/>
   </div>;

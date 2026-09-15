@@ -1,0 +1,106 @@
+.loading-overlay.apartment-loader {
+  background: #f5f4ee;
+  color: #293b30;
+  padding: 24px;
+}
+.apartment-loader-content { width: min(100%, 420px); }
+.apartment-loader-brand {
+  display: block;
+  width: 130px;
+  height: auto;
+  margin: 0 auto 3px;
+}
+.apartment-build {
+  display: block;
+  width: min(100%, 330px);
+  height: auto;
+  margin: 0 auto;
+  overflow: visible;
+}
+.apartment-loader .apartment-loader-message h2 {
+  font: 400 clamp(24px, 3vw, 31px)/1.2 Georgia, serif;
+  margin: 9px 0 12px;
+  letter-spacing: -.65px;
+}
+.apartment-loader .apartment-loader-message p {
+  color: #737e6c;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.apartment-loader-selection {
+  display: block;
+  margin-top: 23px;
+  font-size: 9px;
+  line-height: 1.5;
+  letter-spacing: 1px;
+  color: #89917e;
+}
+.loading-overlay.apartment-loader--page {
+  position: relative;
+  flex: 1;
+  min-height: calc(100svh - 142px);
+  width: 100%;
+}
+.apartment-loading-page { min-height: 0; }
+
+/* Decorative construction loop, not a percentage or simulated loading progress.
+   It uses CSS only, and unmounts immediately when the actual scene is ready. */
+.apartment-build-floor {
+  animation: apartment-floor-rise 6.4s cubic-bezier(.22,.75,.25,1) infinite both;
+}
+.apartment-build-floor--1 { animation-name: apartment-floor-middle; }
+.apartment-build-floor--2 { animation-name: apartment-floor-top; }
+.apartment-build-roof { animation: apartment-roof-settle 6.4s ease-in-out infinite both; }
+.apartment-build-window { animation: apartment-window-glow 6.4s ease-in-out infinite both; }
+.apartment-build-line {
+  stroke-dasharray: 1;
+  animation: apartment-ground-draw 6.4s ease-in-out infinite both;
+}
+@keyframes apartment-floor-rise {
+  0%, 5% { opacity: 0; transform: translateY(-16px); }
+  17%, 83% { opacity: 1; transform: translateY(0); }
+  95%, 100% { opacity: 0; transform: translateY(0); }
+}
+@keyframes apartment-floor-middle {
+  0%, 16% { opacity: 0; transform: translateY(-18px); }
+  29%, 83% { opacity: 1; transform: translateY(0); }
+  95%, 100% { opacity: 0; transform: translateY(0); }
+}
+@keyframes apartment-floor-top {
+  0%, 28% { opacity: 0; transform: translateY(-20px); }
+  41%, 83% { opacity: 1; transform: translateY(0); }
+  95%, 100% { opacity: 0; transform: translateY(0); }
+}
+@keyframes apartment-roof-settle {
+  0%, 39% { opacity: 0; transform: translateY(-14px); }
+  51%, 83% { opacity: 1; transform: translateY(0); }
+  95%, 100% { opacity: 0; transform: translateY(0); }
+}
+@keyframes apartment-window-glow {
+  0%, 46% { opacity: .12; }
+  61%, 100% { opacity: .92; }
+}
+@keyframes apartment-ground-draw {
+  0% { stroke-dashoffset: 1; }
+  15%, 85% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 1; }
+}
+.apartment-loader--still .apartment-build * { animation: none; }
+@media (max-width: 600px) {
+  .loading-overlay.apartment-loader { padding: 24px 18px; }
+  .apartment-loader-brand { width: 112px; }
+  .apartment-build { width: min(100%, 280px); }
+  .apartment-loader .apartment-loader-message h2 { font-size: 25px; }
+  .apartment-loader-selection { margin-top: 16px; }
+}
+@media (max-width: 760px) {
+  .app:has(.apartment-loader) .plan-panel { visibility: hidden; pointer-events: none; }
+}
+@media (max-height: 540px) and (min-width: 761px) {
+  .apartment-build { width: 220px; }
+  .apartment-loader-brand { width: 105px; }
+  .apartment-loader-selection { margin-top: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .apartment-build * { animation: none; }
+}

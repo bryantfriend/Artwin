@@ -1,4 +1,5 @@
 export const showroomMessages={
+ 'Preparing your virtual tour…':['Готовим виртуальную прогулку…','Виртуалдык саякатыңыз даярдалууда…','正在准备您的虚拟看房…'],
  'Hello Artwin, I would like to discuss a commercial space.':['Здравствуйте, Artwin! Хочу обсудить коммерческое помещение.','Саламатсызбы, Artwin! Коммерциялык жай тууралуу сүйлөшкүм келет.','您好，Artwin！我想咨询商业空间。'],
  'More filters':['Ещё фильтры','Дагы чыпкалар','更多筛选'],
  'Fewer filters':['Скрыть фильтры','Чыпкаларды жашыруу','收起筛选'],

@@ -12,6 +12,7 @@ import WhatsAppContact from './ui/WhatsAppContact.jsx';
 import ConsultationLink from './ui/ConsultationLink.jsx';
 import {BuyerLauncher} from './ui/BuyerTools.jsx';
 import LanguagePicker from './ui/LanguagePicker.jsx';
+import ApartmentLoading from './ui/ApartmentLoading.jsx';
 
 import {projectHref} from './projects.js';
 const Viewer=lazy(()=>import('./scene/Viewer.jsx'));
@@ -147,7 +148,7 @@ export default function ApartmentExperience({project,plan}) {
         <div className="scene-label"><span className="live-dot"/>{t(mode==='dollhouse'?'INTERACTIVE 3D VIEW':'INSIDE THE RESIDENCE')}</div>
         <div className="showroom-view-controls"><button aria-pressed={!furnished} onClick={()=>{setFurnished(v=>!v);setTarget(null);if(mode==='walkthrough')requestTravel(APARTMENT.entrance.position,APARTMENT.entrance.yaw);}}>{t(furnished?'Hide furniture':'Show furniture')}</button><select aria-label={t('Lighting atmosphere')} value={lighting} onChange={e=>setLighting(e.target.value)}><option value="day">{t('Daylight')}</option><option value="evening">{t('Warm evening')}</option></select></div><div className="viewer-tools"><button className="icon-button" onClick={recover} aria-label={t(mode==='dollhouse'?'Reset view':'Return to entrance')} title={t(mode==='dollhouse'?'Reset view':'Return to entrance')}><Icon name="reset"/></button><button className="icon-button" onClick={fullscreen} aria-label={t("Toggle fullscreen")} title={t("Fullscreen")}><Icon name="expand"/></button></div>
         {mode==='dollhouse'&&<div className="compass"><span>{t('North')}</span><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5 27 30 20 25 13 30Z"/></svg></div>}
-        {(!ready||contextLost)&&<div className="loading-overlay"><div className="loading-symbol"><img src={`${import.meta.env.BASE_URL}artwin-logo.png`} alt="ARTWIN" width="287" height="88"/></div><h2>{t(contextLost?'The graphics connection was lost.':'Making room for you.')}</h2><p>{t(contextLost?'Reload to restore the apartment.':'Preparing the apartment and physics…')}</p>{contextLost&&<button className="primary-button" onClick={()=>location.reload()}>{t("Reload viewer")}</button>}</div>}
+        {(!ready||contextLost)&&<ApartmentLoading contextLost={contextLost} selection={`${project.name} · ${number(plan.area,2)} ${t('m²')}`}/>}
         {mode==='walkthrough'&&ready&&!help&&<>
           {!paused&&<div className={`reticle ${target?'targeted':''}`}/>}
           {target&&!paused&&<button className="interaction-prompt" onClick={activate}><kbd>E</kbd> {prompt}</button>}

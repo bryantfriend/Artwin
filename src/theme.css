@@ -1,0 +1,61 @@
+/* Interface palette sampled from artwin.kg on 2026-09-15.
+   Project photography, architectural materials and service logos keep their own colors. */
+:root {
+  --artwin-yellow: #ffd008;
+  --artwin-yellow-hover: #ebbe00;
+  --artwin-yellow-soft: #fff4bf;
+  --artwin-yellow-ink: #665200;
+  --artwin-ink: #121212;
+  --artwin-charcoal: #1f1f1f;
+  --artwin-text: #4d4d4d;
+  --artwin-muted: #606060;
+  --artwin-subtle: #999999;
+  --artwin-inverse-muted: #d6d6d6;
+  --artwin-white: #ffffff;
+  --artwin-canvas: #fafafa;
+  --artwin-surface: #f3f3f3;
+  --artwin-surface-deep: #e9e9e9;
+  --artwin-preview: #e0e0e0;
+  --artwin-border: #dedede;
+  --artwin-border-strong: #b8b8b8;
+  --artwin-focus: #806600;
+  --artwin-error: #a33232;
+  --artwin-error-soft: #f7dddd;
+  accent-color: var(--artwin-yellow);
+  background: var(--artwin-canvas);
+}
+
+/* A dark focus ring remains visible on both yellow controls and white surfaces. */
+:focus-visible {
+  outline: 2px solid var(--artwin-focus);
+  outline-offset: 3px;
+}
+input::placeholder, textarea::placeholder { color: var(--artwin-muted); opacity: 1; }
+::selection { background: var(--artwin-yellow); color: var(--artwin-ink); }
+.social-play { fill: var(--artwin-ink); }
+.social-group a:hover .social-play { fill: var(--artwin-yellow); }
+
+.collection-button, .buyer-primary, .primary-button, .consultation-link,
+.compare-launch, .neighbourhood-open {
+  transition: background-color .18s, box-shadow .18s;
+}
+.buyer-primary:not(.buyer-whatsapp):hover:not(:disabled), .compare-launch:hover:not(:disabled) {
+  background: var(--artwin-yellow-hover);
+}
+.buyer-whatsapp:hover { background: #0b743c; border-color: #0b743c; }
+.buyer-secondary:hover:not(:disabled), .gallery-open:hover,
+.preview-expand:hover, .plan-details-toggle:hover {
+  background: var(--artwin-yellow-soft);
+}
+.buyer-nav a:hover, .collection-breadcrumb a:hover,
+.project-source:hover, .project-mobile-nav a:hover {
+  color: var(--artwin-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--artwin-yellow);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .collection-button, .buyer-primary, .primary-button, .consultation-link,
+  .compare-launch, .neighbourhood-open { transition: none; }
+}

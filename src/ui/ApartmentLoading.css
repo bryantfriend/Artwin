@@ -1,6 +1,6 @@
 .loading-overlay.apartment-loader {
-  background: #f5f4ee;
-  color: #293b30;
+  background: var(--artwin-surface);
+  color: var(--artwin-ink);
   padding: 24px;
 }
 .apartment-loader-content { width: min(100%, 420px); }
@@ -23,7 +23,7 @@
   letter-spacing: -.65px;
 }
 .apartment-loader .apartment-loader-message p {
-  color: #737e6c;
+  color: var(--artwin-muted);
   font-size: 12px;
   line-height: 1.7;
 }
@@ -33,7 +33,7 @@
   font-size: 9px;
   line-height: 1.5;
   letter-spacing: 1px;
-  color: #89917e;
+  color: var(--artwin-muted);
 }
 .loading-overlay.apartment-loader--page {
   position: relative;

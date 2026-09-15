@@ -1,0 +1,45 @@
+async (page) => {
+ const check=(ok,message)=>{if(!ok)throw Error(message);};
+ const brandButton=async locator=>{
+   const colors=await locator.evaluate(el=>({bg:getComputedStyle(el).backgroundColor,ink:getComputedStyle(el).color}));
+   check(colors.bg==='rgb(255, 208, 8)'&&colors.ink==='rgb(18, 18, 18)',`Yellow control with dark text: ${JSON.stringify(colors)}`);
+ };
+ await page.goto('http://127.0.0.1:4174/Artwin/projects/tokyo-city/apartments/two-room-euro-52/');
+ await page.locator('.loading-overlay').waitFor({state:'hidden',timeout:60000});
+ await page.locator('.topbar select').selectOption('en-US');
+ await page.setViewportSize({width:1440,height:1000});
+ await brandButton(page.locator('.enter-button'));
+ await brandButton(page.locator('.mode-switch button[aria-pressed=true]'));
+ await page.screenshot({path:'output/playwright/brand-viewer-desktop.png'});
+ await page.locator('.enter-button').focus();
+ check(await page.locator('.enter-button').evaluate(el=>getComputedStyle(el).outlineStyle==='solid'),'Keyboard focus ring visible');
+ await page.setViewportSize({width:390,height:844});
+ await page.screenshot({path:'output/playwright/brand-viewer-mobile.png'});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.locator('.tour-start').click();
+ await page.locator('.tour-card').waitFor();
+ await brandButton(page.locator('.tour-explore'));
+ await page.screenshot({path:'output/playwright/brand-tour-mobile.png'});
+ await page.locator('.tour-explore').click();
+ await brandButton(page.locator('.mode-switch button[aria-pressed=true]'));
+ await page.locator('.buyer-launcher').click();
+ const dialog=page.locator('.buyer-dialog');
+ await dialog.getByRole('button',{name:'Plan payments',exact:true}).click();
+ await dialog.getByLabel('Apartment price or budget',{exact:true}).fill('120000');
+ await dialog.getByLabel('Down payment',{exact:true}).fill('36000');
+ await dialog.getByLabel('Months',{exact:true}).fill('24');
+ check(await dialog.locator('.payment-result').evaluate(el=>getComputedStyle(el).backgroundColor==='rgb(31, 31, 31)'),'Payment result panel uses charcoal');
+ await brandButton(dialog.locator('.buyer-tabs button[aria-pressed=true]').last());
+ await page.screenshot({path:'output/playwright/brand-payment-mobile.png'});
+ await dialog.getByRole('button',{name:'Furniture planner',exact:true}).click();
+ const rect=dialog.locator('.furniture-sketch rect');
+ await dialog.getByRole('button',{name:'Table',exact:true}).click();
+ check(await rect.evaluate(el=>getComputedStyle(el).fill==='rgb(255, 244, 191)'),'Furniture uses pale yellow');
+ await page.screenshot({path:'output/playwright/brand-planner-mobile.png'});
+ await dialog.getByRole('button',{name:'Discuss my selection',exact:true}).click();
+ await dialog.locator('.buyer-whatsapp').hover();
+ check(await dialog.locator('.buyer-whatsapp').evaluate(el=>getComputedStyle(el).backgroundColor==='rgb(11, 116, 60)'),'WhatsApp hover remains recognizably green');
+ await page.keyboard.press('Escape');
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ return {result:'PASS',viewer:true,tour:true,payment:true,furniture:true,focus:true,whatsapp:true};
+}

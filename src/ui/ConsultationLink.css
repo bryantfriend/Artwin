@@ -7,19 +7,19 @@
   padding: 12px 18px;
   flex-shrink: 0;
   border-radius: 4px;
-  background: #ffd000;
-  color: #252a26;
+  background: var(--artwin-yellow);
+  color: var(--artwin-ink);
   font-size: 12px;
   font-weight: 500;
   line-height: 1.4;
   text-align: center;
   transition: background .18s;
 }
-.consultation-link:hover { background: #f0c400; }
-a.consultation-link:focus-visible { outline: 3px solid #8f7400; outline-offset: 4px; }
+.consultation-link:hover { background: var(--artwin-yellow-hover); }
+a.consultation-link:focus-visible { outline: 3px solid var(--artwin-focus); outline-offset: 4px; }
 .project-consultation { margin-top: 24px; }
-.project-consultation p { margin-top: 10px; font-size: 11px; line-height: 1.6; color: #73786f; }
-.project-consultation p a { color: #526545; text-decoration: underline; text-underline-offset: 3px; }
+.project-consultation p { margin-top: 10px; font-size: 11px; line-height: 1.6; color: var(--artwin-muted); }
+.project-consultation p a { color: var(--artwin-text); text-decoration: underline; text-underline-offset: 3px; }
 .consultation-banner {
   display: flex;
   align-items: center;
@@ -27,12 +27,12 @@ a.consultation-link:focus-visible { outline: 3px solid #8f7400; outline-offset: 
   gap: 32px;
   margin-bottom: 52px;
   padding: 38px 40px;
-  border: 1px solid #d9ddd1;
+  border: 1px solid var(--artwin-border);
   border-radius: 4px;
-  background: #efefe6;
+  background: var(--artwin-surface);
 }
 .consultation-banner h2 { margin-top: 12px; font-size: 30px; font-weight: 400; letter-spacing: -.7px; line-height: 1.2; }
-.consultation-banner p { margin-top: 13px; font-size: 12px; line-height: 1.8; color: #73786f; }
+.consultation-banner p { margin-top: 13px; font-size: 12px; line-height: 1.8; color: var(--artwin-muted); }
 @media (max-width: 1200px) {
   .consultation-link--compact { width: 44px; height: 44px; padding: 0; border-radius: 50%; }
   .consultation-link--compact span { display: none; }

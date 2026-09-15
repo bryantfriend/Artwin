@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { decorativeTexture } from './decorativeTextures.js';
 import { wovenRugTextures } from './wovenRug.js';
 import { kitchenMarbleTextures } from './kitchenMarble.js';
+import { surfaceMaps,contactTexture } from './interiorSurfaces.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 export const boxGeometry=new THREE.BoxGeometry(1,1,1);
 export const roundedGeometry=new RoundedBoxGeometry(1,1,1,3,.09);
@@ -10,7 +11,7 @@ export const cylinderGeometry=new THREE.CylinderGeometry(1,1,1,40);
 export const pillowGeometry=new THREE.SphereGeometry(1,32,20);
 {const p=pillowGeometry.attributes.position;for(let i=0;i<p.count;i++){const puff=(n,power)=>Math.sign(n)*Math.pow(Math.abs(n),power);p.setXYZ(i,puff(p.getX(i),.45),puff(p.getY(i),.75),puff(p.getZ(i),.45));}pillowGeometry.computeVertexNormals();}
 export const ringGeometry=new THREE.TorusGeometry(1,.045,8,48);
-function texture(kind) {
+function texture(kind,grain) {
   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=1024;
   const c=canvas.getContext('2d');let seed=193;
   const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
@@ -18,7 +19,11 @@ function texture(kind) {
     c.fillStyle='#d5c7b2';c.fillRect(0,0,512,1024);
     const palette=kind==='wiltonFloor'?['#d3c4b5','#c4b3a1','#ded1c1','#cdbdab','#d9cbba']:kind==='londonFloor'?['#e3e0d8','#d8d6cf','#e8e5dc','#d0cec5','#e1ded5']:['#d9cbb6','#c6ad8e','#bea07b','#e0d5c4','#d2bda0','#b79a78'];
     for(let col=0;col<8;col++) {
-      for(let row=-1;row<3;row++) {c.fillStyle=palette[Math.floor(random()*palette.length)];c.fillRect(col*64+1,row*430+(col%3)*130,63,429);}
+      for(let row=-1;row<3;row++) {
+        const y=row*430+(col%3)*130;
+        c.fillStyle=palette[Math.floor(random()*palette.length)];c.fillRect(col*64+1,y,63,429);
+        if(grain){c.save();c.globalCompositeOperation='soft-light';c.globalAlpha=.65;c.drawImage(grain,Math.floor(random()*640),0,320,1024,col*64+1,y,63,429);c.restore();}
+      }
       for(let i=0;i<100;i++){const x=col*64+random()*63;c.strokeStyle=`rgba(66,43,25,${random()*(kind==='londonFloor'?.035:.10)})`;c.beginPath();c.moveTo(x,0);c.bezierCurveTo(x+5,300,x-5,700,x,1024);c.stroke();}
     }
   } else {
@@ -34,8 +39,11 @@ function texture(kind) {
 }
 function stripeTexture(white=false){
   const c=document.createElement('canvas');c.width=c.height=512;const ctx=c.getContext('2d');
-  const colors=white?['#e4e1da','#eeece6','#d3d0c9','#f4f1eb']:['#695240','#b9aa95','#403c38','#d7cdbb','#8c7861'];
-  for(let y=0;y<512;y+=32){ctx.fillStyle=colors[Math.floor(y/32)%colors.length];ctx.fillRect(0,y,512,32);}
+  ctx.fillStyle=white?'#e9e6df':'#d6cbbd';ctx.fillRect(0,0,512,512);
+  // Quiet woven bedding with a broad folded foot band; no repeating graphic stripes.
+  ctx.fillStyle=white?'#c9c7bf':'#8a7763';ctx.fillRect(0,44,512,138);
+  for(const y of [50,175]){ctx.strokeStyle=white?'#dfddd5':'#aa9781';ctx.setLineDash([3,4]);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(512,y);ctx.stroke();}
+  for(let y=0;y<512;y+=2){ctx.fillStyle=y%6?'rgba(255,255,255,.026)':'rgba(65,51,38,.025)';ctx.fillRect(0,y,512,1);}
   const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;
 }
 function weaveTexture(){
@@ -44,8 +52,10 @@ function weaveTexture(){
   for(let i=0;i<128;i+=4){c.fillStyle=i%8?'#aaa':'#666';c.fillRect(i,0,1,128);c.fillRect(0,i,128,1);}
   const t=new THREE.CanvasTexture(canvas);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(5,5);return t;
 }
-export function createMaterials(theme){
-  const maps={wood:texture('wood'),stone:texture('stone'),darkMarble:texture('darkMarble'),weave:weaveTexture(),brownBedding:stripeTexture(),whiteBedding:stripeTexture(true)};
+export function createMaterials(theme,textures){
+  const surfaces=surfaceMaps(textures);
+  const slab=kitchenMarbleTextures({tiled:false});slab.bump.dispose();
+  const maps={...surfaces,wood:texture('wood',surfaces.timber.image),stone:slab.map,darkMarble:texture('darkMarble'),weave:weaveTexture(),brownBedding:stripeTexture(),whiteBedding:stripeTexture(true)};
   const colors={wall:'#f1f1ef',trim:'#ffffff',dark:'#363638',walnut:'#4b3527',oak:'#b89c7c',linen:'#d3d0c9',taupe:'#857767',sage:'#a8a698',metal:'#292b2c',brass:'#bd9553',ceramic:'#fafaf7',rug:'#d4d0c7',leaf:'#3d4737',soil:'#433528',black:'#141416',white:'#fafaf7',curtain:'#92918d',caramel:'#9c7257',padded:'#adaeaa',pink:'#d4969f'};
   const materials=Object.fromEntries(Object.entries(colors).map(([k,color])=>[k,new THREE.MeshStandardMaterial({color,roughness:k==='brass'?.3:.82,metalness:k==='brass'?.65:0})]));
   for(const k of ['wood','stone','darkMarble'])materials[k]=new THREE.MeshPhysicalMaterial({map:maps[k],roughness:k==='wood'?.52:.26,clearcoat:k==='wood'?.12:.3,clearcoatRoughness:.3,side:THREE.DoubleSide});
@@ -62,6 +72,9 @@ export function createMaterials(theme){
   materials.rugBinding=new THREE.MeshStandardMaterial({color:'#8e8d82',roughness:1,bumpMap:maps.weave,bumpScale:.004});
   materials.sheer=new THREE.MeshStandardMaterial({color:'#f6f1e7',transparent:true,opacity:.38,roughness:1,side:THREE.DoubleSide,depthWrite:false});
   materials.terracotta=new THREE.MeshStandardMaterial({color:'#ac6d50',roughness:.9});
+  materials.leaf.side=THREE.DoubleSide;materials.leaf.roughness=.58;
+  materials.leafLight=new THREE.MeshStandardMaterial({color:'#667448',roughness:.63,side:THREE.DoubleSide});
+  materials.leafVein=new THREE.MeshStandardMaterial({color:'#8a9462',roughness:.8});
   materials.curtain.side=THREE.DoubleSide;
   materials.upholstery=new THREE.MeshPhysicalMaterial({color:'#ece8df',roughness:.93,bumpMap:maps.weave,bumpScale:.008,sheen:.4,sheenColor:'#fff8ed'});
   for(const [name,color] of Object.entries({sofaGray:'#626563',sofaGrayAccent:'#8f9290'}))materials[name]=new THREE.MeshPhysicalMaterial({color,roughness:.94,bumpMap:maps.weave,bumpScale:.005,sheen:.3,sheenColor:'#d7d5cf'});
@@ -89,7 +102,7 @@ export function createMaterials(theme){
     materials.chairFabric.color.set('#486a70');materials.chairStitch.color.set('#739295');
     materials.upholstery.color.set('#c7bcab');materials.sofaAccent.color.set('#6b655d');
     materials.walnut.color.set('#665043');materials.padded.color.set('#9b9b99');
-    maps.wiltonFloor=texture('wiltonFloor');maps.wiltonFloor.repeat.set(2,2);
+    maps.wiltonFloor=texture('wiltonFloor',surfaces.timber.image);maps.wiltonFloor.repeat.set(2,2);
     materials.wiltonFloor=new THREE.MeshStandardMaterial({map:maps.wiltonFloor,roughness:.68});
     for(const [key,color] of Object.entries({charcoal:'#41494e',pearl:'#aca9a2',mocha:'#6d6051'})){
       const cloth=document.createElement('canvas');cloth.width=cloth.height=256;const paint=cloth.getContext('2d');
@@ -102,7 +115,7 @@ export function createMaterials(theme){
     materials.curtain.color.set('#20483c');
     materials.chairFabric.color.set('#666a60');materials.chairStitch.color.set('#777e70');
     materials.sofaAccent.color.set('#496557');materials.oak.color.set('#ad987d');
-    maps.londonFloor=texture('londonFloor');maps.londonFloor.repeat.set(2,2);materials.londonFloor=new THREE.MeshStandardMaterial({map:maps.londonFloor,roughness:.72});
+    maps.londonFloor=texture('londonFloor',surfaces.timber.image);maps.londonFloor.repeat.set(2,2);materials.londonFloor=new THREE.MeshStandardMaterial({map:maps.londonFloor,roughness:.72});
     const canvas=document.createElement('canvas');canvas.width=canvas.height=256;const c=canvas.getContext('2d');
     c.fillStyle='#ece7db';c.fillRect(0,0,256,256);
     for(let y=0;y<256;y+=64)for(let x=0;x<256;x+=64){c.fillStyle=(x+y)%128?'#7c827c':'#5e635e';c.beginPath();c.moveTo(x+32,y+5);c.lineTo(x+59,y+32);c.lineTo(x+32,y+59);c.lineTo(x+5,y+32);c.closePath();c.fill();c.strokeStyle='#f4f0e8';c.lineWidth=3;c.stroke();}
@@ -121,5 +134,19 @@ export function createMaterials(theme){
     'boston-tower':{curtain:'#87898b',chairFabric:'#7a6354',padded:'#878788',upholstery:'#bbb8b1',whiteBedding:'#d0d0d0'},
   }[theme];
   if(palette)for(const [key,color] of Object.entries(palette))materials[key].color.set(color);
+  // Scanned weave changes how light catches the surface while retaining each project's palette.
+  for(const key of ['linen','taupe','padded','curtain','caramel','upholstery','sofaGray','sofaGrayAccent','sofaBrown','sofaAccent','chairFabric',...Object.keys(materials).filter(k=>k.endsWith('Bedding'))]){
+    const mat=materials[key];mat.bumpMap=null;mat.normalMap=maps.fabricNormal;mat.normalScale=new THREE.Vector2(.24,.24);
+    mat.roughnessMap=maps.fabricRoughness;mat.roughness=.96;
+  }
+  // Furniture uses real grain; the lighter oak is tinted independently of the walnut.
+  for(const key of ['walnut','oak']){
+    const mat=materials[key];mat.map=maps.timber;mat.normalMap=maps.timberNormal;mat.normalScale=new THREE.Vector2(.16,.16);mat.roughness=.64;
+    mat.color.multiplyScalar(1.18);
+  }
+  for(const key of ['wood','hallOak','londonFloor','wiltonFloor'])if(materials[key]){materials[key].bumpMap=materials[key].map;materials[key].bumpScale=.0015;materials[key].roughness=.66;}
+  for(const key of ['ceramic','white']){materials[key].roughness=.36;}
+  materials.brass.metalness=.9;materials.brass.roughness=.36;
+  maps.contact=contactTexture();materials.contact=new THREE.MeshBasicMaterial({map:maps.contact,color:'#342b25',transparent:true,opacity:.2,depthWrite:false,toneMapped:false});
   return {materials,dispose(){Object.values(materials).forEach(m=>m.dispose());Object.values(maps).forEach(t=>t.dispose());}};
 }

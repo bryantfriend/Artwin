@@ -5,6 +5,7 @@ import { projects,projectHref,apartmentHref } from '../src/projects.js';
 import {projectMedia} from '../src/projectMedia.js';
 import {projectLifestyle} from '../src/projectLifestyle.js';
 import {validateSales} from '../src/sales.js';
+import {interiorTextureUrls} from '../src/scene/interiorSurfaces.js';
 
 const html=await readFile(new URL('../dist/index.html',import.meta.url),'utf8');
 const references=[...html.matchAll(/(?:src|href)="([^"]+)"/g)].map(m=>m[1]).filter(url=>!url.startsWith('https:'));
@@ -22,7 +23,7 @@ try {
   const consultants=JSON.parse(await readFile(new URL('../src/consultants.json',import.meta.url),'utf8'));
   const consultantImages=consultants.map(person=>`/Artwin/${person.photo}`);
   const referenceImages=(await readdir(new URL('../dist/references/',import.meta.url))).map(name=>`/Artwin/references/${name}`);
-  const publicAssets=['/Artwin/artwin-logo.png','/Artwin/textures/kyrgyz-city-panorama.jpg','/Artwin/sales-data.json'];
+  const publicAssets=['/Artwin/artwin-logo.png','/Artwin/textures/kyrgyz-city-panorama.jpg','/Artwin/sales-data.json',...interiorTextureUrls];
   validateSales(await (await fetch(origin+'/Artwin/sales-data.json')).json());
   for(const path of [...references,...entries.map(name=>`/Artwin/assets/${name}`),...projectImages,...planImages,...galleryImages,...lifestyleImages,...consultantImages,...referenceImages,...publicAssets]) {
     const res=await fetch(origin+path);
@@ -31,6 +32,7 @@ try {
     if(path.endsWith('.js'))assert.match(res.headers.get('content-type'),/javascript/);
     if(path.endsWith('.webp'))assert.match(res.headers.get('content-type'),/image\/webp/);
     if(path.endsWith('.png'))assert.match(res.headers.get('content-type'),/image\/png/);
+    if(path.endsWith('.jpg'))assert.match(res.headers.get('content-type'),/image\/jpeg/);
   }
   assert.equal((await fetch(origin+'/')).status,404);
   assert.equal((await fetch(origin+'/Artwin/nonexistent-room')).status,404);

@@ -24,7 +24,7 @@ function Floor({room,m,mode}) {
     <mesh geometry={resources.geo} material={m[room.material|| (room.id==='kitchen'?'kitchenMarble':room.id==='hall'?'hallOak':room.type)]} receiveShadow/>
     <mesh geometry={resources.slab} material={m.wall} position={[0,-.19,0]} receiveShadow/>
     <RigidBody type="fixed" colliders={false}><CuboidCollider args={[resources.w/2,.1,resources.d/2]} position={[resources.x,-.1,resources.z]}/></RigidBody>
-    {mode==='walkthrough'&&!room.outdoor&&<mesh geometry={resources.geo} position={[0,APARTMENT.ceiling,0]} rotation={[0,0,0]}><meshStandardMaterial color="#f4f1ea" side={THREE.DoubleSide}/></mesh>}
+    {mode==='walkthrough'&&!room.outdoor&&<mesh geometry={resources.geo} position={[0,APARTMENT.ceiling,0]} rotation={[0,0,0]} castShadow receiveShadow><meshStandardMaterial color="#f4f1ea" side={THREE.DoubleSide}/></mesh>}
   </>;
 }
 function Wall({wall,m,mode}) {
@@ -105,7 +105,7 @@ export default function Architecture({layout,m,mode,state,player,reducedMotion,q
       <Box position={[0,0,.027]} size={[.065,.12,.018]} material={state.lights[s.room]!==false?m.bulb:m.dark}/>
     </group>)}
     {rooms.filter(r=>!r.id.startsWith('loggia')&&!r.outdoor).map(r=><group key={r.id}>
-      <pointLight castShadow={quality==='high'&&mode==='walkthrough'&&activeRoom===r.id} shadow-mapSize={[512,512]} shadow-bias={-.0005} shadow-normalBias={.035} shadow-radius={2} position={[r.label[0],2.45,r.label[1]]} color={evening?'#ffd7a1':'#fff4e6'} intensity={state.lights[r.id]===false?0:mode==='walkthrough'?11:3} distance={7} decay={2}/>
+      <pointLight castShadow={quality==='high'&&mode==='walkthrough'&&activeRoom===r.id} shadow-mapSize={[512,512]} shadow-bias={-.0002} shadow-normalBias={.018} shadow-radius={3} position={[r.label[0],2.45,r.label[1]]} color={evening?'#ffd7a1':'#fff4e6'} intensity={state.lights[r.id]===false?0:mode==='walkthrough'?(activeRoom===r.id?11:0):3} distance={7} decay={2}/>
       {mode==='walkthrough'&&<Box position={[r.label[0],2.65,r.label[1]]} size={[.5,.04,.5]} material={state.lights[r.id]===false?m.linen:m.bulb}/>}
     </group>)}
   </>;

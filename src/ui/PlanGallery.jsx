@@ -12,7 +12,7 @@ import './PlanGallery.css';
 import {BuyerTools} from './BuyerTools.jsx';
 import {safeRead,safeWrite,track} from '../sales.js';
 
-export const planPreview=plan=>`${import.meta.env.BASE_URL}plans/${plan.id}.png`;
+export const planPreview=plan=>`${import.meta.env.BASE_URL}plans/${plan.id}.png?v=interiors-20260915`;
 function Previews({plan}){
   const {t,number}=useI18n();
   return <div className="paired-previews"><div className="preview-plan"><span>{t(plan.evidence==='render'?'Reconstructed plan':'2D floor plan')}</span><FloorPlan layout={getLayout(plan.id)} interactive={false}/></div><div className="preview-model"><span>{t('Furnished 3D view')}</span><img src={planPreview(plan)} alt={`${t('Furnished 3D view')} · ${number(plan.area,2)} ${t('m²')}`} loading="lazy" width="1220" height="647"/></div></div>;

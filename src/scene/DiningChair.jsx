@@ -1,6 +1,6 @@
 import React from 'react';
 import * as THREE from 'three';
-import { pillowGeometry } from './materials.js';
+import UpholsteredCushion from './UpholsteredCushion.jsx';
 
 // Front is +Z. A padded, continuous shell sweeps around the seat.
 const extent=1.88, segments=64, section=32;
@@ -43,7 +43,7 @@ const legs=[-1,1].flatMap(x=>[-1,1].map(z=>{
 export default function DiningChair({m}){
   return <group>
     {legs.map((props,i)=><mesh key={i} geometry={legGeometry} material={m.walnut} {...props} castShadow receiveShadow/>)}
-    <mesh geometry={pillowGeometry} position={[0,.465,.02]} scale={[.28,.065,.267]} material={m.chairFabric} castShadow receiveShadow/>
+    <UpholsteredCushion position={[0,.465,.02]} size={[.56,.13,.534]} material={m.chairFabric}/>
     <mesh geometry={shell} material={m.chairFabric} castShadow receiveShadow/>
     {[rim,seatSeam,...seams].map((geometry,i)=><mesh key={i} geometry={geometry} material={m.chairStitch}/>)}
   </group>;

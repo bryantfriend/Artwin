@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 // Generated on-device: polished surfaces work without a remote HDR download.
-export default function StudioLighting({evening=false}) {
+export default function StudioLighting({evening=false,interior=false}) {
   const {gl,scene}=useThree();
   useEffect(()=>{
     const room=new RoomEnvironment(),generator=new THREE.PMREMGenerator(gl);
@@ -14,6 +14,6 @@ export default function StudioLighting({evening=false}) {
     room.dispose();generator.dispose();
     return ()=>{scene.environment=previous;scene.environmentIntensity=previousIntensity;map.dispose();};
   },[gl,scene]);
-  useEffect(()=>{scene.environmentIntensity=evening?.22:.45;},[scene,evening]);
+  useEffect(()=>{scene.environmentIntensity=interior?(evening?.16:.32):(evening?.28:.6);},[scene,evening,interior]);
   return null;
 }

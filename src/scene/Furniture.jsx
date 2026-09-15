@@ -1,6 +1,10 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 import DiningChair from './DiningChair.jsx';
+import UpholsteredCushion from './UpholsteredCushion.jsx';
+import Houseplant from './Houseplant.jsx';
+import KitchenSink from './KitchenSink.jsx';
+import {duvetGeometry} from './upholstery.js';
 import TVScreen from './TVScreen.jsx';
 import {Vanity,Shower} from './BathroomFixtures.jsx';
 import { useFrame } from '@react-three/fiber';
@@ -14,23 +18,13 @@ function Soft({position,size,material,...props}) {return <mesh geometry={rounded
 function Ball({position,size,material,...props}) { return <mesh geometry={sphereGeometry} position={position} scale={size} material={material} castShadow {...props}/>; }
 function Cylinder({position,size,material,...props}) { return <mesh geometry={cylinderGeometry} position={position} scale={size} material={material} castShadow {...props}/>; }
 function Legs({width,depth,height,mat}) { return [-1,1].flatMap(x=>[-1,1].map(z=><Box key={`${x}${z}`} position={[x*(width/2-.09),height/2,z*(depth/2-.09)]} size={[.045,height,.045]} material={mat}/>)); }
-function Pillow({position,size,material,...props}) {return <mesh geometry={pillowGeometry} position={position} scale={size.map(v=>v/2)} material={material} castShadow receiveShadow {...props}/>;}
+function Pillow(props) {return <UpholsteredCushion {...props}/>;}
 function Duvet({width,depth,material}){
   const geometry=useMemo(()=>{
-    const g=new THREE.PlaneGeometry(width+.36,depth*.7,64,40);g.rotateX(-Math.PI/2);
-    const p=g.attributes.position;
-    for(let i=0;i<p.count;i++){
-      const x=p.getX(i),z=p.getZ(i);
-      // Keep the top above the mattress; only drape after clearing its edge.
-      const edge=Math.max(0,(Math.abs(x)-width/2)/.18);
-      const fold=.004*Math.sin(x*12+z*7)+.003*Math.sin(x*8-z*17);
-      if(edge>0)p.setX(i,Math.sign(x)*(width/2+.09*Math.sin(edge*Math.PI/2)));
-      p.setY(i,fold-.25*edge*edge);
-    }
-    g.computeVertexNormals();return g;
+    return duvetGeometry(width,depth);
   },[width,depth]);
   useEffect(()=>()=>geometry.dispose(),[geometry]);
-  return <mesh geometry={geometry} position={[0,.67,depth*.18]} material={material} castShadow receiveShadow/>;
+  return <mesh geometry={geometry} position={[0,.69,depth*.18]} material={material} castShadow receiveShadow/>;
 }
 function Bed({item,m}) {
   const [w,,d]=item.size,white=item.color==='white';
@@ -44,7 +38,7 @@ function Bed({item,m}) {
       <Pillow position={[a*w*.25,.86,-d*.2]} size={[w*.32,.38,.15]} rotation={[-.25,0,0]} material={white?m.upholstery:m.taupe}/>
     </group>)}
     <Duvet width={w} depth={d} material={m[item.color+'Bedding']||(white?m.whiteBedding:m.brownBedding)}/>
-    <Soft size={[w-.02,.055,.25]} position={[0,.7,-d*.12]} material={m.linen}/>
+    <Pillow seam={false} size={[w-.025,.055,.28]} position={[0,.729,-d*.14]} material={m.linen}/>
   </>;
 }
 function Sofa({item,m}) {
@@ -56,8 +50,8 @@ function Sofa({item,m}) {
     <Soft position={[0,.65,-.37]} size={[w,.6,.18]} material={m.sofaBrown}/>
     {[-1,1].map(s=><Soft key={s} position={[s*(w/2-.08),.52,0]} size={[.18,.45,.9]} material={m.sofaBrown}/>)}
     {[-1,0,1].map((s)=><group key={s} position={[s*(w-.36)/3,0,0]}>
-      <Soft position={[0,.47,.05]} size={[(w-.42)/3,.17,.67]} material={m.sofaBrown}/>
-      <Pillow position={[0,.72,-.18]} size={[(w-.45)/3,.46,.18]} material={s===0?m.sofaAccent:m.sofaBrown}/>
+      <Pillow position={[0,.47,.055]} size={[(w-.42)/3,.17,.67]} material={m.sofaBrown}/>
+      <Pillow position={[0,.72,-.18]} rotation={[-.13,0,s*.025]} size={[(w-.45)/3,.46,.18]} material={m.sofaBrown}/>
     </group>)}
     {[-1,1].map(a=><Pillow key={a} position={[a*(w/2-.4),.73,.05]} size={[.35,.35,.13]} rotation={[.1,0,a*.22]} material={a===1?m.sofaAccent:m.sofaBrown}/>)}
   </>;
@@ -88,7 +82,7 @@ function Wardrobe({item,m}){
     <Box position={[0,(h+.045)/2,-.02]} size={[w,h-.045,d-.04]} material={frame}/>
     <Box position={[0,.085,d/2-.032]} size={[w,.08,.06]} material={frame}/>
     {[-1,1].map(s=><group key={s}>
-      <Box position={[s*(w/4-.007),(top+bottom)/2,d/2-.032]} size={[w/2-.04,doorHeight,.035]} material={front}/>
+      <Soft position={[s*(w/4-.007),(top+bottom)/2,d/2-.032]} size={[w/2-.04,doorHeight,.035]} material={front}/>
       <Box position={[s*.043,h*.53,d/2-.008]} size={[.016,h*.78,.016]} material={m.brushedNickel}/>
       {[.19,.87].map(y=><Box key={y} position={[s*.043,h*y,d/2-.023]} size={[.018,.02,.026]} material={m.brushedNickel}/>)}
       {[-1,1].map(z=><Cylinder key={z} position={[s*(w/2-.075),.025,z*(d/2-.07)]} size={[.027,.05,.027]} material={m.black}/>)}
@@ -112,10 +106,11 @@ function Chair({m}) {
     {[-1,1].map(a=><Soft key={a} position={[a*.275,.62,-.02]} size={[.07,.22,.48]} material={m.caramel}/>)}
   </>;
 }
+const dinnerPlateGeometry=new THREE.LatheGeometry([[0,0],[.095,0],[.135,.007],[.15,.018],[.15,.023],[.136,.025],[.109,.012],[.08,.008],[0,.008]].map(p=>new THREE.Vector2(...p)),48);
 function Place({position,rotation=0,m}) {return <group position={position} rotation={[0,rotation,0]}>
-  <Cylinder position={[0,0,0]} size={[.18,.012,.18]} material={m.brass}/>
-  <Cylinder position={[0,.012,0]} size={[.15,.018,.15]} material={m.black}/>
-  <Cylinder position={[0,.025,0]} size={[.09,.012,.09]} material={m.ceramic}/>
+  <Cylinder position={[0,0,0]} size={[.17,.005,.17]} material={m.brass}/>
+  <mesh geometry={dinnerPlateGeometry} position={[0,.004,0]} material={m.porcelain} castShadow receiveShadow/>
+  <mesh geometry={ringGeometry} position={[0,.028,0]} rotation={[-Math.PI/2,0,0]} scale={[.147,.147,.06]} material={m.black}/>
   <Box position={[.22,.01,0]} size={[.015,.012,.24]} material={m.brass}/>
   <Cylinder position={[-.2,.075,-.14]} size={[.035,.14,.035]} material={m.glass}/>
 </group>;}
@@ -125,7 +120,7 @@ function BorsokBowl({m}){
     <mesh geometry={servingBowlGeometry} material={m.porcelain} castShadow receiveShadow/>
     {Array.from({length:19},(_,i)=>{
       const layer=i<10?0:i<16?1:2,n=layer===0?10:layer===1?6:3,j=i-(layer===0?0:layer===1?10:16),a=j/n*Math.PI*2+layer*.6,r=layer===0?.086:layer===1?.057:.025;
-      return <Pillow key={i} position={[Math.cos(a)*r,.047+layer*.032,Math.sin(a)*r]} size={[.044+(i%3)*.006,.036,.048+(i%2)*.009]} rotation={[Math.sin(i)*.28,a,Math.cos(i)*.2]} material={i%3===0?m.borsokGolden:m.borsok}/>;
+      return <mesh key={i} geometry={pillowGeometry} position={[Math.cos(a)*r,.047+layer*.032,Math.sin(a)*r]} scale={[(.044+(i%3)*.006)/2,.018,(.048+(i%2)*.009)/2]} rotation={[Math.sin(i)*.28,a,Math.cos(i)*.2]} material={i%3===0?m.borsokGolden:m.borsok} castShadow receiveShadow/>;
     })}
   </>;
 }
@@ -166,17 +161,20 @@ function RoundDining({item,m}) {return <group scale={[item.size[0]/2.35,1,item.s
 function Kitchen({item,m,mode}) {
   const w=item.size[0];
   return <>
-    <Box position={[0,.46,0]} size={[w,.88,.6]} material={m.dark}/>
-    <Box position={[0,.92,.025]} size={[w+.04,.06,.65]} material={m.stone}/>
+    <Box position={[0,.37,0]} size={[w,.7,.6]} material={m.dark}/>
+    <Box position={[0,.82,.28]} size={[w,.2,.04]} material={m.dark}/>
+    <Box position={[0,.82,-.28]} size={[w,.2,.04]} material={m.dark}/>
+    {/* Four stone sections leave a real opening for the recessed sink. */}
+    <Box position={[(-w/2-.02+.58)/2,.92,.025]} size={[w/2+.6,.06,.65]} material={m.stone}/>
+    <Box position={[(1.14+w/2+.02)/2,.92,.025]} size={[w/2-1.12,.06,.65]} material={m.stone}/>
+    <Box position={[.86,.92,-.235]} size={[.56,.06,.13]} material={m.stone}/>
+    <Box position={[.86,.92,.29]} size={[.56,.06,.12]} material={m.stone}/>
     <Box position={[0,1.23,-.29]} size={[w,.56,.03]} material={m.stone}/>
     {(!item.room||mode==='walkthrough')&&<Box position={[0,1.94,-.06]} size={[w,.88,.47]} material={m.white}/>}
     {[-1.45,-.72,0,.72,1.45].map(x=><group key={x}><Box position={[x,.47,.31]} size={[.008,.8,.01]} material={m.oak}/>{(!item.room||mode==='walkthrough')&&<Box position={[x,1.94,.18]} size={[.008,.86,.012]} material={m.oak}/>}<Box position={[x+.15,.78,.325]} size={[.22,.018,.03]} material={m.brass}/></group>)}
     <Box position={[-.9,.957,.02]} size={[.66,.018,.45]} material={m.black}/>
     {[-1.05,-.76].flatMap(x=>[-.1,.14].map(z=><Cylinder key={`${x}${z}`} position={[x,.97,z]} size={[.09,.006,.09]} material={m.metal}/>))}
-    <Box position={[.86,.96,.03]} size={[.55,.02,.4]} material={m.metal}/>
-    <Box position={[.86,.97,.03]} size={[.46,.025,.31]} material={m.mirror}/>
-    <Box position={[.86,1.1,-.18]} size={[.025,.29,.025]} material={m.brass}/>
-    <Box position={[.86,1.235,-.1]} size={[.025,.025,.19]} material={m.brass}/>
+    <KitchenSink m={m}/>
   </>;
 }
 function Cabinet({item,m,state,player,mode}) {
@@ -235,13 +233,7 @@ function Bath({item,m,activeRoom,quality,mode}) {
 }
 
 function Plant({item,m}) {
-  const h=item.size[1];
-  return <>
-    <Cylinder position={[0,.22,0]} size={[.2,.44,.2]} material={m.linen}/>
-    <Cylinder position={[0,.44,0]} size={[.18,.01,.18]} material={m.soil}/>
-    <Box position={[0,h/2,0]} size={[.025,h-.2,.025]} material={m.walnut}/>
-    {Array.from({length:7},(_,i)=> <Ball key={i} position={[Math.sin(i*2.4)*.17,.55+i*(h-.65)/7,Math.cos(i*2.4)*.17]} size={[.2,.12,.1]} rotation={[0,i*2.4,.5]} material={m.leaf}/>)}
-  </>;
+  return <Houseplant item={item} m={m}/>;
 }
 export default function Furniture({item,m,state,player,mode,activeRoom,quality,reducedMotion}) {
   const [w,h,d]=item.size;
@@ -262,6 +254,7 @@ export default function Furniture({item,m,state,player,mode,activeRoom,quality,r
   }[item.kind];
   return <RigidBody type="fixed" colliders={false} position={item.position} rotation={[0,item.rotation||0,0]}>
     <CuboidCollider args={[w/2,h/2,d/2]} position={[0,h/2,0]}/>
+    {['bed','sofa','wardrobe','hallStorage','kitchen','nightstand','coffee','coffeeOval','plant','chair','desk','cabinet','dining','diningCompact','diningRound','breakfast'].includes(item.kind)&&<mesh name="furniture-contact-shadow" position={[0,.039,0]} rotation={[-Math.PI/2,0,0]} material={m.contact} raycast={()=>null}><planeGeometry args={[w*1.12+.08,d*1.12+.08]}/></mesh>}
     {content ? content() : <Bath item={item} m={m} activeRoom={activeRoom} quality={quality} mode={mode}/>}
   </RigidBody>;
 }

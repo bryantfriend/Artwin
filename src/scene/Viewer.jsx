@@ -1,6 +1,6 @@
 import {translate as t,useI18n} from '../i18n.js';
 import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
 import * as THREE from 'three';
@@ -10,6 +10,7 @@ import Architecture from './Architecture.jsx';
 import Player from './Player.jsx';
 import StudioLighting from './StudioLighting.jsx';
 import Exterior from './Exterior.jsx';
+import {interiorTextureUrls} from './interiorSurfaces.js';
 
 const MemoArchitecture=React.memo(Architecture);
 
@@ -91,14 +92,15 @@ function NoGraphics({onFailure}) {
 }
 function Scene(props) {
   const {tourStops}=props.layout;
-  const resources=useMemo(()=>createMaterials(props.layout.theme),[props.layout.theme]);
+  const textures=useLoader(THREE.TextureLoader,interiorTextureUrls);
+  const resources=useMemo(()=>createMaterials(props.layout.theme,textures),[props.layout.theme,textures]);
   useEffect(()=>()=>resources.dispose(),[resources]);
   return <>
     <ContextEvents onContextLost={props.onContextLost}/>
-    <StudioLighting evening={props.lighting==='evening'}/>
+    <StudioLighting evening={props.lighting==='evening'} interior={props.mode!=='dollhouse'}/>
     <color attach="background" args={[props.mode==='dollhouse'?'#e7e7e7':props.lighting==='evening'?'#7d8493':'#acd0ed']}/>
-    <ambientLight intensity={props.lighting==='evening'?.18:.26}/>
-    <hemisphereLight color="#ffffff" groundColor="#a6a5a2" intensity={.5}/>
+    <ambientLight intensity={props.mode==='dollhouse'?.14:.06}/>
+    <hemisphereLight color="#e5eef9" groundColor="#b8a28b" intensity={props.mode==='dollhouse'?.3:props.lighting==='evening'?.10:.18}/>
     <directionalLight position={[7,12,16]} intensity={props.lighting==='evening'?.3:1.65} color={props.lighting==='evening'?'#ffd2a0':'#fff6e9'} castShadow={props.quality==='high'} shadow-radius={3} shadow-mapSize={[2048,2048]} shadow-camera-left={-14} shadow-camera-right={14} shadow-camera-top={14} shadow-camera-bottom={-14} shadow-normalBias={.04} shadow-bias={-.0001}/>
     {props.mode==='dollhouse'&&<mesh position={[4.5,-.27,7]} rotation={[-Math.PI/2,0,0]} receiveShadow><planeGeometry args={[200,200]}/><meshStandardMaterial color="#e7e7e7" roughness={1}/></mesh>}
     <Suspense fallback={null}>
@@ -140,7 +142,7 @@ export default function Viewer(props) {
     shadows={props.quality==='high'?{type:THREE.PCFShadowMap}:false} dpr={props.quality==='high'?[1,1.6]:1}
     camera={{position:props.layout.APARTMENT.overview.position,fov:43,near:.08,far:150}}
     gl={{antialias:true,powerPreference:'high-performance'}}
-    onCreated={({gl})=>{gl.domElement.tabIndex=0;gl.domElement.setAttribute('aria-label',t('Apartment 3D canvas; drag to look or orbit'));}}
+    onCreated={({gl})=>{gl.toneMapping=THREE.AgXToneMapping;gl.toneMappingExposure=1.05;gl.domElement.tabIndex=0;gl.domElement.setAttribute('aria-label',t('Apartment 3D canvas; drag to look or orbit'));}}
     fallback={<p>{t("A browser with WebGL 2 is required to view this apartment.")}</p>}
   ><Scene {...props} suspended={suspended}/></Canvas></ViewerBoundary>;
 }

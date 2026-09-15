@@ -10,7 +10,7 @@ import Modal from './Modal.jsx';
 import {consultationHref} from './ConsultationLink.jsx';
 import './PlanGallery.css';
 import {BuyerTools} from './BuyerTools.jsx';
-import {safeWrite,track} from '../sales.js';
+import {safeRead,safeWrite,track} from '../sales.js';
 
 export const planPreview=plan=>`${import.meta.env.BASE_URL}plans/${plan.id}.png`;
 function Previews({plan}){
@@ -23,19 +23,21 @@ function Metrics({plan}){
 }
 export default function PlanGallery({project}){
   const {t,number}=useI18n();
-  const [bedrooms,setBedrooms]=useState('All'),[area,setArea]=useState('all'),[sort,setSort]=useState('ascending'),[savedOnly,setSavedOnly]=useState(false);
+  const [bedrooms,setBedrooms]=useState(()=>safeRead(`artwin-filters-${project.id}`,{}).bedrooms??'All'),[area,setArea]=useState(()=>safeRead(`artwin-filters-${project.id}`,{}).area||'all'),[sort,setSort]=useState(()=>safeRead(`artwin-filters-${project.id}`,{}).sort||'ascending'),[savedOnly,setSavedOnly]=useState(false);
   const [saved,setSaved]=useState(()=>{try{const ids=JSON.parse(localStorage.getItem('artwin-saved-plans')||'[]');return Array.isArray(ids)?ids.filter(id=>typeof id==='string'):[];}catch{return [];}});
+  const [moreFilters,setMoreFilters]=useState(false);
   const [expanded,setExpanded]=useState([]);
   const [compare,setCompare]=useState([]),[enlarged,setEnlarged]=useState(null),[comparisonOpen,setComparisonOpen]=useState(false);
   useEffect(()=>{safeWrite('artwin-saved-plans',saved);},[saved]);
+  useEffect(()=>{safeWrite(`artwin-filters-${project.id}`,{bedrooms,area,sort});},[project.id,bedrooms,area,sort]);
   const visible=filterPlans(project.plans,{bedrooms,area,sort,savedOnly,saved});
   const selected=project.plans.filter(p=>compare.includes(p.id));
   const toggleSaved=id=>{if(!saved.includes(id))track('shortlist_saved',{projectId:project.id,planId:id});setSaved(ids=>ids.includes(id)?ids.filter(value=>value!==id):[...ids,id]);};
   const toggleCompare=id=>setCompare(ids=>ids.includes(id)?ids.filter(value=>value!==id):ids.length<3?[...ids,id]:ids);
   const clearFilters=()=>{setBedrooms('All');setArea('all');setSavedOnly(false);};
   return <section className="plan-showcase" aria-labelledby="floor-plans-title">
-    <div className="showcase-heading"><div><span className="collection-kicker">{t('PICTURE YOUR EVERYDAY')}</span><h2 id="floor-plans-title">{t('A plan for your life.')}</h2><p>{t('See the layout. Picture the furniture. Step inside.')}</p></div><div className="showcase-range"><strong>{number(Math.min(...project.plans.map(p=>p.area)),2)}—{number(Math.max(...project.plans.map(p=>p.area)),2)} <small>{t('m²')}</small></strong><span>{t('Floor plans: {count}',{count:number(project.plans.length)})}</span></div></div>
-    <div className="showcase-filters"><div className="bedroom-filters" role="group" aria-label={t('Filter apartments by bedrooms')}>{['All',...new Set(project.plans.map(p=>p.bedrooms).sort((a,b)=>a-b))].map(n=><button key={n} aria-pressed={bedrooms===n} onClick={()=>setBedrooms(n)}>{n==='All'?t('All floor plans'):t(n===0?'One-room homes':n===1?'1 bedroom':'{count} bedrooms',{count:number(n)})}</button>)}</div><div className="showcase-selects"><label>{t('Area')}<select value={area} onChange={e=>setArea(e.target.value)}>{[['all','Any area'],['small','Under 80 m²'],['medium','80–110 m²'],['large','Over 110 m²']].map(([value,label])=><option key={value} value={value}>{t(label)}</option>)}</select></label><label className="showcase-sort"><span>{t('Sort floor plans')}</span><select aria-label={t('Sort floor plans')} value={sort} onChange={e=>setSort(e.target.value)}><option value="ascending">{t('Area: small to large')}</option><option value="descending">{t('Area: large to small')}</option></select></label></div></div>
+    <div className="showcase-heading"><div><span className="collection-kicker">{t('PICTURE YOUR EVERYDAY')}</span><h2 id="floor-plans-title" tabIndex={-1}>{t('A plan for your life.')}</h2><p>{t('See the layout. Picture the furniture. Step inside.')}</p></div><div className="showcase-range"><strong>{number(Math.min(...project.plans.map(p=>p.area)),2)}—{number(Math.max(...project.plans.map(p=>p.area)),2)} <small>{t('m²')}</small></strong><span>{t('Floor plans: {count}',{count:number(project.plans.length)})}</span></div></div>
+    <div className="showcase-filters"><div className="bedroom-filters" role="group" aria-label={t('Filter apartments by bedrooms')}>{['All',...new Set(project.plans.map(p=>p.bedrooms).sort((a,b)=>a-b))].map(n=><button key={n} aria-pressed={bedrooms===n} onClick={()=>setBedrooms(n)}>{n==='All'?t('All floor plans'):t(n===0?'One-room homes':n===1?'1 bedroom':'{count} bedrooms',{count:number(n)})}</button>)}</div><button className="more-plan-filters" aria-expanded={moreFilters} aria-controls="additional-plan-filters" onClick={()=>setMoreFilters(v=>!v)}>{t(moreFilters?'Fewer filters':'More filters')}{area!=='all'?' •':''}</button><div id="additional-plan-filters" className={`showcase-selects${moreFilters?' filters-expanded':''}`}><label>{t('Area')}<select value={area} onChange={e=>setArea(e.target.value)}>{[['all','Any area'],['small','Under 80 m²'],['medium','80–110 m²'],['large','Over 110 m²']].map(([value,label])=><option key={value} value={value}>{t(label)}</option>)}</select></label><label className="showcase-sort"><span>{t('Sort floor plans')}</span><select aria-label={t('Sort floor plans')} value={sort} onChange={e=>setSort(e.target.value)}><option value="ascending">{t('Area: small to large')}</option><option value="descending">{t('Area: large to small')}</option></select></label></div></div>
     <div className="showcase-results"><span role="status">{t('Floor plans: {count}',{count:number(visible.length)})}</span><button className="saved-filter" aria-label={t('Show saved plans only')} aria-pressed={savedOnly} onClick={()=>setSavedOnly(v=>!v)}><Icon name="heart" size={17}/>{t('Saved plans')} <span>{saved.filter(id=>project.plans.some(p=>p.id===id)).length}</span></button></div>
     <div className="residence-list">{visible.map(plan=><article className={`residence-card${expanded.includes(plan.id)?' details-open':''}`} key={plan.id} data-plan-id={plan.id}>
       <button className="preview-trigger" aria-label={`${t('Enlarge previews')} · ${number(plan.area,2)} ${t('m²')}`} onClick={()=>setEnlarged(plan)}><Previews plan={plan}/><span className="preview-expand"><Icon name="expand" size={17}/>{t('Enlarge previews')}</span></button>

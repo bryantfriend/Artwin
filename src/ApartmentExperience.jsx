@@ -1,3 +1,4 @@
+import {routeHref} from './navigation.js';
 import {translate as t,useI18n} from './i18n.js';
 import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {getLayout} from './layouts/index.js';
@@ -23,6 +24,7 @@ export default function ApartmentExperience({project,plan}) {
   const [mode,setMode]=useState('dollhouse'),[selected,setSelected]=useState(null),[currentRoom,setCurrentRoom]=useState('hall');
   const [state,setState]=useState({doors:{},lights:{},tv:false,cabinet:false});
   const [ready,setReady]=useState(false),[paused,setPaused]=useState(false),[planOpen,setPlanOpen]=useState(()=>window.innerWidth>=760),[help,setHelp]=useState(false);
+  const [furnished,setFurnished]=useState(true),[lighting,setLighting]=useState('day');
   const [quality,setQuality]=useState(()=>window.matchMedia('(max-width: 760px)').matches?'low':'high');
   const [target,setTarget]=useState(null),[reset,setReset]=useState(0),[position,setPosition]=useState(null),[travel,setTravel]=useState(null);
   const [fade,setFade]=useState(false),[notice,setNotice]=useState(''),[contextLost,setContextLost]=useState(false);
@@ -120,7 +122,7 @@ export default function ApartmentExperience({project,plan}) {
   return <div className={`app mode-${mode}`}>
     <header className="topbar">
       <a className="mobile-project-back" href={projectHref(project)} aria-label={t('Back to {project} floor plans',{project:project.name})} title={t('Back to {project} floor plans',{project:project.name})}><Icon name="arrow" size={24}/><img src={`${import.meta.env.BASE_URL}artwin-logo.png`} alt="ARTWIN" width="287" height="88"/></a>
-      <a className="wordmark" href="#/projects" aria-label={t("Artwin home")}><img src={`${import.meta.env.BASE_URL}artwin-logo.png`} alt="ARTWIN" width="287" height="88"/></a>
+      <a className="wordmark" href={routeHref('/projects')} aria-label={t("Artwin home")}><img src={`${import.meta.env.BASE_URL}artwin-logo.png`} alt="ARTWIN" width="287" height="88"/></a>
       <div className="header-divider"/><span className="header-caption">{t("SPACES FOR LIVING")}</span>
       <div className="header-end"><a className="apartment-project-back" href={projectHref(project)} aria-label={t('Back to {project} floor plans',{project:project.name})}><Icon name="arrow" size={16}/>{project.name}<span>{number(plan.area,2)} {t('m²')} · {t('Floor plans')}</span></a><LanguagePicker/><ConsultationLink compact projectName={project.name} projectId={project.id}/><WhatsAppContact/><button className="icon-button help-button" onClick={()=>{setHelp(true);clearInput(input);}} aria-label={t("Open controls and help")}><Icon name="help"/></button></div>
     </header>
@@ -135,15 +137,15 @@ export default function ApartmentExperience({project,plan}) {
           <button className="plan-heading" onClick={()=>setPlanOpen(!planOpen)} aria-expanded={planOpen}><span><Icon name="plan" size={17}/> {t("YOUR FLOOR PLAN")}</span><span>{planOpen?'−':'+'}</span></button>
           {planOpen&&<><FloorPlan layout={layout} selected={mode==='tour'?tourStops[tourIndex].room:mode==='walkthrough'?currentRoom:selected} onSelect={selectRoom} position={position} mode={mode}/><div className="plan-caption"><span className="plan-dot"/> {t("Select a room to explore")}</div></>}
         </div>
-        <p className="reference-note">{t(plan?.evidence==='render'?'Approximate arrangement reconstructed from Artwin’s furnished perspective.':'Approximate visualization based on the supplied reference.')}</p>
+        <p className="reference-note">{!furnished&&<>{t('Furniture hidden. Fixtures and finishes remain illustrative.')} </>}{t(plan?.evidence==='render'?'Approximate arrangement reconstructed from Artwin’s furnished perspective.':'Approximate visualization based on the supplied reference.')}</p>
       </aside>
       <section className="experience" aria-label={t("Interactive 3D apartment viewer")}>
         <div className="viewer" ref={viewerRef}>
-          <ErrorBoundary><Suspense fallback={null}><Viewer layout={layout} currentRoom={currentRoom} tourIndex={tourIndex} mode={mode} selected={selected} reset={reset} onSelect={selectRoom} state={state} player={player} input={input} travel={travel} onTravel={onTravel} paused={paused||help||fade} onPause={onPause} onRoom={onRoom} onTarget={setTarget} quality={quality} reducedMotion={reducedMotion} onReady={onReady} onContextLost={()=>setContextLost(true)}/></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={null}><Viewer furnished={furnished} lighting={lighting} layout={layout} currentRoom={currentRoom} tourIndex={tourIndex} mode={mode} selected={selected} reset={reset} onSelect={selectRoom} state={state} player={player} input={input} travel={travel} onTravel={onTravel} paused={paused||help||fade} onPause={onPause} onRoom={onRoom} onTarget={setTarget} quality={quality} reducedMotion={reducedMotion} onReady={onReady} onContextLost={()=>setContextLost(true)}/></Suspense></ErrorBoundary>
         </div>
         <nav className="mode-switch" aria-label={t("Viewing mode")}><button onClick={()=>changeMode('dollhouse')} aria-pressed={mode==='dollhouse'}><Icon name="cube" size={17}/> {t("Dollhouse")}</button><button disabled={!ready} onClick={()=>changeMode('walkthrough')} aria-pressed={mode==='walkthrough'}><Icon name="walk" size={17}/> {t("Walkthrough")}</button></nav>
         <div className="scene-label"><span className="live-dot"/>{t(mode==='dollhouse'?'INTERACTIVE 3D VIEW':'INSIDE THE RESIDENCE')}</div>
-        <div className="viewer-tools"><button className="icon-button" onClick={recover} aria-label={t(mode==='dollhouse'?'Reset view':'Return to entrance')} title={t(mode==='dollhouse'?'Reset view':'Return to entrance')}><Icon name="reset"/></button><button className="icon-button" onClick={fullscreen} aria-label={t("Toggle fullscreen")} title={t("Fullscreen")}><Icon name="expand"/></button></div>
+        <div className="showroom-view-controls"><button aria-pressed={!furnished} onClick={()=>{setFurnished(v=>!v);setTarget(null);if(mode==='walkthrough')requestTravel(APARTMENT.entrance.position,APARTMENT.entrance.yaw);}}>{t(furnished?'Hide furniture':'Show furniture')}</button><select aria-label={t('Lighting atmosphere')} value={lighting} onChange={e=>setLighting(e.target.value)}><option value="day">{t('Daylight')}</option><option value="evening">{t('Warm evening')}</option></select></div><div className="viewer-tools"><button className="icon-button" onClick={recover} aria-label={t(mode==='dollhouse'?'Reset view':'Return to entrance')} title={t(mode==='dollhouse'?'Reset view':'Return to entrance')}><Icon name="reset"/></button><button className="icon-button" onClick={fullscreen} aria-label={t("Toggle fullscreen")} title={t("Fullscreen")}><Icon name="expand"/></button></div>
         {mode==='dollhouse'&&<div className="compass"><span>{t('North')}</span><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5 27 30 20 25 13 30Z"/></svg></div>}
         {(!ready||contextLost)&&<div className="loading-overlay"><div className="loading-symbol"><img src={`${import.meta.env.BASE_URL}artwin-logo.png`} alt="ARTWIN" width="287" height="88"/></div><h2>{t(contextLost?'The graphics connection was lost.':'Making room for you.')}</h2><p>{t(contextLost?'Reload to restore the apartment.':'Preparing the apartment and physics…')}</p>{contextLost&&<button className="primary-button" onClick={()=>location.reload()}>{t("Reload viewer")}</button>}</div>}
         {mode==='walkthrough'&&ready&&!help&&<>

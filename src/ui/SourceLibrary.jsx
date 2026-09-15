@@ -1,0 +1,7 @@
+import React from 'react';
+import {useI18n} from '../i18n.js';
+import {projectDetails} from '../projectDetails.js';
+export default function SourceLibrary({project}){
+ const {t}=useI18n(),info=projectDetails[project.id];
+ return <section className="source-library"><span className="collection-kicker">{t('KNOW WHAT YOU ARE CHOOSING')}</span><h2>{t('Project references')}</h2><div className="source-records"><a href={project.sourceUrl} target="_blank" rel="noopener noreferrer"><h3>{t('Official project presentation')} ↗</h3>{t('Architecture, facilities and published project information')}<small>{t('Source checked')}: {info?.reviewed||'2026-09-15'}</small></a>{info?.brochure&&<a href={info.brochure} target="_blank" rel="noopener noreferrer"><h3>{t('Official project brochure')} ↗</h3>{t('Read the original published material')}</a>}<a href="https://youtube.com/@artwin_kg" target="_blank" rel="noopener noreferrer"><h3>{t('Videos from Artwin')} ↗</h3>{t('Visit the official channel for published videos and project news')}</a></div><details><summary>{t('Understanding the visualizations')}</summary><p>{t('The 3D interiors illustrate a possible arrangement. Furniture, finishes and window scenery are illustrative. Confirm exact dimensions and the delivered specification with Artwin.')}</p><p>{t('Gallery renderings are design references. They are not dated construction photographs.')}</p></details></section>;
+}

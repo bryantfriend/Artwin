@@ -1,3 +1,4 @@
+import {routeLocation} from '../navigation.js';
 import React from 'react';
 import './WhatsAppContact.css';
 import {resolveRoute} from '../projects.js';
@@ -8,7 +9,7 @@ export const whatsAppContactUrl='https://wa.me/996228880000';
 
 export default function WhatsAppContact({floating=false}) {
   const {t}=useI18n();
-  const route=resolveRoute(window.location.hash);
+  const route=resolveRoute(routeLocation());
   const href=route.project?whatsappHref(contextMessage({project:route.project,plan:route.plan},t)):whatsAppContactUrl;
   return <a
     className={`whatsapp-contact${floating?' whatsapp-contact--floating':''}`}

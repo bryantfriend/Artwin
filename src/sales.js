@@ -1,3 +1,4 @@
+import {routeHref} from './navigation.js';
 import {projects,apartmentHref} from './projects.js';
 
 export const emptySales={version:1,updatedAt:null,units:[],milestones:[],documents:[]};
@@ -7,7 +8,7 @@ export const resolvePlan=key=>allPlans().find(({project,plan})=>planKey(project,
 export const safeRead=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback;}catch{return fallback;}};
 export function safeWrite(key,value){try{localStorage.setItem(key,JSON.stringify(value));window.dispatchEvent(new Event('artwin-sales-change'));return true;}catch{return false;}}
 export function sharedPlans(search=''){return [...new Set(new URLSearchParams(search).get('plans')?.split(',')||[])].filter(resolvePlan).slice(0,12);}
-export function shortlistUrl(keys){const url=new URL(window.location.href);url.search='';url.hash=`/shortlist?${new URLSearchParams({plans:keys.filter(resolvePlan).slice(0,12).join(',')})}`;return url.href;}
+export function shortlistUrl(keys){const url=new URL(window.location.href);return new URL(routeHref(`/shortlist?${new URLSearchParams({plans:keys.filter(resolvePlan).slice(0,12).join(',')})}`),url.origin).href;}
 export function readSaved(){const raw=safeRead('artwin-saved-plans',[]);return Array.isArray(raw)?[...new Set(raw.filter(id=>typeof id==='string'))]:[];}
 export function savedKeys(){return allPlans().filter(({plan})=>readSaved().includes(plan.id)).map(({project,plan})=>planKey(project,plan));}
 export function calculatePayment({price,deposit,months,annualRate=0}){
@@ -43,7 +44,7 @@ export function matchPlans({city='All',bedrooms='',maxArea='',maxPrice='',deposi
   }).filter(r=>r.budget!=='over').sort((a,b)=>(a.budget==='match'?0:1)-(b.budget==='match'?0:1)||a.plan.area-b.plan.area);
 }
 export function contextMessage({project,plan,unit,keys=[],payment,note='',visit},t){
-  const lines=[t('Hello Artwin, I would like to discuss an apartment.')];
+  const lines=[t(project?.type==='Business centre'?'Hello Artwin, I would like to discuss a commercial space.':'Hello Artwin, I would like to discuss an apartment.')];
   if(project)lines.push(project.name);
   if(plan)lines.push(`${t(plan.name)} · ${plan.area.toFixed(2)} ${t('m²')}`);
   if(unit)lines.push(`${t('Building')}: ${unit.building} · ${t('Floor')}: ${unit.floor} · ${t('Apartment')}: ${unit.number}`);
@@ -55,7 +56,7 @@ export function contextMessage({project,plan,unit,keys=[],payment,note='',visit}
   for(const key of keys.slice(0,6)){const r=resolvePlan(key);if(r)lines.push(`${r.project.name} · ${r.plan.area.toFixed(2)} ${t('m²')}`);}
   if(visit)lines.push(`${t('Preferred appointment')}: ${visit}`);
   if(note.trim())lines.push(note.trim().slice(0,500));
-  if(project&&plan){const url=new URL(window.location.href);url.search='';url.hash=apartmentHref(project,plan).slice(1);lines.push(url.href);}
+  if(project&&plan){lines.push(new URL(apartmentHref(project,plan),window.location.href).href);}
   return lines.join('\n');
 }
 export const whatsappHref=message=>`https://wa.me/996228880000?text=${encodeURIComponent(message)}`;

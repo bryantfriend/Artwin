@@ -91,21 +91,21 @@ function Door({door,m,open,mode,player,reducedMotion}) {
     </group>
   </RigidBody>;
 }
-export default function Architecture({layout,m,mode,state,player,reducedMotion,quality,activeRoom}) {
+export default function Architecture({layout,m,mode,state,player,reducedMotion,quality,activeRoom,furnished=true,evening=false}) {
   const {rooms,walls,doors,furniture,switches}=layout;
   return <>
     {rooms.map(room=><Floor key={room.id} room={room} m={m} mode={mode}/>)}
     {walls.map(wall=><Wall key={wall.id} wall={wall} m={m} mode={mode}/>)}
     {doors.map(door=><Door key={door.id} door={door} m={m} mode={mode} open={!!state.doors[door.id]} player={player} reducedMotion={reducedMotion}/>)}
-    {layout.id==='four-room-134'?<Decor m={m} mode={mode}/>:<LayoutDecor layout={layout} m={m} mode={mode}/>}
-    {furniture.map(item=><Furniture activeRoom={activeRoom} quality={quality} key={item.id} item={item} m={m} state={state} player={player} mode={mode} reducedMotion={reducedMotion}/>)}
-    <DiningChandeliers layout={layout} m={m} mode={mode} state={state}/>
+    {layout.id==='four-room-134'?(furnished&&<Decor m={m} mode={mode}/>):<LayoutDecor furnished={furnished} layout={layout} m={m} mode={mode}/>}
+    {furniture.filter(item=>furnished||['kitchen','vanity','shower','bath','toilet','wardrobe','hallStorage'].includes(item.kind)).map(item=><Furniture activeRoom={activeRoom} quality={quality} key={item.id} item={item} m={m} state={state} player={player} mode={mode} reducedMotion={reducedMotion}/>)}
+    {furnished&&<DiningChandeliers layout={layout} m={m} mode={mode} state={state}/>}
     {switches.map(s=><group key={s.id} position={s.position} rotation={[0,s.rotation,0]} userData={{interaction:s.id}}>
       <Box size={[.13,.2,.045]} material={m.white}/>
       <Box position={[0,0,.027]} size={[.065,.12,.018]} material={state.lights[s.room]!==false?m.bulb:m.dark}/>
     </group>)}
     {rooms.filter(r=>!r.id.startsWith('loggia')&&!r.outdoor).map(r=><group key={r.id}>
-      <pointLight castShadow={quality==='high'&&mode==='walkthrough'&&activeRoom===r.id} shadow-mapSize={[512,512]} shadow-bias={-.0005} shadow-normalBias={.035} shadow-radius={2} position={[r.label[0],2.45,r.label[1]]} color="#fff4e6" intensity={state.lights[r.id]===false?0:mode==='walkthrough'?11:3} distance={7} decay={2}/>
+      <pointLight castShadow={quality==='high'&&mode==='walkthrough'&&activeRoom===r.id} shadow-mapSize={[512,512]} shadow-bias={-.0005} shadow-normalBias={.035} shadow-radius={2} position={[r.label[0],2.45,r.label[1]]} color={evening?'#ffd7a1':'#fff4e6'} intensity={state.lights[r.id]===false?0:mode==='walkthrough'?11:3} distance={7} decay={2}/>
       {mode==='walkthrough'&&<Box position={[r.label[0],2.65,r.label[1]]} size={[.5,.04,.5]} material={state.lights[r.id]===false?m.linen:m.bulb}/>}
     </group>)}
   </>;

@@ -1,4 +1,5 @@
 import {catalogMessages} from './locales/catalog.js';
+import {showroomMessages} from './locales/showroom.js';
 import {useSyncExternalStore} from 'react';
 import {uiMessages} from './locales/ui.js';
 import {dataMessages} from './locales/data.js';
@@ -8,7 +9,7 @@ import {londonMessages} from './locales/london.js';
 import {wiltonMessages} from './locales/wilton.js';
 
 export const languages=[{id:'ru',label:'Русский',short:'RU'},{id:'ky',label:'Кыргызча',short:'KY'},{id:'en-US',label:'English (US)',short:'EN'},{id:'zh-CN',label:'中文',short:'中文'}];
-export const messages={...uiMessages,...dataMessages,...viewerMessages,...buyerMessages,...londonMessages,...wiltonMessages,...catalogMessages};
+export const messages={...uiMessages,...dataMessages,...viewerMessages,...buyerMessages,...londonMessages,...wiltonMessages,...catalogMessages,...showroomMessages};
 export function validLanguage(value){return languages.some(l=>l.id===value)?value:'ru';}
 let language='ru';
 try{language=validLanguage(localStorage.getItem('artwin-language'));}catch{/* Storage is optional. */}

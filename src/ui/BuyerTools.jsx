@@ -1,3 +1,4 @@
+import {routeHref} from '../navigation.js';
 import React,{useEffect,useState} from 'react';
 import {useI18n} from '../i18n.js';
 import {getLayout} from '../layouts/index.js';
@@ -15,7 +16,7 @@ export function BuyerLauncher({project,plan,onOpen}){
 }
 export function BuyerTools({project,plan,compact=false}){
   const {t,number}=useI18n(),[tool,setTool]=useState(null);
-  return <><div className={`buyer-tools ${compact?'buyer-tools-compact':''}`}><div><span className="collection-kicker">{t('YOUR NEXT STEP')}</span><strong>{t('Plan your purchase')}</strong></div><div className="buyer-tool-buttons">{Object.entries(toolNames).filter(([key])=>key!=='fit'||plan).map(([key,label])=><button key={key} onClick={()=>setTool(key)}>{t(label)} <span aria-hidden="true">↗</span></button>)}{!compact&&<a href="#/finder">{t('Help me choose')} →</a>}</div></div>{tool&&<Modal onClose={()=>setTool(null)} labelledBy="buyer-tool-title" className="buyer-dialog"><span className="collection-kicker">{project.name}{plan?` · ${number(plan.area,2)} ${t('m²')}`:''}</span><h2 id="buyer-tool-title">{t(toolNames[tool])}</h2>{tool==='inventory'?<Inventory project={project} initialPlan={plan}/>:tool==='payment'?<PaymentPlanner project={project} plan={plan}/>:tool==='fit'?<FurniturePlanner layout={getLayout(plan.id)}/>:<ContactBrief project={project} plan={plan}/>}</Modal>}</>;
+  return <><div className={`buyer-tools ${compact?'buyer-tools-compact':''}`}><div><span className="collection-kicker">{t('YOUR NEXT STEP')}</span><strong>{t('Plan your purchase')}</strong></div><div className="buyer-tool-buttons">{Object.entries(toolNames).filter(([key])=>key!=='fit'||plan).map(([key,label])=><button key={key} onClick={()=>setTool(key)}>{t(label)} <span aria-hidden="true">↗</span></button>)}{!compact&&<a href={routeHref('/finder')}>{t('Help me choose')} →</a>}</div></div>{tool&&<Modal onClose={()=>setTool(null)} labelledBy="buyer-tool-title" className="buyer-dialog"><span className="collection-kicker">{project.name}{plan?` · ${number(plan.area,2)} ${t('m²')}`:''}</span><h2 id="buyer-tool-title">{t(toolNames[tool])}</h2>{tool==='inventory'?<Inventory project={project} initialPlan={plan}/>:tool==='payment'?<PaymentPlanner project={project} plan={plan}/>:tool==='fit'?<FurniturePlanner layout={getLayout(plan.id)}/>:<ContactBrief project={project} plan={plan}/>}</Modal>}</>;
 }
 export function InventoryNotice(){const {preview,failed}=useSales(),{t}=useI18n();return preview?<p className="buyer-notice">{t('Local inventory preview. These records are not published or verified by Artwin.')}</p>:failed?<p className="buyer-notice" role="status">{t('Inventory could not be loaded. Ask Artwin for current availability.')}</p>:null;}
 export function Inventory({project,initialPlan}){

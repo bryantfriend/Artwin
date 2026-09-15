@@ -1,4 +1,5 @@
 import {catalogPlans} from './catalogPlans.js';
+import {routeHref,basePath} from './navigation.js';
 // Project identity and imagery: Artwin's project directory, checked 2026-09-13.
 // Plan availability describes this interactive collection, not sales inventory.
 export const projectSource='https://artwin.kg/#rec596501902';
@@ -33,16 +34,17 @@ export const projects=[
   {id:'french-house',name:'French House',nativeName:'Французский дом',city:'Osh',address:'275 Shakirov Street',type:'Residential',description:'A residential address with views towards the embankment.',sourceUrl:'https://artwin.kg/page31314850.html',plans:[]},
   {id:'boston-tower',name:'Boston Tower',city:'Osh',address:'Razzakov Avenue · KhBK district',type:'Residential',description:'A residential tower on Razzakov Avenue.',sourceUrl:'https://artwin.kg/page31279315.html',plans:catalogPlans.filter(p=>p.project==='boston-tower')},
 ];
-export const projectImage=project=>`${import.meta.env.BASE_URL}projects/${project.id}.webp`;
-export const projectHref=project=>`#/projects/${project.id}`;
-export const apartmentHref=(project,plan)=>`${projectHref(project)}/apartments/${plan.id}`;
+export const projectImage=project=>`${basePath}projects/${project.id}.webp`;
+export const projectHref=project=>routeHref(`/projects/${project.id}`);
+export const apartmentHref=(project,plan)=>routeHref(`/projects/${project.id}/apartments/${plan.id}`);
 
 export function resolveRoute(hash=''){
-  const [rawPath,search='']=hash.replace(/^#/, '').split('?');
+  const [rawPath,search='']=hash.replace(/^#/, '').replace(new RegExp(`^${basePath}`),'/').split('?');
   const path=rawPath.replace(/\/$/,'');
   if(path==='/finder')return {kind:'finder'};
   if(path==='/shortlist')return {kind:'shortlist',search};
   if(path==='/sales-workspace')return {kind:'workspace'};
+  if(path==='/presentation')return {kind:'presentation',search};
   if(!path||path==='/projects')return {kind:'projects'};
   const parts=path.split('/').filter(Boolean);
   if(parts[0]==='consultations'){

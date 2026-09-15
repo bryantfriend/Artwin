@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const root=resolve(fileURLToPath(new URL('../dist',import.meta.url)));
 const base='/Artwin/';
-const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.wasm':'application/wasm','.png':'image/png','.webp':'image/webp','.glb':'model/gltf-binary','.gltf':'model/gltf+json','.json':'application/json'};
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.wasm':'application/wasm','.png':'image/png','.webp':'image/webp','.glb':'model/gltf-binary','.gltf':'model/gltf+json','.json':'application/json','.xml':'application/xml; charset=utf-8','.jpg':'image/jpeg'};
 export function createPagesServer() {
   return createServer(async(req,res)=>{
     try {
@@ -15,8 +15,13 @@ export function createPagesServer() {
       if(url.pathname==='/Artwin'){res.writeHead(301,{Location:base});res.end();return;}
       if(!url.pathname.startsWith(base)){res.writeHead(404);res.end('Not found');return;}
       const relative=decodeURIComponent(url.pathname.slice(base.length))||'index.html';
-      const path=resolve(root,relative);
-      if(!path.startsWith(root+sep)||!(await stat(path)).isFile()){res.writeHead(404);res.end('Not found');return;}
+      let path=resolve(root,relative);
+      if(!path.startsWith(root+sep)){res.writeHead(404);res.end('Not found');return;}
+      if((await stat(path)).isDirectory()){
+        if(!url.pathname.endsWith('/')){res.writeHead(301,{Location:url.pathname+'/'+url.search});res.end();return;}
+        path=resolve(path,'index.html');
+      }
+      if(!(await stat(path)).isFile()){res.writeHead(404);res.end('Not found');return;}
       const data=await readFile(path);
       res.writeHead(200,{'Content-Type':mime[extname(path)]||'application/octet-stream','Cache-Control':'no-store'});
       res.end(data);

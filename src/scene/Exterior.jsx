@@ -1,4 +1,4 @@
-import React,{useMemo,useEffect} from 'react';
+import React,{useMemo,useEffect,useRef,useCallback} from 'react';
 import {useLoader} from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -14,7 +14,14 @@ function softenPanoramaEdges(shader){
     #endif`);
 }
 
-export default function Exterior({visible}){
+export default function Exterior({visible,evening=false}){
+  const compiled=useRef(null),currentEvening=useRef(evening);currentEvening.current=evening;
+  const tint=shader=>{
+    shader.uniforms.skyTone.value.set(currentEvening.current?'#7d8493':'#acd0ed');
+    shader.uniforms.groundTone.value.set(currentEvening.current?'#384b43':'#718568');
+  };
+  const compile=useCallback(shader=>{softenPanoramaEdges(shader);compiled.current=shader;tint(shader);},[]);
+  useEffect(()=>{if(compiled.current)tint(compiled.current);},[evening]);
   const source=useLoader(THREE.TextureLoader,`${import.meta.env.BASE_URL}textures/kyrgyz-city-panorama.jpg`);
   const texture=useMemo(()=>{
     const t=source.clone();t.colorSpace=THREE.SRGBColorSpace;
@@ -26,10 +33,10 @@ export default function Exterior({visible}){
     {/* Distant, world-fixed scenery keeps the view steady as the visitor moves. */}
     <mesh position={[4.9,-2,7.5]} raycast={()=>null}>
       <cylinderGeometry args={[45,45,32,128,1,true]}/>
-      <meshBasicMaterial map={texture} side={THREE.BackSide} toneMapped={false} onBeforeCompile={softenPanoramaEdges}/>
+      <meshBasicMaterial map={texture} color={evening?'#8797b0':'#ffffff'} side={THREE.BackSide} toneMapped={false} onBeforeCompile={compile}/>
     </mesh>
     <mesh position={[4.9,-18,7.5]} rotation={[-Math.PI/2,0,0]} raycast={()=>null}>
-      <circleGeometry args={[45,64]}/><meshBasicMaterial color="#718568" toneMapped={false}/>
+      <circleGeometry args={[45,64]}/><meshBasicMaterial color={evening?'#384b43':'#718568'} toneMapped={false}/>
     </mesh>
   </group>;
 }

@@ -6,6 +6,8 @@ import {routeHref,routeLocation,presentationHref} from '../src/navigation.js';
 import {sharedPlans,allPlans,planKey,contextMessage} from '../src/sales.js';
 import {pageMetadata} from '../src/pageMetadata.js';
 import {projectMedia} from '../src/projectMedia.js';
+import {projectLifestyle} from '../src/projectLifestyle.js';
+import {projectDetails} from '../src/projectDetails.js';
 import {translate} from '../src/i18n.js';
 
 test('every clean apartment link and legacy hash resolves to the same apartment',()=>{
@@ -59,4 +61,21 @@ test('commercial contact text does not ask for an apartment',()=>{
  const message=contextMessage({project:projects.find(p=>p.id==='seoul')},s=>s);
  assert.match(message,/commercial/);
  assert.doesNotMatch(message,/apartment/);
+});
+
+test('every project has attributed lifestyle images with translated captions and known features',async()=>{
+ for(const project of projects){
+  const images=projectLifestyle[project.id];
+  assert.ok(images?.length>0,project.id);
+  assert.equal(new Set(images.map(image=>image.file)).size,images.length);
+  for(const image of images){
+   assert.match(image.file,new RegExp(`^(gallery|lifestyle)/${project.id}-[\\w-]+\\.webp$`));
+   const file=await readFile(new URL(`../public/${image.file}`,import.meta.url));
+   assert.equal(file.toString('ascii',8,12),'WEBP',image.file);
+   assert.match(image.source,/^https:\/\/static\.tildacdn\.(one|net)\//);
+   assert.ok(['render','illustration'].includes(image.kind));
+   for(const feature of image.features)assert.ok(projectDetails[project.id].features.includes(feature),feature);
+   for(const key of [image.title,image.description])for(const language of ['ru','ky','zh-CN'])assert.notEqual(translate(key,{},language),key);
+  }
+ }
 });

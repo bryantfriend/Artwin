@@ -1,0 +1,58 @@
+.project-lifestyle { margin: 0 0 30px; min-width: 0; }
+.project-confidence .confidence-grid > .neighbourhood-panel { grid-column: auto; }
+.lifestyle-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+.lifestyle-heading .collection-kicker { color: #74806b; font-size: 9px; }
+.lifestyle-heading h3 { font: 400 clamp(27px, 3.2vw, 40px)/1.12 Georgia, serif; letter-spacing: -.8px; margin: 12px 0; }
+.lifestyle-heading p { margin: 0; font-size: 13px; color: #707b66; }
+.lifestyle-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.lifestyle-controls button { width: 46px; height: 46px; border: 1px solid #d4dacb; border-radius: 50%; background: #fff; color: #2b402f; font-size: 21px; cursor: pointer; }
+.lifestyle-controls button:not(:disabled):hover { background: #ffd000; border-color: #ffd000; }
+.lifestyle-controls button:disabled { opacity: .3; cursor: default; }
+.lifestyle-controls span { font-size: 12px; font-variant-numeric: tabular-nums; min-width: 38px; text-align: center; }
+.lifestyle-track { display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: #c6cfba transparent; padding: 0 0 14px; }
+.lifestyle-card { flex: 0 0 calc((100% - 40px)/3); min-width: 0; scroll-snap-align: start; }
+.lifestyle-image { width: 100%; display: block; position: relative; padding: 0; overflow: hidden; border-radius: 15px; border: 0; background: #e8e9e1; cursor: zoom-in; text-align: left; }
+.lifestyle-image img { width: 100%; height: auto; aspect-ratio: 4/3; object-fit: cover; display: block; transition: transform .45s ease; }
+.lifestyle-image:hover img { transform: scale(1.035); }
+.lifestyle-image::after { content: ''; position: absolute; inset: 55% 0 0; background: linear-gradient(transparent, #0d1c1b8c); pointer-events: none; }
+.lifestyle-image-label { position: absolute; bottom: 17px; left: 17px; right: 58px; z-index: 1; font-size: 9px; line-height: 1.5; color: #fff; letter-spacing: .35px; }
+.lifestyle-enlarge { position: absolute; right: 13px; bottom: 13px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #ffffffeb; color: #293c30; z-index: 1; }
+.lifestyle-caption { display: flex; align-items: start; gap: 13px; padding: 18px 2px 6px; }
+.lifestyle-number { color: #7d8974; font-size: 10px; border-top: 2px solid #ffd000; padding-top: 7px; min-width: 22px; }
+.lifestyle-caption h4 { margin: 0 0 8px; font: 400 clamp(20px, 2vw, 25px)/1.2 Georgia, serif; letter-spacing: -.3px; overflow-wrap: anywhere; }
+.lifestyle-caption p { color: #77816d; font-size: 12px; margin: 0; }
+.lifestyle-footer { display: flex; gap: 16px; justify-content: space-between; align-items: center; padding: 2px 0 14px; border-bottom: 1px solid #dde1d4; }
+.lifestyle-footer p { font-size: 11px; margin: 0; color: #7a8370; }
+.project-confidence .lifestyle-more { margin-top: 14px; background: transparent; }
+.lifestyle-facts { display: flex; flex-wrap: wrap; gap: 8px; }
+.lifestyle-facts span { font-size: 12px; border-radius: 6px; padding: 8px 12px; background: #edf0e6; }
+.lifestyle-track--single .lifestyle-card { flex-basis: min(100%, 620px); }
+.lifestyle-dialog { width: min(1060px, calc(100% - 32px)); max-width: none; }
+.lifestyle-dialog h2 { font: 400 clamp(26px, 4vw, 38px)/1.15 Georgia, serif; margin: 12px 40px 22px 0; }
+.lifestyle-full-image { width: 100%; height: min(56dvh, 580px); object-fit: contain; display: block; background: #f1f2ed; border-radius: 10px; }
+.lifestyle-modal-caption { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 16px 0; }
+.lifestyle-modal-caption p { font-size: 14px; margin: 0 0 5px; }
+.lifestyle-modal-caption small { font-size: 10px; color: #747f69; }
+.project-lifestyle :focus-visible, .lifestyle-dialog :focus-visible { outline: 2px solid #526c41; outline-offset: 3px; }
+.lifestyle-image:focus-visible { outline-offset: -3px; }
+@media(max-width: 1020px) { .lifestyle-card { flex-basis: calc((100% - 20px)/2); } }
+@media(max-width: 600px) {
+ .lifestyle-heading { align-items: center; gap: 12px; margin-bottom: 18px; }
+ .lifestyle-heading h3 { font-size: 28px; }
+ .lifestyle-heading .collection-kicker { font-size: 8px; letter-spacing: 1.2px; }
+ .lifestyle-heading p { font-size: 12px; }
+ .lifestyle-controls { gap: 6px; }
+ .lifestyle-controls button { width: 44px; height: 44px; }
+ .lifestyle-card { flex-basis: 88%; }
+ .lifestyle-image { border-radius: 12px; }
+ .lifestyle-caption { padding-top: 15px; }
+ .lifestyle-caption h4 { font-size: 23px; }
+ .lifestyle-footer { display: block; padding-top: 7px; }
+ .lifestyle-footer .buyer-link { font-size: 11px; }
+ .lifestyle-dialog { width: calc(100% - 16px); }
+ .lifestyle-dialog .dialog-content { padding: 24px 16px; }
+ .lifestyle-full-image { height: auto; max-height: 48dvh; }
+ .lifestyle-modal-caption { align-items: start; flex-direction: column; }
+ .lifestyle-modal-caption .lifestyle-controls { width: 100%; justify-content: space-between; }
+}
+@media(prefers-reduced-motion: reduce) { .lifestyle-image img { transition: none; } }

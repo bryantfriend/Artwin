@@ -3,6 +3,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { createPagesServer } from './serve-pages.mjs';
 import { projects,projectHref,apartmentHref } from '../src/projects.js';
 import {projectMedia} from '../src/projectMedia.js';
+import {projectLifestyle} from '../src/projectLifestyle.js';
 import {validateSales} from '../src/sales.js';
 
 const html=await readFile(new URL('../dist/index.html',import.meta.url),'utf8');
@@ -17,12 +18,13 @@ try {
   const projectImages=projects.map(project=>`/Artwin/projects/${project.id}.webp`);
   const planImages=projects.flatMap(p=>p.plans.map(plan=>`/Artwin/plans/${plan.id}.png`));
   const galleryImages=Object.values(projectMedia).flat().map(item=>`/Artwin/gallery/${item.file}`);
+  const lifestyleImages=[...new Set(Object.values(projectLifestyle).flat().map(item=>`/Artwin/${item.file}`))];
   const consultants=JSON.parse(await readFile(new URL('../src/consultants.json',import.meta.url),'utf8'));
   const consultantImages=consultants.map(person=>`/Artwin/${person.photo}`);
   const referenceImages=(await readdir(new URL('../dist/references/',import.meta.url))).map(name=>`/Artwin/references/${name}`);
   const publicAssets=['/Artwin/artwin-logo.png','/Artwin/textures/kyrgyz-city-panorama.jpg','/Artwin/sales-data.json'];
   validateSales(await (await fetch(origin+'/Artwin/sales-data.json')).json());
-  for(const path of [...references,...entries.map(name=>`/Artwin/assets/${name}`),...projectImages,...planImages,...galleryImages,...consultantImages,...referenceImages,...publicAssets]) {
+  for(const path of [...references,...entries.map(name=>`/Artwin/assets/${name}`),...projectImages,...planImages,...galleryImages,...lifestyleImages,...consultantImages,...referenceImages,...publicAssets]) {
     const res=await fetch(origin+path);
     assert.equal(res.status,200,`Missing asset ${path}`);
     const body=await res.arrayBuffer();assert(body.byteLength>0,`Empty asset ${path}`);
@@ -41,6 +43,6 @@ try {
     if(path.includes('/apartments/'))assert.match(page,/og:image" content="https:\/\/bryantfriend.github.io\/Artwin\/plans\//);
   }
   assert.equal((await fetch(origin+'/Artwin/sitemap.xml')).status,200);
-  console.log(`PASS: ${routes.length} project/apartment entry pages and ${galleryImages.length} gallery images.`);
+  console.log(`PASS: ${routes.length} project/apartment entry pages, ${galleryImages.length} gallery images and ${lifestyleImages.length} lifestyle images.`);
   console.log(`PASS: ${entries.length} built assets, ${references.length} HTML references, ${projectImages.length} project images, ${planImages.length} 3D previews, ${consultantImages.length} consultant photos and logo/panorama served beneath /Artwin/. Unknown paths return 404.`);
 } finally {await new Promise(resolve=>server.close(resolve));}

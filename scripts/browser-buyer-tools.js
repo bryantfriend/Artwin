@@ -26,7 +26,7 @@ async(page)=>{
   for(const lang of ['ru','ky','en-US','zh-CN']){
    await page.locator('.collection-header select').selectOption(lang);for(const width of [320,390,760,1440]){await page.setViewportSize({width,height:900});check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Finder overflow '+lang+'/'+width);}
   }
-  await page.locator('.collection-header select').selectOption('en-US');await page.setViewportSize({width:1440,height:1000});await page.goto(base+'#/projects/tokyo-city');await dismiss();await page.locator('.project-confidence summary').filter({hasText:'Life in this project'}).click();await page.screenshot({path:'output/playwright/buyer-project-desktop.png'});
+  await page.locator('.collection-header select').selectOption('en-US');await page.setViewportSize({width:1440,height:1000});await page.goto(base+'#/projects/tokyo-city');await dismiss();await page.locator('.project-lifestyle').scrollIntoViewIfNeeded();await page.screenshot({path:'output/playwright/buyer-project-desktop.png'});
   check(!errors.length,errors.join(';'));check(!responses.length,responses.join(';'));return {result:'PASS',errors,responses,shareUrl:url};
  }finally{page.off('pageerror',onError);page.off('console',onConsole);page.off('response',onResponse);}
 }

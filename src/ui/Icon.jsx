@@ -1,5 +1,12 @@
 import React from 'react';
 const paths={
+  pin:<><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></>,
+  external:<><path d="M14 3h7v7m0-7L10 14M10 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/></>,
+  school:<><path d="m2 7 10-5 10 5-10 5-10-5ZM6 9v6c4 3 8 3 12 0V9M21 8v9"/></>,
+  park:<><path d="m12 2-6 8h3l-5 7h16l-5-7h3L12 2Zm0 15v5M8 22h8"/></>,
+  clinic:<><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6Z"/></>,
+  shop:<><path d="M4 9v12h16V9M2 9l3-6h14l3 6M2 9a3.3 3.3 0 0 0 6.7 0 3.3 3.3 0 0 0 6.6 0A3.3 3.3 0 0 0 22 9M9 21v-6h6v6"/></>,
+  bus:<><rect x="5" y="2" width="14" height="18" rx="3"/><path d="M5 11h14M8 20v2m8-2v2M8 6h8M8 16h1m6 0h1"/></>,
   cube:<><path d="m12 3 9 5v8l-9 5-9-5V8z"/><path d="m3 8 9 5 9-5M12 13v8M7.5 5.5l9 5"/></>,
   walk:<><circle cx="13" cy="4" r="2"/><path d="m10 21 2-7-3-3 2-5 4 1 2 5 3 1M5 12l3-1 2-4M12 14l4 3 1 4"/></>,
   arrow:<path d="M4 12h15m-6-6 6 6-6 6"/>,

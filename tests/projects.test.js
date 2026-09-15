@@ -6,7 +6,7 @@ test('collection routes expose the listed projects without inventing apartment a
   assert.equal(projects.length,10);
   assert.equal(new Set(projects.map(p=>p.id)).size,10);
   assert.equal(projects.filter(p=>p.plans.length).length,8);
-  assert.equal(resolveRoute('').kind,'projects');
+  assert.equal(resolveRoute('').kind,'home');
   assert.equal(resolveRoute('#/projects').kind,'projects');
   for(const project of projects)assert.equal(resolveRoute(projectHref(project)).project,project);
   const tokyo=projects.find(p=>p.id==='tokyo-city');

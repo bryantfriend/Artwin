@@ -41,11 +41,12 @@ export const apartmentHref=(project,plan)=>routeHref(`/projects/${project.id}/ap
 export function resolveRoute(hash=''){
   const [rawPath,search='']=hash.replace(/^#/, '').replace(new RegExp(`^${basePath}`),'/').split('?');
   const path=rawPath.replace(/\/$/,'');
-  if(path==='/finder')return {kind:'finder'};
+  if(path==='/finder')return {kind:'finder',search};
   if(path==='/shortlist')return {kind:'shortlist',search};
   if(path==='/sales-workspace')return {kind:'workspace'};
   if(path==='/presentation')return {kind:'presentation',search};
-  if(!path||path==='/projects')return {kind:'projects'};
+  if(!path)return {kind:'home'};
+  if(path==='/projects')return {kind:'projects',search};
   const parts=path.split('/').filter(Boolean);
   if(parts[0]==='consultations'){
     if(parts.length===1)return {kind:'consultations'};

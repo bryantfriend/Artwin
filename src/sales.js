@@ -62,7 +62,7 @@ export function contextMessage({project,plan,unit,keys=[],payment,note='',visit}
 export const whatsappHref=message=>`https://wa.me/996228880000?text=${encodeURIComponent(message)}`;
 export function track(event,context={}){
   if(safeRead('artwin-measurement',false)!==true)return;
-  const allowed=['project_view','plan_view','finder_used','payment_calculated','shortlist_saved','whatsapp_opened','booking_opened'];
+  const allowed=['home_view','home_search_started','project_view','plan_view','finder_used','payment_calculated','shortlist_saved','whatsapp_opened','booking_opened'];
   if(!allowed.includes(event))return;
   const events=safeRead('artwin-events',[]);
   const row={event,at:new Date().toISOString(),projectId:projects.some(p=>p.id===context.projectId)?context.projectId:null,planId:allPlans().some(r=>r.plan.id===context.planId)?context.planId:null};

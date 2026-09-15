@@ -22,7 +22,7 @@ test('every clean apartment link and legacy hash resolves to the same apartment'
   }
  }
  assert.equal(routeHref('/'),'/Artwin/');
- assert.equal(resolveRoute('/Artwin/').kind,'projects');
+ assert.equal(resolveRoute('/Artwin/').kind,'home');
  assert.equal(routeLocation({pathname:'/Artwin/finder/',search:'',hash:''}),'/finder/');
  assert.equal(routeLocation({pathname:'/Artwin/',search:'?v=old',hash:'#/projects/seoul'}),'#/projects/seoul');
 });

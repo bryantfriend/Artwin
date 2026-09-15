@@ -17,6 +17,7 @@ import './showroom.css';
 import './projects.css';
 import './experience.css';
 import ApartmentLoading from './ui/ApartmentLoading.jsx';
+import HomePage from './ui/HomePage.jsx';
 const ApartmentExperience=lazy(()=>import('./ApartmentExperience.jsx'));
 const Presentation=lazy(()=>import('./ui/Presentation.jsx'));
 const positions=new Map();
@@ -35,6 +36,7 @@ export default function App(){
     return()=>{clearInterval(timer);window.removeEventListener('scroll',scroll);};
   },[hash]);
   useEffect(()=>{
+    if(route.kind==='home')track('home_view');
     if(route.kind==='project')track('project_view',{projectId:route.project.id});
     if(route.kind==='apartment')track('plan_view',{projectId:route.project.id,planId:route.plan.id});
   },[hash]);
@@ -57,7 +59,7 @@ export default function App(){
     return()=>{cancelAnimationFrame(frame);window.removeEventListener('scroll',save);};
   },[hash]);
   const content=route.kind==='apartment'?<ErrorBoundary><Suspense fallback={<div className="collection"><CollectionHeader/><main className="apartment-loading-page"><ApartmentLoading standalone selection={`${route.project.name} · ${number(route.plan.area,2)} ${t('m²')}`}/></main></div>}><ApartmentExperience key={route.plan.id} project={route.project} plan={route.plan}/></Suspense></ErrorBoundary>:<div className="collection"><CollectionHeader/>
-    {route.kind==='projects'?<ProjectCollection/>:route.kind==='finder'?<ApartmentFinder/>:route.kind==='shortlist'?<SharedShortlist key={hash} search={route.search}/>:route.kind==='presentation'?<Suspense fallback={<p role="status">{t('Preparing presentation…')}</p>}><Presentation key={hash} search={route.search}/></Suspense>:route.kind==='workspace'?<SalesWorkspace/>:route.kind==='project'?<ProjectPage key={route.project.id} project={route.project}/>:route.kind==='consultations'?<ConsultationPage key={route.project?.id||'all'} initialProject={route.project}/>:<main className="collection-missing"><span className="collection-kicker">{t('LET’S FIND YOUR WAY')}</span><h1 data-page-title tabIndex={-1}>{t('This space isn’t available.')}</h1><p>{t('Choose a project from the collection to continue exploring.')}</p><a className="collection-button" href={routeHref('/projects')}>{t('View all projects')}</a></main>}
+    {route.kind==='home'?<HomePage/>:route.kind==='projects'?<ProjectCollection key={hash} search={route.search}/>:route.kind==='finder'?<ApartmentFinder key={hash} search={route.search}/>:route.kind==='shortlist'?<SharedShortlist key={hash} search={route.search}/>:route.kind==='presentation'?<Suspense fallback={<p role="status">{t('Preparing presentation…')}</p>}><Presentation key={hash} search={route.search}/></Suspense>:route.kind==='workspace'?<SalesWorkspace/>:route.kind==='project'?<ProjectPage key={route.project.id} project={route.project}/>:route.kind==='consultations'?<ConsultationPage key={route.project?.id||'all'} initialProject={route.project}/>:<main className="collection-missing"><span className="collection-kicker">{t('LET’S FIND YOUR WAY')}</span><h1 data-page-title tabIndex={-1}>{t('This space isn’t available.')}</h1><p>{t('Choose a project from the collection to continue exploring.')}</p><a className="collection-button" href={routeHref('/projects')}>{t('View all projects')}</a></main>}
     <CollectionFooter/><WhatsAppContact floating/>
   </div>;
   return <SalesProvider>{content}{welcome&&['projects','project'].includes(route.kind)&&<WelcomeModal onClose={()=>{safeWrite('artwin-welcome-dismissed',Date.now());setWelcome(false);}}/>}</SalesProvider>;
